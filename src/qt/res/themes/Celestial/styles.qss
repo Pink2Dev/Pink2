@@ -1,0 +1,714 @@
+/**
+ * Celestial Qt Theme - v1.0
+ * Created: 24/10/2014
+ * Author: ShrykeZ (Based on HyperBlue by Zeewolf) - ##hyperstake (freenode)
+ * HyperStake - faster than light!
+ */
+
+/**
+ * QSS REFERENCE :
+ * http://qt-project.org/doc/qt-4.8/stylesheet-reference.html
+ * http://qt-project.org/doc/qt-4.8/stylesheet-examples.html
+ */
+ 
+/** [VARS]
+	$text-color = #E5E4E2
+	$main-color-l = #142930
+	$main-color-xl = #6D7B8D
+	$main-color-d = #342D7E
+	$main-color-xd = #0C090A
+	$main-color-transparent-0 = rgba(37,56,60,50)
+	$main-color-transparent-1 = rgba(37,56,60,100)
+	$main-color-transparent-2 = rgba(72,99,160,200)
+	$shade-transparent-1 = rgba(0,0,0,100)
+	$shade-transparent-2 = rgba(0,0,0,50)
+	$main-color = #25383C
+	$text-grey-d = #0c191d
+	$accent-color = #dca753
+	$brightest-color = #fff
+	$input-border-color = #BCC6CC
+	$header-font = "Verdana, Geneva, sans-serif"
+	$error-color = #FF0000
+	$success-color = #00FF00
+[/VARS] */
+
+* { gridline-color: $main-color }
+
+/* Dialog, Window */
+QDialog, QMainWindow {
+	background-image: url($theme-dir/space.png);
+	background-repeat: repeat-xy;
+}
+
+#coinLogo {
+	qproperty-pixmap: url($theme-dir/hypstk-watermark.png);
+	qproperty-alignment: 'AlignBottom | AlignLeft';
+}
+
+/* Frames */
+QFrame {	
+	/* too general - do not style */
+}
+
+/* Bottom status bar */
+QStatusBar {
+	background-color: transparent;
+	color: $text-color;
+}
+
+QStatusBar::item {
+	border: none;
+}
+
+/* Label */
+QLabel {
+	color: $text-color;
+}
+
+QLabel[error="true"], QLabel[status="error"] {
+	color: $error-color;
+}
+
+QLabel[ok="true"], QLabel[status="ok"] {
+	color: $success-color;
+}
+
+QValidatedLineEdit[error="true"], QDoubleSpinBox[error="true"] {
+	border-color: $error-color;
+}
+
+/* Frames labels - Balance, Stake, etc. */
+
+/* Balance frame */
+QFrame#frame_4 {
+	background-color: $shade-transparent-1;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+}
+
+#verticalLayout_3 {
+	background-color: $shade-transparent-1;
+}
+
+/* Recent transactions frame */
+QFrame#frame_3, QFrame#frame_2 {
+	background-color: $shade-transparent-1;
+	border: none;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+}
+
+/* Panel in Coin Control window */
+QFrame#frame_3 QFrame {
+	color: $text-color;
+}
+
+QFrame#rangeFrame {
+	background-color: $shade-transparent-1;
+	border: none;
+	margin-top: 10px;
+}
+
+#CoinControlDialog QFrame#frame {
+	border: none;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+}
+
+QFrame#frameCoinControl {
+	background-color: $shade-transparent-1;
+	border: none;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+}
+
+/* Balance value */
+#frame #labelBalance {
+	color: $brightest-color;
+}
+
+/* Wallet label */
+QFrame#frame #label_5 {
+	font-size: 15px;
+	font-family: $header-font;
+	color: $accent-color;
+}
+
+/* Recent transactions label */
+QFrame#frame_2 #label_4 {
+	font-size: 15px;
+	font-family: $header-font;
+	color: $accent-color;
+}
+
+QFrame#frame_2 {
+	background-color: $shade-transparent-1;
+}
+
+/* ScrollArea */
+QScrollArea {
+	background-color: $shade-transparent-1;
+	border: none;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+}
+
+#scrollAreaWidgetContents { 
+	background-color: transparent;
+}
+#scrollAreaWidgetContents > QFrame {
+	background-color: transparent;
+	border-width: 0px;
+	border-style: none;
+}
+
+#scrollAreaWidgetContents > QFrame:last {
+	border-bottom: 1px solid $brightest-color;
+}
+
+#scrollAreaWidgetContents > QFrame:only-one {
+	border-bottom: none;
+}
+
+/* Text edit fields */
+QPlainTextEdit, QLineEdit {
+	padding: 4px;
+	background-color: $main-color;
+	color: $brightest-color;
+	border: 1px solid $input-border-color;
+}
+
+QPlainTextEdit:focus, QLineEdit:focus {
+	border: 1px solid $accent-color;
+}
+
+QPlainTextEdit:disabled, QLineEdit:disabled {
+	border-color: $main-color-xd;
+	color: $input-border-color;
+}
+
+/* Text edit - debug window */
+QTextEdit {
+	padding: 4px;
+	background-color: transparent;
+	color: $brightest-color;
+	border: none;
+}
+
+QTextEdit:disabled {
+	border-color: $main-color-xd;
+	color: $input-border-color;
+}
+
+/* Combo box */
+QComboBox {
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 $main-color-xl, stop:1 $main-color);
+	color: $text-color;
+	border: 1px solid $input-border-color;
+	border-radius: 3px; /* same radius as the QComboBox */
+	padding: 3px 18px 3px 4px;
+	min-width: 6em;
+}
+
+QComboBox:on {
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 $main-color, stop:1 $main-color-xl);
+	border-color: $accent-color;
+}
+
+QComboBox:disabled {
+	border-color: $main-color-xd;
+	color: $input-border-color;
+}
+
+QComboBox::drop-down:disabled {
+	border-color: $input-border-color;
+}
+
+QComboBox::down-arrow {
+	/* Custom dropdown symbol */
+	image: url($theme-dir/down-arrow.png);
+}
+
+QComboBox::down-arrow:disabled {
+	image: url($theme-dir/down-arrow-disabled.png);
+}
+
+QComboBox::down-arrow:on {
+	/* Custom dropdown symbol */
+	image: url($theme-dir/up-arrow.png);
+}
+
+QComboBox::drop-down {
+	border: 0px;
+}
+
+QComboBox QAbstractItemView {
+	border: 1px solid $main-color-xl;
+	color: $text-color;
+	background-color: $main-color;
+	outline: 0px;
+}
+
+QComboBox QListView {
+	border: none;
+	selection-color: $main-color;
+	selection-background-color: $text-color;
+}
+
+/* Up&down spin box */
+QDateTimeEdit, QSpinBox, QDoubleSpinBox {
+	padding: 3px;
+	background-color: $main-color;
+	color: $brightest-color;
+	border: 1px solid $input-border-color;
+}
+
+QDateTimeEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {
+	border-color: $accent-color;
+}
+
+QDateTimeEdit:disabled, QSpinBox:disabled, QDoubleSpinBox:disabled {
+	border-color: $main-color-xd;
+	color: $input-border-color;
+}
+
+QDateTimeEdit::down-arrow {
+	image: url($theme-dir/calendar.png);
+}
+
+QDateTimeEdit::down-arrow:disabled {
+	image: url($theme-dir/calendar-disabled.png);
+}
+
+QDateTimeEdit::drop-down {
+	border: 0px;
+}
+
+QDoubleSpinBox::down-button {
+	image: url($theme-dir/down-arrow.png);
+}
+
+QDoubleSpinBox::up-button {
+	image: url($theme-dir/up-arrow.png);
+}
+
+/* Button */
+QPushButton {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 1, stop: 0 $text-color, stop: 0.5 $main-color-xd);
+	color: $text-color;
+	padding: 4px;
+	border: 2px solid $text-color;
+	outline: none;
+	font-family: $header-font;
+	font-size: 12px;
+	border-radius: 3px;
+	/*min-width: 6em;*/
+}
+
+QPushButton[text="OK"] {
+	width: 6em;
+}
+
+QToolButton {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 1, stop: 0 $text-color, stop: 0.5 $main-color-xd);
+	color: $text-color;
+	padding: 4px;
+	border: 2px solid $text-color;
+	outline: none;
+	font-family: $header-font;
+	font-size: 12px;
+	border-radius: 3px;
+}
+
+QPushButton:hover, QToolButton:hover {
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 1, stop: 0 $accent-color, stop: 0.5 $main-color-xd);
+	color: $accent-color;
+	border: 2px solid $accent-color;
+}
+
+QPushButton:disabled, QToolButton:disabled {
+	background-color: $main-color-xd;
+	border: 2px solid $input-border-color;
+	color: $main-color-xl;
+}
+
+QPushButton:pressed, QToolButton:pressed {
+	background-color: $accent-color;
+	/*border: 2px solid transparent;*/
+	color: $main-color-xd;
+}
+
+/* Toolbar */
+QToolBar {
+	background: $main-color-l;
+	spacing: 0px; /* spacing between items in the tool bar */
+	border-bottom: 3px solid $main-color-xd;
+	border-top: 1px solid $main-color-xd;
+	min-height: 40px;
+	padding: 0px;
+}
+
+QToolBar::handle {
+	padding: 0px;
+	background-image: url($theme-dir/toolbar-handle.png);
+	background-repeat: repeat-y;
+	background-position: top center;
+}
+
+/* Toolbar buttons */
+QToolBar QToolButton { /* all types of tool button */
+	border-radius: 0px;
+	background-color: transparent;
+	color: $text-color;
+	padding: 3px 1px 5px 2px;
+	font-family: $header-font;
+	font-size: 12px;
+	margin-top: 4px;
+	border: none;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+QToolBar QToolButton:hover {
+	color: $brightest-color;
+	background-color: transparent;
+	border: none;
+	
+}
+
+QToolBar QToolButton:checked {
+	background-color: $main-color-xd;
+	color: $accent-color;
+	border-bottom: 3px solid $accent-color;
+	padding: 5px 1px 5px 2px;
+}
+
+QToolBar QToolButton:disabled {
+	color: $input-border-color;
+	background-color: transparent;
+	border: none;
+}
+
+/* Tool buttons - buttons with icons */
+#qt_toolbar_ext_button {
+	qproperty-icon: url($theme-dir/arrow-down.png);
+	border-radius: 0px;
+	margin-top: 3px;
+	padding: 0px;
+	border: 0px;
+	margin-left: -3px;
+}
+
+#addressBookButton, QToolButton#clearButton, QToolButton#pasteButton, QToolButton#deleteButton,
+QToolButton#addressBookButton_VM, QToolButton#copySignatureButton_SM, QToolButton#pasteButton_SM, QToolButton#addressBookButton_SM {
+	min-width: 16px;
+	max-width: 24px;
+	padding: 2px;
+	margin-left: 4px;
+}
+
+/* Progress bar */
+QProgressBar {
+	border: 1px solid rgba(136,193,208,80);
+	color: $brightest-color;
+	font-weight: bold;
+	background-color: transparent;
+}
+
+QProgressBar::chunk {
+	background-color: rgba(136,193,208,80);
+	width: 3px;
+	margin: 0.5px;
+}
+
+/* Table */
+CoinControlTreeWidget, QTableView {
+	background: $main-color-transparent-0;
+	alternate-background-color: $main-color-transparent-1;
+	border-style: none;
+	border-bottom: 3px solid $shade-transparent-2;
+	color: $text-color;
+	selection-background-color: $main-color-transparent-2;
+	/*selection-color: $main-color-xd;*/
+	outline: none;
+}
+
+QTableView QTableCornerButton::section {
+	border: 0px solid $main-color-xd;
+	outline: none;
+}
+
+QTableWidget::item:focus {
+	outline: none;
+	border: 0px;
+}
+
+QTreeView {
+	background: $main-color-transparent-0;
+	color: $text-color;
+	border-style: none;
+	selection-background-color: $accent-color;
+	alternate-background-color: $main-color-transparent-1;
+	selection-color: $main-color-xd;
+	outline: none;
+}
+
+QTreeView::item {
+	border: none;
+	color: $text-color;
+}
+
+QTreeView::item:hover {
+	color: $brightest-color;
+}
+
+QTreeView::item:selected {
+	background-color: $main-color-transparent-2;
+	color: $main-color-xd;
+}
+
+/* Table Header */
+QHeaderView {
+	color: $brightest-color;
+	background-color: $main-color;
+	border-bottom: 1px solid $accent-color;
+}
+
+QHeaderView::section {
+	color: $accent-color;
+	background-color: transparent;
+}
+
+QHeaderView::section:checked {
+
+}
+
+/* Tooltip */
+QToolTip {
+	border: 2px outset $main-color-xl;
+	color: $text-color;
+	background-color: $main-color;
+}
+
+
+/* Menu Bar */
+QMenuBar {
+	background-color: $text-grey-d;
+	border: none;
+}
+
+QMenuBar::item {
+	background: transparent;
+	color: $text-color;
+}
+
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+	background: $text-color;
+	color: $text-grey-d;
+}
+
+QMenuBar::item:pressed {
+	background: $text-color;
+}
+
+/* Menu dialog */
+QMenu {
+	color: $text-color;
+	background-color: $text-grey-d;
+}
+
+QMenu::item {
+	/* sets background of menu item. set this to something non-transparent
+	if you want menu color and menu item color to be different */
+	background-color: transparent;
+}
+
+QMenu::item:selected { /* when user selects item using mouse or keyboard */
+	color: $text-grey-d;
+	background-color: $text-color;
+}
+
+/* Checkbox */
+QCheckBox {
+	color: $text-color;
+}
+
+QCheckBox::indicator {
+	width: 13px;
+	height: 13px;
+}
+
+QCheckBox::indicator:unchecked {
+	image: url($theme-dir/cb.png);
+}
+
+QCheckBox::indicator:unchecked:hover {
+	image: url($theme-dir/cb-hover.png);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+	/*image: url($theme-dir/checkbox_unchecked_pressed.png);*/
+}
+
+QCheckBox::indicator:checked {
+	image: url($theme-dir/cb-checked.png);
+}
+
+QCheckBox::indicator:checked:hover {
+	image: url($theme-dir/cb-checked-hover.png);
+}
+
+QCheckBox::indicator:checked:pressed {
+	/*image: url($theme-dir/checkbox_checked_pressed.png);*/
+}
+
+QCheckBox::indicator:indeterminate:hover {
+	/*image: url($theme-dir/checkbox_indeterminate_hover.png);*/
+}
+
+QCheckBox::indicator:indeterminate:pressed {
+	/*image: url($theme-dir/checkbox_indeterminate_pressed.png);*/
+}
+
+/* Radio button */
+QRadioButton {
+	color: $text-color;
+}
+
+QRadioButton::indicator {
+	width: 13px;
+	height: 13px;
+}
+
+QRadioButton::indicator::unchecked {
+	image: url($theme-dir/r.png);
+}
+
+QRadioButton::indicator:unchecked:hover {
+	image: url($theme-dir/r-hover.png);
+}
+
+QRadioButton::indicator:unchecked:pressed {
+	/*image: url($theme-dir/rpressed.png);*/
+}
+
+QRadioButton::indicator::checked {
+	image: url($theme-dir/r-checked.png);
+}
+
+QRadioButton::indicator:checked:hover {
+	image: url($theme-dir/r-checked-hover.png);
+}
+
+QRadioButton::indicator:checked:pressed {
+	/*image: url($theme-dir/radiobutton_checked_pressed.png);*/
+}
+
+/* Tabs */
+QTabWidget {
+	background: transparent;
+}
+
+QTabWidget::pane {
+	background-color: $shade-transparent-1;
+	border-bottom: 3px solid $shade-transparent-2;
+	border-right: 3px solid $shade-transparent-2;
+	border-top: 2px solid $main-color-xd;
+	margin-top: -2px;
+}
+
+QTabWidget::tab-bar {
+}
+
+/* Style the tab using the tab sub-control. Note that it reads QTabBar _not_ QTabWidget */
+QTabBar::tab {
+	/*background-color: $main-color;*/
+	background-color: transparent;
+	min-width: 26ex;
+	padding: 6px 4px 8px 4px;
+	color: $text-color;
+	margin-right: 2ex;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	border-bottom: 2px solid $accent-color;
+	background-color: $main-color-xd;
+	color: $accent-color;
+	margin-top: 1px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+QTabBar::tab:!selected {
+	/*margin-top: 2px;*/ /* make non-selected tabs look smaller */
+}
+
+/* Scroll bar */
+
+QScrollBar:vertical {
+	background: $main-color-transparent-1;
+	width: 6px;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+
+QScrollBar::add-line:vertical {
+	height: 0px;
+}
+
+QScrollBar::sub-line:vertical {
+	height: 0px;
+}
+
+/* Calendar */
+
+/* navigation bar */
+QCalendarWidget QWidget#qt_calendar_navigationbar { background-color: $main-color }
+QCalendarWidget QToolButton {
+}
+QCalendarWidget QMenu {
+	background-color: $main-color-xd;
+}
+ 
+ /* header row */
+QCalendarWidget QWidget { alternate-background-color: $main-color-l }
+ 
+/* normal days */
+QCalendarWidget QAbstractItemView:enabled {
+	color: $text-color;
+	background-color: $main-color;
+	selection-background-color: $accent-color;
+	selection-color: $main-color-xd;
+}
+ 
+/* days in other months */
+QCalendarWidget QAbstractItemView:disabled { color: $main-color-xd }
+
+/* Window resize grip */
+QSizeGrip {
+	image: url($theme-dir/sizegrip.png);
+	width: 16px;
+	height: 16px;
+}
+
+/* QBalloonTip - notification used in Linux - styled by Qt */
+QBalloonTip {
+	background-color: $main-color-l;
+	color: $text-color;
+}
+
+QBalloonTip QPushButton {
+	min-width: 16px;
+	color: $text-color;
+	padding: 0px;
+	border-radius: 0px;
+	background-color: $text-color;
+}
+
+QBalloonTip QPushButton:hover {
+	border: none;  
+	background-color: $accent-color;
+}

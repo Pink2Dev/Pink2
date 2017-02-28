@@ -1,0 +1,96 @@
+---
+name: "jumbucks"
+suites:
+- "precise"
+architectures:
+- "amd64"
+packages:
+- "mingw-w64"
+- "g++-mingw-w64"
+- "git-core"
+- "unzip"
+- "nsis"
+- "faketime"
+- "autoconf2.13"
+- "libtool"
+- "automake"
+- "pkg-config"
+- "bsdmainutils"
+reference_datetime: "2013-06-01 00:00:00"
+remotes:
+- "url": "https://github.com/jyap808/jumbucks.git"
+  "dir": "jumbucks"
+files:
+- "qt-win32-5.2.0-gitian-r3.zip"
+- "qt-win64-5.2.0-gitian-r3.zip"
+- "boost-win32-1.55.0-gitian-r6.zip"
+- "boost-win64-1.55.0-gitian-r6.zip"
+- "bitcoin-deps-win32-gitian-r14.zip"
+- "bitcoin-deps-win64-gitian-r14.zip"
+- "protobuf-win32-2.5.0-gitian-r4.zip"
+- "protobuf-win64-2.5.0-gitian-r4.zip"
+script: |
+  # Defines
+  export TZ=UTC
+  INDIR=$HOME/build
+  OPTFLAGS='-O2'
+  TEMPDIR="$HOME/tempdir"
+  NEEDDIST=1
+  # Qt: workaround for determinism in resource ordering
+  #  Qt5's rcc uses a QHash to store the files for the resource.
+  #  A security fix in QHash makes the ordering of keys to be different on every run
+  #  (https://qt.gitorious.org/qt/qtbase/commit/c01eaa438200edc9a3bbcd8ae1e8ded058bea268).
+  #  This is good in general but qrc shouldn't be doing a traversal over a randomized container.
+  #  The thorough solution would be to use QMap instead of QHash, but this requires patching Qt.
+  #  For now luckily there is a test mode that forces a fixed seed.
+  export QT_RCC_TEST=1
+  for BITS in 32 64; do # for architectures
+    #
+    STAGING=$HOME/staging${BITS}
+    BUILDDIR=$HOME/build${BITS}
+    BINDIR=$OUTDIR/$BITS
+    if [ "$BITS" == "32" ]; then
+      HOST=i686-w64-mingw32
+    else
+      HOST=x86_64-w64-mingw32
+    fi
+    export PATH=$STAGING/host/bin:$PATH
+    mkdir -p $STAGING $BUILDDIR $BINDIR
+    #
+    cd $STAGING
+    unzip $INDIR/qt-win${BITS}-5.2.0-gitian-r3.zip
+    unzip $INDIR/boost-win${BITS}-1.55.0-gitian-r6.zip
+    unzip $INDIR/bitcoin-deps-win${BITS}-gitian-r14.zip
+    unzip $INDIR/protobuf-win${BITS}-2.5.0-gitian-r4.zip
+    if [ "$NEEDDIST" == "1" ]; then
+      # Make source code archive which is architecture independent so it only needs to be done once
+      cd $HOME/build/jumbucks
+      $HOME/staging${BITS}/host/bin/qmake MINIUPNPC_LIB_PATH=$STAGING MINIUPNPC_INCLUDE_PATH=$STAGING BDB_LIB_PATH=$STAGING BDB_INCLUDE_PATH=$STAGING BOOST_LIB_PATH=$STAGING BOOST_INCLUDE_PATH=$STAGING BOOST_LIB_SUFFIX=-mt-s BOOST_THREAD_LIB_SUFFIX=_win32-mt-s OPENSSL_LIB_PATH=$STAGING OPENSSL_INCLUDE_PATH=$STAGING QRENCODE_LIB_PATH=$STAGING QRENCODE_INCLUDE_PATH=$STAGING USE_QRCODE=1 INCLUDEPATH=$STAGING DEFINES=BOOST_THREAD_USE_LIB BITCOIN_NEED_QT_PLUGINS=0 QMAKE_LRELEASE=lrelease QMAKE_CXXFLAGS=-frandom-seed=jumbucks USE_BUILD_INFO=1 USE_SSE2=1
+      make $MAKEOPTS install
+      cd ..
+      tar -zcvf jumbucks.tar.gz jumbucks
+      DISTNAME=`echo jumbucks.tar.gz`
+      NEEDDIST=0
+    fi
+    # Build platform-dependent executables from source archive
+    cd $BUILDDIR
+    mkdir -p distsrc
+    cd distsrc
+    tar --strip-components=1 -xvf /home/ubuntu/build/jumbucks.tar.gz
+    $HOME/staging${BITS}/host/bin/qmake MINIUPNPC_LIB_PATH=$STAGING MINIUPNPC_INCLUDE_PATH=$STAGING BDB_LIB_PATH=$STAGING BDB_INCLUDE_PATH=$STAGING BOOST_LIB_PATH=$STAGING BOOST_INCLUDE_PATH=$STAGING BOOST_LIB_SUFFIX=-mt-s BOOST_THREAD_LIB_SUFFIX=_win32-mt-s OPENSSL_LIB_PATH=$STAGING OPENSSL_INCLUDE_PATH=$STAGING QRENCODE_LIB_PATH=$STAGING QRENCODE_INCLUDE_PATH=$STAGING USE_QRCODE=1 INCLUDEPATH=$STAGING DEFINES=BOOST_THREAD_USE_LIB BITCOIN_NEED_QT_PLUGINS=0 QMAKE_LRELEASE=lrelease QMAKE_CXXFLAGS=-frandom-seed=jumbucks USE_BUILD_INFO=1 USE_SSE2=1
+    export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+    export FAKETIME=$REFERENCE_DATETIME
+    make $MAKEOPTS
+    $HOST-strip release/jumbucks-qt.exe
+    cp release/jumbucks-qt.exe $BINDIR/
+    unset LD_PRELOAD
+    unset FAKETIME
+  done # for BITS in
+
+  # sort distribution tar file and normalize user/group/mtime information for deterministic output
+  mkdir -p $OUTDIR/src
+  rm -rf $TEMPDIR
+  mkdir -p $TEMPDIR
+  cd $TEMPDIR
+  tar -xvf $HOME/build/$DISTNAME | sort | tar --no-recursion -cT /dev/stdin --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 --mtime="$REFERENCE_DATETIME" | gzip -n > $OUTDIR/src/$DISTNAME
+
