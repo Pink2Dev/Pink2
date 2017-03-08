@@ -981,10 +981,10 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
     if (nHeight == 1)
         nSubsidy = 364800000 * COIN; // Pinkcoin Coinbase.
 
-    if (nHeight > 1 && nHeight < 10000)
+    if (nHeight > 1 && nHeight < 16240)
         nSubsidy = 0;
 
-    if (nHeight >= 10000)
+    if (nHeight >= 16240)
         50 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
 
     if (fDebug && GetBoolArg("-printcreation"))
@@ -998,9 +998,8 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
 {
     int64_t nSubsidy = 0;
 
-    if (nHeight >= 10000)
+    if (nHeight >= 16240)
     {
-
         if (IsFlashStakeReward(nTime))
         {
             nSubsidy = 150 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
