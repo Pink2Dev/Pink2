@@ -1242,20 +1242,25 @@ void BitcoinGUI::updateStakingIcon()
         uint64_t nNetworkWeight = GetPoSKernelPS();
 
         uint64_t chanceToStake;
-        uint64_t diff;
-
-        chanceToStake = (nWeight * 10000) / nNetworkWeight;
-
-        for (uint64_t i=0; i<30; i++ )
+        if (nNetworkWeight > 0)
         {
-             diff = 10000 - chanceToStake;
-             chanceToStake += (nWeight * diff) / nNetworkWeight;
-        }
+            uint64_t diff;
 
-        chanceToStake = chanceToStake / 100;
+            chanceToStake = (nWeight * 10000) / nNetworkWeight;
 
-        if (chanceToStake > 100)
+            for (uint64_t i=0; i<30; i++ )
+            {
+                diff = 10000 - chanceToStake;
+                chanceToStake += (nWeight * diff) / nNetworkWeight;
+            }
+
+            chanceToStake = chanceToStake / 100;
+
+            if (chanceToStake > 100)
+                chanceToStake = 100;
+        } else {
             chanceToStake = 100;
+        }
 
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
         labelStakingIcon->setToolTip(tr("Staking.<br>Your weight is: %1<br>Network weight is: %2<br>Chance to stake within an hour: %3\%").arg(nWeight).arg(nNetworkWeight).arg(chanceToStake));
