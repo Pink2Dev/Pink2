@@ -528,7 +528,7 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
 
 void StakeMiner(CWallet *pwallet)
 {
-    SetThreadPriority(THREAD_PRIORITY_NORMAL);
+    SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     // Make this thread recognisable as the mining thread
     RenameThread("pinkcoin-miner");
@@ -588,7 +588,7 @@ void StakeMiner(CWallet *pwallet)
         {
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
             CheckStake(pblock.get(), *pwallet);
-            SetThreadPriority(THREAD_PRIORITY_NORMAL);
+            SetThreadPriority(THREAD_PRIORITY_LOWEST);
             MilliSleep(500);
         }
         else

@@ -18,7 +18,7 @@ using namespace std;
 unsigned int nStakeSplitAge = 1 * 4 * 60 * 60;
 int64_t nStakeCombineThreshold = 10000 * COIN;
 
-CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
+// CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -2512,8 +2512,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     int64_t nCredit = 0;
     CScript scriptPubKeyKernel;
 
-    CScript scriptD4L;
-    scriptD4L.SetDestination(addrD4L.Get());
+   // CScript scriptD4L;
+   // scriptD4L.SetDestination(addrD4L.Get());
 
     CTxDB txdb("r");
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
@@ -2617,9 +2617,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 						txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
 				}
 
-                // D4L testing
-                if (true)
-                    txNew.vout.push_back(CTxOut(0, scriptD4L));
 				
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake : added kernel type=%d\n", whichType);
@@ -2683,16 +2680,16 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     // Set output amount
-    if (txNew.vout.size() == 4)
+    if (txNew.vout.size() == 3)
     {
-        txNew.vout[1].nValue = ((nCredit - (20 * COIN)) / 2 / CENT) * CENT;
-        txNew.vout[2].nValue = (nCredit - (20 * COIN)) - txNew.vout[1].nValue;
-        txNew.vout[3].nValue = 20 * COIN;
+        txNew.vout[1].nValue = ((nCredit) / 2 / CENT) * CENT;
+        txNew.vout[2].nValue = (nCredit) - txNew.vout[1].nValue;
+        // txNew.vout[3].nValue = 20 * COIN;
 
     }
     else {
-        txNew.vout[1].nValue = nCredit - 20;
-        txNew.vout[2].nValue = 20;
+        txNew.vout[1].nValue = nCredit;
+        // txNew.vout[2].nValue = 20;
     }
 
 
