@@ -29,7 +29,7 @@ static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
 static const unsigned int MAX_BLOCK_SIGOPS = MAX_BLOCK_SIZE/50;
 static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
-static const unsigned int MIN_PEERS = 1;
+static const unsigned int MIN_PEERS = 3;
 static const unsigned int nHalvingPoint = 2;
 static const int64_t MIN_TX_FEE = 10000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
@@ -917,7 +917,7 @@ public:
     unsigned int GetStakeEntropyBit() const
     {
         // Take last bit of block hash as entropy bit
-        unsigned int nEntropyBit = ((GetHash().Get64()) & (long long unsigned int)1); //1llu);
+        unsigned int nEntropyBit = ((GetHash().Get64()) & (long long unsigned int)1); // 1llu);
         if (fDebug && GetBoolArg("-printstakemodifier"))
             printf("GetStakeEntropyBit: hashBlock=%s nEntropyBit=%u\n", GetHash().ToString().c_str(), nEntropyBit);
         return nEntropyBit;

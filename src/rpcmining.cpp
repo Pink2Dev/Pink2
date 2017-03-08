@@ -48,7 +48,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
 
     diff.push_back(Pair("proof-of-work",        GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex2(pindexBest, false))));
+    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
     diff.push_back(Pair("proof-of-stake(flash)",       GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
     diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
     obj.push_back(Pair("difficulty",    diff));
@@ -102,7 +102,7 @@ Value getstakinginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("currentblocktx", (uint64_t)nLastBlockTx));
     obj.push_back(Pair("pooledtx", (uint64_t)mempool.size()));
 
-    obj.push_back(Pair("difficulty", GetDifficulty(GetLastBlockIndex2(pindexBest, false))));
+    obj.push_back(Pair("difficulty", GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
     obj.push_back(Pair("difficulty (flash)", GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
     obj.push_back(Pair("search-interval", (int)nLastCoinStakeSearchInterval));
 

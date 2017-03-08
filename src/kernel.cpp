@@ -283,7 +283,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
 
     nValueIn = nValueIn / COIN; // Don't let amounts less than 1 PINK stake on their own.
 
-    // int64_t nDivideBase = nDayTime * CENT;
+    // int64_t nDivideBase = nDayTime;
     bnCoinDayWeight_Calc = nValueIn * GetWeight((int64_t)txPrev.nTime, (int64_t)nTimeTx) / nDayTime;
 
 

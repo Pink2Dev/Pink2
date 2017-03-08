@@ -37,13 +37,13 @@ map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
 
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 20);      // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
-CBigNum bnProofOfStakeLimit(~uint256(0) >> 12);
-CBigNum bnProofOfFlashStakeLimit(~uint256(0) >> 12);
+CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
+CBigNum bnProofOfFlashStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
 unsigned int nTargetSpacing     = 120;               // 2 Minutes
 unsigned int nTargetSpacing_Staking = 360;           // 6 Minutes
-unsigned int nTargetSpacing_FlashStaking = 60;       // 40 Seconds with transitions generally produces 1 minute blocks.
+unsigned int nTargetSpacing_FlashStaking = 60;       // 1 Minute
 unsigned int nStakeMinAge       = 1 * 60 * 60;       // 1 hour
 unsigned int nStakeMaxAge       = 24 * 60 * 60 * 30; // 30 days
 unsigned int nModifierInterval  = 5 * 60;            // time to elapse before new modifier is computed
@@ -981,8 +981,11 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
     if (nHeight == 1)
         nSubsidy = 364800000 * COIN; // Pinkcoin Coinbase.
 
-    if (nHeight > 1)
-        nSubsidy = 50 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
+    if (nHeight > 1 && nHeight < 10000)
+        nSubsidy = 0;
+
+    if (nHeight >= 10000)
+        50 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
@@ -995,11 +998,18 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
 {
     int64_t nSubsidy = 0;
 
-    if (IsFlashStakeReward(nTime))
+    if (nHeight >= 10000)
     {
-        nSubsidy = 150 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
-    } else {
-        nSubsidy = 100 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
+
+        if (IsFlashStakeReward(nTime))
+        {
+            nSubsidy = 150 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
+            printf("/n/nIsFlashStake/n/n");
+        } else {
+            nSubsidy = 100 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
+            printf("/n/nIs NOT FlashStake/n/n");
+        }
+
     }
 
     if (fDebug && GetBoolArg("-printcreation"))

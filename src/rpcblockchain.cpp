@@ -176,7 +176,7 @@ Value getdifficulty(const Array& params, bool fHelp)
 
     Object obj;
     obj.push_back(Pair("proof-of-work",        GetDifficulty()));
-    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    obj.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
     obj.push_back(Pair("proof-of-stake (flash)",       GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
     obj.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
     return obj;

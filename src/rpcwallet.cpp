@@ -101,7 +101,7 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("ip",            addrSeenByPeer.ToStringIP()));
 
     diff.push_back(Pair("proof-of-work",  GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex2(pindexBest, false))));
+    diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
     diff.push_back(Pair("proof-of-stake (flash)", GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
     obj.push_back(Pair("difficulty",    diff));
 
