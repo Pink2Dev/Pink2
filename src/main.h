@@ -632,9 +632,10 @@ public:
     {
         std::string str;
         str += IsCoinBase()? "Coinbase" : (IsCoinStake()? "Coinstake" : "CTransaction");
-        str += strprintf("(hash=%s, nTime=%d, ver=%d, vin.size=%u, vout.size=%u, nLockTime=%d)\n",
+        str += strprintf("(hash=%s, nTime=%d, currentTime=%d, ver=%d, vin.size=%u, vout.size=%u, nLockTime=%d)\n",
             GetHash().ToString().substr(0,10).c_str(),
             nTime,
+            (unsigned int)GetTime(),
             nVersion,
             vin.size(),
             vout.size(),
