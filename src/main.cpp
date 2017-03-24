@@ -82,6 +82,7 @@ const string strMessageMagic = "Pinkcoin Signed Message:\n";
 int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
+int64_t nMinimumStakeValue = 1; // Don't stake old 0 reward blocks.
 
 extern enum Checkpoints::CPMode CheckpointsMode;
 
