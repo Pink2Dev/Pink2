@@ -336,19 +336,20 @@ void OverviewPage::handlePriceReply(QNetworkReply *reply)
             //Parse the json
             QJsonDocument jsonResponse = QJsonDocument::fromJson(replyText.toUtf8());
             QJsonObject  ResponseObject = jsonResponse.object();
-            //QJsonObject  ResultObject   = ResponseObject.value("").toObject();
-
-            //QMessageBox::information(this, "hello", ResultObject["price_usd"].toString());
 
             if(ResponseObject.contains("price_usd"))
             {
                QString sLastPrice = ResponseObject["price_btc"].toString();
                sLastPrice = sLastPrice.trimmed();
-               nLastPrice = sLastPrice.toDouble();
+               if (sLastPrice.toDouble() > 0)
+                   nLastPrice = sLastPrice.toDouble();
+
+               sLastPrice = "";
 
                sLastPrice = ResponseObject["price_usd"].toString();
                sLastPrice = sLastPrice.trimmed();
-               nLastPriceUSD = sLastPrice.toDouble();
+               if (sLastPrice.toDouble() > 0)
+                   nLastPriceUSD = sLastPrice.toDouble();
             }
 
             updateBtcValueLabel(nLastPrice, nLastPriceUSD);
