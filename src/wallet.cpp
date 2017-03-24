@@ -15,8 +15,8 @@
 
 using namespace std;
 
-unsigned int nStakeSplitAge = 1 * 4 * 60 * 60;
-int64_t nStakeCombineThreshold = 10000 * COIN;
+unsigned int nStakeSplitAge = 1 * 1 * 60 * 60;
+int64_t nStakeCombineThreshold = 100 * COIN;
 
 // CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
 
@@ -1251,7 +1251,7 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
                 continue;
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++)
-                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) && pcoin->vout[i].nValue >= nMinimumInputValue)
+                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) && pcoin->vout[i].nValue >= nMinimumStakeValue)
                     vCoins.push_back(COutput(pcoin, i, nDepth));
         }
     }
@@ -2449,8 +2449,8 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nMinWeight, ui
         int nDayTime = 24 * 60 * 60; // Length of a Day
         int64_t nValue = pcoin.first->vout[pcoin.second].nValue / COIN; // Less than 1 coin will never stake.
 
-        int64_t nDivideBase = nDayTime * CENT;
-        bnCoinDayWeight_Calc = pcoin.first->vout[pcoin.second].nValue * nTimeWeight / nDivideBase;
+        // int64_t nDivideBase = nDayTime * CENT;
+        bnCoinDayWeight_Calc = nValue * nTimeWeight / nDayTime;
 
 
         CBigNum bnCoinDayWeight = CBigNum(bnCoinDayWeight_Calc);
