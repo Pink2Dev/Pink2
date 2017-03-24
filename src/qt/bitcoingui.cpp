@@ -117,7 +117,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                       QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} \
                       \
                       #spacer2 { background:rgb(26, 0, 13);border:none; } \
-                      #spacer { background:rgb(102, 0, 51);border:none; } \
+                      #spacer { background:rgb(152, 50, 101);border:none; } \
                       #toolbar2 \
                       { \
                            border:none; \
@@ -135,7 +135,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                            padding-top:20px; \
                            padding-left: 20px; \
                            padding-right: 20px;\
-                           background: rgb(102, 0, 51); \
+                           background: rgb(152, 50, 101); \
                            text-align: left; \
                            color: white; \
                            min-width:200px; \
@@ -153,20 +153,20 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                            width:200px; \
                            color: rgb(255,255,255); \
                            text-align: left; \
-                           background-color: rgb(102, 0, 51); \
+                           background-color: rgb(152, 50, 101); \
                       } \
-                     #OverviewButton:hover {background-color: rgb(255, 51, 153); border: none;} \
-                       #OverviewButton:checked {background-color: rgb(204, 0, 102); border: none;} \
-                       #SendButton:hover {background-color: rgb(255, 51, 153); border: none;} \
-                       #SendButton:checked {background-color: rgb(204, 0, 102); border: none;} \
-                       #ReceiveButton:hover {background-color:rgb(255, 51, 153); border: none;} \
-                       #ReceiveButton:checked {background-color: rgb(204, 0, 102); border: none;} \
-                       #HistoryButton:hover {background-color: rgb(255, 51, 153); border: none;} \
-                       #HistoryButton:checked {background-color: rgb(204, 0, 102); border: none;} \
-                       #AddressBookButton:hover {background-color: rgb(255, 51, 153); border: none;} \
-                       #AddressBookButton:checked {background-color: rgb(204, 0, 102); border: none;} \
-                       #MessageButton:hover {background-color: rgb(255, 51, 153); border: none;} \
-                       #MessageButton:checked {background-color: rgb(204, 0, 102); border: none;} \
+                     #OverviewButton:hover {background-color: rgb(255, 101, 183); border: none;} \
+                       #OverviewButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                       #SendButton:hover {background-color: rgb(255, 121, 183); border: none;} \
+                       #SendButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                       #ReceiveButton:hover {background-color:rgb(255, 101, 183); border: none;} \
+                       #ReceiveButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                       #HistoryButton:hover {background-color: rgb(255, 101, 183); border: none;} \
+                       #HistoryButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                       #AddressBookButton:hover {background-color: rgb(255, 101, 183); border: none;} \
+                       #AddressBookButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                       #MessageButton:hover {background-color: rgb(255, 101, 183); border: none;} \
+                       #MessageButton:checked {background-color: rgb(255, 80, 162); border: none;} \
                      #labelMiningIcon \
                       { \
                            padding-left:5px; \
@@ -179,7 +179,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                       \
                       QMenu { background: rgb(0,0,0); color:white; padding-bottom:10px; } \
                       QMenu::item { color:white; background-color: transparent; } \
-                      QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(84,142,168), stop: 1 rgb(84,142,168));} \
+                      QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
                       QMenuBar { background: rgb(0,0,0); color:white; } \
                       QMenuBar::item \
                       { \
@@ -192,7 +192,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                             background-color: transparent; \
                       } \
                       \
-                      QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(84,142,168), stop: 1 rgb(84,142,168));} \
+                      QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
                       ");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
