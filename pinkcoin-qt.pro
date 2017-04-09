@@ -132,10 +132,18 @@ contains(RELEASE, 1) {
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++ -static
 
-# use: qmake "USE_QRCODE=1"
+# use: qmake "USE_QRCODE=1" ( enabled by default; default)
+#  or: qmake "USE_QRCODE=0" (disabled by default)
+#  or: qmake "USE_QRCODE=-" (not supported)
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
-contains(USE_QRCODE, 1) {
+contains(USE_QRCODE, -) {
+    message(Building without QRCode support)
+} else {
     message(Building with QRCode support)
+    count(USE_QRCODE, 0) {
+        USE_QRCODE=1
+    }
+
     DEFINES += USE_QRCODE
     LIBS += -lqrencode
 }
@@ -151,6 +159,7 @@ contains(USE_UPNP, -) {
     count(USE_UPNP, 0) {
         USE_UPNP=1
     }
+
     DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
     LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
