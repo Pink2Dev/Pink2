@@ -171,7 +171,7 @@ void copyEntryData(QAbstractItemView *view, int column, int role)
 QString getEntryData(QAbstractItemView *view, int column, int role)
 {
     if(!view || !view->selectionModel())
-        return false;
+        return "";
     QModelIndexList selection = view->selectionModel()->selectedRows(column);
 
     if(!selection.isEmpty())
