@@ -171,6 +171,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
 #if QT_VERSION >= 0x050000
     // set a timer for price API
+    nLastPrice = 0;
+    nLastPriceUSD = 0;
     QTimer *timerPriceAPI = new QTimer();
     connect(timerPriceAPI, SIGNAL(timeout()), this, SLOT(sendRequest()));
     timerPriceAPI->start(90 * 1000);
