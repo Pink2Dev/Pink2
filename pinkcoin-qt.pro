@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = PinkCoin-qt
+TARGET = Pinkcoin-Qt
 VERSION = 2.0.0.4
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
@@ -25,14 +25,24 @@ OBJECTS_DIR = build
 MOC_DIR = build
 UI_DIR = build
 
-build_macosx {
-    QMAKE_TARGET_BUNDLE_PREFIX = com.getpinkcoin
+macx {
+    message(Building for Mac)
+
+    ICON = src/qt/res/icons/pinkcoin.icns
+    QMAKE_INFO_PLIST = share/qt/Info.plist
+
+    HEADERS += src/qt/macdockiconhandler.h \
+               src/qt/macnotificationhandler.h
+    OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm \
+                         src/qt/macnotificationhandler.mm
+    LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
     # OSX 10.6 was the last to support 32-bit, so we target 10.7 and up
-    DEFINES += IS_ARCH_64
-    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
-    QMAKE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    DEFINES += IS_ARCH_64 MAC_OSX MSG_NOSIGNAL=0
+    QMAKE_CXXFLAGS += -pthread -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    QMAKE_CFLAGS += -pthread -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
     QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    QMAKE_LFLAGS_THREAD += -pthread
 }
 
 # Platform specific defaults, if not overridden on command line
@@ -460,18 +470,6 @@ windows:!contains(MINGW_THREAD_BUGFIX, 0) {
     DEFINES += _MT BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
-
-macx:HEADERS += src/qt/macdockiconhandler.h \
-                src/qt/macnotificationhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm \
-                          src/qt/macnotificationhandler.mm
-macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
-macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "Pinkcoin-Qt"
-macx:QMAKE_CFLAGS_THREAD += -pthread
-macx:QMAKE_LFLAGS_THREAD += -pthread
-macx:QMAKE_CXXFLAGS_THREAD += -pthread
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
