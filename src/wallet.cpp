@@ -16,7 +16,7 @@
 using namespace std;
 
 unsigned int nStakeSplitAge = 1 * 1 * 60 * 60;
-int64_t nStakeCombineThreshold = 100 * COIN;
+int64_t nStakeCombineThreshold = 1000 * COIN;
 
 // CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
 
@@ -2514,6 +2514,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
    // CScript scriptD4L;
    // scriptD4L.SetDestination(addrD4L.Get());
+    
 
     CTxDB txdb("r");
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
