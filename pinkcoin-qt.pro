@@ -46,7 +46,7 @@ macx {
 }
 
 # Platform specific defaults, if not overridden on command line
-# Mac builds by default use packages installed via Homebrew
+# Mac builds by default use packages installed via MacPorts
 
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
@@ -58,12 +58,12 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /usr/local/opt/boost/include
+    macx:BOOST_INCLUDE_PATH =  /opt/local/include/boost
     windows:BOOST_INCLUDE_PATH = C:/deps/boost_1_57_0
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /usr/local/opt/boost/lib
+    macx:BOOST_LIB_PATH = /opt/local/lib
     windows:BOOST_LIB_PATH = C:/deps/boost_1_57_0/stage/lib
 }
 
@@ -72,52 +72,52 @@ isEmpty(BDB_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_INCLUDE_PATH) {
-    macx:BDB_INCLUDE_PATH = /usr/local/opt/berkeley-db@4/include
+    macx:BDB_INCLUDE_PATH = /opt/local/include/db48
     windows:BDB_INCLUDE_PATH = C:/deps/db-4.8.30.NC/build_unix
 }
 
 isEmpty(BDB_LIB_PATH) {
-    macx:BDB_LIB_PATH = /usr/local/opt/berkeley-db@4/lib
+    macx:BDB_LIB_PATH = /opt/local/lib/db48
     windows:BDB_LIB_PATH = C:/deps/db-4.8.30.NC/build_unix
 }
 
 isEmpty(LIBPNG_INCLUDE_PATH) {
-    macx:LIBPNG_INCLUDE_PATH = /usr/local/opt/libpng/include
+    macx:LIBPNG_INCLUDE_PATH = /opt/local/include/libpng16
     windows:LIBPNG_INCLUDE_PATH = C:/deps/libpng-1.6.16
 }
 
 isEmpty(LIBPNG_LIB_PATH) {
-    macx:LIBPNG_LIB_PATH = /usr/local/opt/libpng/lib
+    macx:LIBPNG_LIB_PATH = /opt/local/lib
     windows:LIBPNG_LIB_PATH = C:/deps/libpng-1.6.16/.libs
 }
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    macx:MINIUPNPC_INCLUDE_PATH = /usr/local/opt/miniupnpc/include
+    macx:MINIUPNPC_INCLUDE_PATH = /opt/local/include/miniupnpc
     windows:MINIUPNPC_INCLUDE_PATH = C:/deps
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
-    macx:MINIUPNPC_LIB_PATH = /usr/local/opt/miniupnpc/lib
+    macx:MINIUPNPC_LIB_PATH = /opt/local/lib
     windows:MINIUPNPC_LIB_PATH = C:/deps/miniupnpc
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
-    macx:QRENCODE_INCLUDE_PATH = /usr/local/opt/qrencode/include
+    macx:QRENCODE_INCLUDE_PATH = /opt/local/include
     windows:QRENCODE_INCLUDE_PATH = C:/deps/qrencode-3.4.4
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
-    macx:QRENCODE_LIB_PATH = /usr/local/opt/qrencode/lib
+    macx:QRENCODE_LIB_PATH = /opt/local/lib
     windows:QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    macx:OPENSSL_INCLUDE_PATH = /usr/local/opt/openssl/include
+    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl
     windows:OPENSSL_INCLUDE_PATH = C:/deps/openssl-1.0.2h/include
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    macx:OPENSSL_LIB_PATH = /usr/local/opt/openssl/lib
+    macx:OPENSSL_LIB_PATH =  /opt/local/lib
     windows:OPENSSL_LIB_PATH = C:/deps/openssl-1.0.2h
 }
 
