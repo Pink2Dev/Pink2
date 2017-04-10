@@ -1981,7 +1981,11 @@ static bool ScanBlock(CBlock& block, CTxDB& txdb, SecMsgDB& addrpkdb,
                 // -- opcode is the length of the following data, compressed public key is always 33
                 if (opcode == 33)
                 {
-                    key.SetPubKey(vch);
+                    if (!key.SetPubKey(vch))
+                    {
+                        printf("Bad Public Key.\n");
+                        continue;
+                    }
                     
                     key.SetCompressedPubKey(); // ensure key is compressed
                     CPubKey pubKey = key.GetPubKey();
