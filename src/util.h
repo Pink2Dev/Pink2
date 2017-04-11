@@ -109,7 +109,14 @@ inline void MilliSleep(int64_t n)
 #define ATTR_WARN_PRINTF(X,Y)
 #endif
 
-
+#if defined(_MSC_VER) || defined(__MSVCRT__)
+#undef PRId64
+#define PRId64 "I64d"
+#undef PRIu64
+#define PRIu64 "I64u"
+#undef PRIx64
+#define PRIx64 "I64x"
+#endif
 
 
 
