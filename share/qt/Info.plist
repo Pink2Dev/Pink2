@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIconFile</key>
-	<string>bitcoin.icns</string>
+        <string>pinkcoin.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
@@ -17,14 +17,14 @@
 	<key>CFBundleExecutable</key>
 	<string>Pinkcoin-Qt</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.getpinkcoin.Pinkcoin-Qt</string>
+        <string>ca.pinkcoin.Pinkcoin-Qt</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.getpinkcoin.PinkcoinPayment</string>
+                        <string>ca.pinkcoin.PinkcoinPayment</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pinkcoin</string>

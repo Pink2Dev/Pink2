@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = PinkCoin-qt
+TARGET = Pinkcoin-Qt
 VERSION = 2.0.0.5
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
@@ -25,18 +25,28 @@ OBJECTS_DIR = build
 MOC_DIR = build
 UI_DIR = build
 
-build_macosx {
-    QMAKE_TARGET_BUNDLE_PREFIX = com.getpinkcoin
+macx {
+    message(Building for Mac)
+
+    ICON = src/qt/res/icons/pinkcoin.icns
+    QMAKE_INFO_PLIST = share/qt/Info.plist
+
+    HEADERS += src/qt/macdockiconhandler.h \
+               src/qt/macnotificationhandler.h
+    OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm \
+                         src/qt/macnotificationhandler.mm
+    LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
     # OSX 10.6 was the last to support 32-bit, so we target 10.7 and up
-    DEFINES += IS_ARCH_64
-    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
-    QMAKE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    DEFINES += IS_ARCH_64 MAC_OSX MSG_NOSIGNAL=0
+    QMAKE_CXXFLAGS += -pthread -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    QMAKE_CFLAGS += -pthread -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
     QMAKE_OBJECTIVE_CFLAGS += -mmacosx-version-min=10.7 -arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+    QMAKE_LFLAGS_THREAD += -pthread
 }
 
 # Platform specific defaults, if not overridden on command line
-# Mac builds by default use packages installed via Homebrew
+# Mac builds by default use packages installed via MacPorts
 
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
@@ -48,12 +58,12 @@ isEmpty(BOOST_THREAD_LIB_SUFFIX) {
 }
 
 isEmpty(BOOST_INCLUDE_PATH) {
-    macx:BOOST_INCLUDE_PATH = /usr/local/opt/boost/include
+    macx:BOOST_INCLUDE_PATH =  /opt/local/include/boost
     windows:BOOST_INCLUDE_PATH = C:/deps/boost_1_57_0
 }
 
 isEmpty(BOOST_LIB_PATH) {
-    macx:BOOST_LIB_PATH = /usr/local/opt/boost/lib
+    macx:BOOST_LIB_PATH = /opt/local/lib
     windows:BOOST_LIB_PATH = C:/deps/boost_1_57_0/stage/lib
 }
 
@@ -62,52 +72,52 @@ isEmpty(BDB_LIB_SUFFIX) {
 }
 
 isEmpty(BDB_INCLUDE_PATH) {
-    macx:BDB_INCLUDE_PATH = /usr/local/opt/berkeley-db@4/include
+    macx:BDB_INCLUDE_PATH = /opt/local/include/db48
     windows:BDB_INCLUDE_PATH = C:/deps/db-4.8.30.NC/build_unix
 }
 
 isEmpty(BDB_LIB_PATH) {
-    macx:BDB_LIB_PATH = /usr/local/opt/berkeley-db@4/lib
+    macx:BDB_LIB_PATH = /opt/local/lib/db48
     windows:BDB_LIB_PATH = C:/deps/db-4.8.30.NC/build_unix
 }
 
 isEmpty(LIBPNG_INCLUDE_PATH) {
-    macx:LIBPNG_INCLUDE_PATH = /usr/local/opt/libpng/include
+    macx:LIBPNG_INCLUDE_PATH = /opt/local/include/libpng16
     windows:LIBPNG_INCLUDE_PATH = C:/deps/libpng-1.6.16
 }
 
 isEmpty(LIBPNG_LIB_PATH) {
-    macx:LIBPNG_LIB_PATH = /usr/local/opt/libpng/lib
+    macx:LIBPNG_LIB_PATH = /opt/local/lib
     windows:LIBPNG_LIB_PATH = C:/deps/libpng-1.6.16/.libs
 }
 
 isEmpty(MINIUPNPC_INCLUDE_PATH) {
-    macx:MINIUPNPC_INCLUDE_PATH = /usr/local/opt/miniupnpc/include
+    macx:MINIUPNPC_INCLUDE_PATH = /opt/local/include/miniupnpc
     windows:MINIUPNPC_INCLUDE_PATH = C:/deps
 }
 
 isEmpty(MINIUPNPC_LIB_PATH) {
-    macx:MINIUPNPC_LIB_PATH = /usr/local/opt/miniupnpc/lib
+    macx:MINIUPNPC_LIB_PATH = /opt/local/lib
     windows:MINIUPNPC_LIB_PATH = C:/deps/miniupnpc
 }
 
 isEmpty(QRENCODE_INCLUDE_PATH) {
-    macx:QRENCODE_INCLUDE_PATH = /usr/local/opt/qrencode/include
+    macx:QRENCODE_INCLUDE_PATH = /opt/local/include
     windows:QRENCODE_INCLUDE_PATH = C:/deps/qrencode-3.4.4
 }
 
 isEmpty(QRENCODE_LIB_PATH) {
-    macx:QRENCODE_LIB_PATH = /usr/local/opt/qrencode/lib
+    macx:QRENCODE_LIB_PATH = /opt/local/lib
     windows:QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
 }
 
 isEmpty(OPENSSL_INCLUDE_PATH) {
-    macx:OPENSSL_INCLUDE_PATH = /usr/local/opt/openssl/include
+    macx:OPENSSL_INCLUDE_PATH = /opt/local/include/openssl
     windows:OPENSSL_INCLUDE_PATH = C:/deps/openssl-1.0.2h/include
 }
 
 isEmpty(OPENSSL_LIB_PATH) {
-    macx:OPENSSL_LIB_PATH = /usr/local/opt/openssl/lib
+    macx:OPENSSL_LIB_PATH =  /opt/local/lib
     windows:OPENSSL_LIB_PATH = C:/deps/openssl-1.0.2h
 }
 
@@ -132,10 +142,18 @@ contains(RELEASE, 1) {
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++ -static
 
-# use: qmake "USE_QRCODE=1"
+# use: qmake "USE_QRCODE=1" ( enabled by default; default)
+#  or: qmake "USE_QRCODE=0" (disabled by default)
+#  or: qmake "USE_QRCODE=-" (not supported)
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
-contains(USE_QRCODE, 1) {
+contains(USE_QRCODE, -) {
+    message(Building without QRCode support)
+} else {
     message(Building with QRCode support)
+    count(USE_QRCODE, 0) {
+        USE_QRCODE=1
+    }
+
     DEFINES += USE_QRCODE
     LIBS += -lqrencode
 }
@@ -151,6 +169,7 @@ contains(USE_UPNP, -) {
     count(USE_UPNP, 0) {
         USE_UPNP=1
     }
+
     DEFINES += USE_UPNP=$$USE_UPNP STATICLIB
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
     LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
@@ -451,18 +470,6 @@ windows:!contains(MINGW_THREAD_BUGFIX, 0) {
     DEFINES += _MT BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
-
-macx:HEADERS += src/qt/macdockiconhandler.h \
-                src/qt/macnotificationhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm \
-                          src/qt/macnotificationhandler.mm
-macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
-macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "Pinkcoin-Qt"
-macx:QMAKE_CFLAGS_THREAD += -pthread
-macx:QMAKE_LFLAGS_THREAD += -pthread
-macx:QMAKE_CXXFLAGS_THREAD += -pthread
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
