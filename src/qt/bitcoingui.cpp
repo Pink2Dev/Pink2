@@ -56,7 +56,7 @@
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QTimer>
-#include <QDragenterEvent>
+#include <QDragEnterEvent>
 #include <QUrl>
 #include <QStyle>
 #include <QStyleFactory>
