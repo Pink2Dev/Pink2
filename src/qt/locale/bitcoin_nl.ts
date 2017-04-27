@@ -47,7 +47,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+22"/>
         <source>Double-click to edit address or label</source>
-        <translation>Dubbelklik om het adres of label te wijzipink</translation>
+        <translation>Dubbelklik om het adres of label te wijzigen</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -67,7 +67,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="-46"/>
         <source>These are your Pinkcoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Dit zijn al jou Pinkcoin adressen om betalinpink mee te ontvanpink. Je kunt iedere verzender een apart adres geven zodat je kunt volpink wie jou betaald.</translation>
+        <translation>Dit zijn al jou Pinkcoin adressen om betalingen mee te ontvangen. Je kunt iedere verzender een apart adres geven zodat je kunt volgen wie jou betaald.</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -137,7 +137,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+0"/>
         <source>Could not write to file %1.</source>
-        <translation>Kan niet schrijven naat bestand %1</translation>
+        <translation>Kan niet schrijven naar bestand %1</translation>
     </message>
 </context>
 <context>
@@ -183,7 +183,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+33"/>
         <source>Serves to disable the trivial sendmoney when OS account compromised. Provides no real security.</source>
-        <translation>Bedoeld om het command &apos;sendmoney&apos; uit te schakelen indien het OS niet meer veilig is. Geeft geen echte beveiliging.</translation>
+        <translation>Bedoeld om het command &apos;sendmoney&apos; uit te schakelen indien het besturingssysteem (OS) niet meer veilig is. Dit geeft geen echte beveiliging.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -248,7 +248,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+15"/>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
-        <translation>BELANGRIJK: Elke eerder gemaakte backup van uw portemonneebestand dient u te vervanpink door het nieuw gegenereerde, versleutelde portemonneebestand. Om veiligheidsredenen zullen eerdere backups van het niet-versleutelde portemonneebestand onbruikbaar worden zodra u uw nieuwe, versleutelde, portemonnee begint te gebruiken.</translation>
+        <translation>BELANGRIJK: Elke eerder gemaakte backup van uw portemonneebestand dient u te vervangen door het nieuw gegenereerde, versleutelde portemonneebestand. Om veiligheidsredenen zullen eerdere backups van het niet-versleutelde portemonneebestand onbruikbaar worden zodra u uw nieuwe, versleutelde portemonnee begint te gebruiken.</translation>
     </message>
     <message>
         <location line="+103"/>
@@ -265,7 +265,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="-58"/>
         <source>Pinkcoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Pinkcoin zal nu sluiten om het versleutel proces te voltooien. Onthou dat het versleutelen van je portemonnee je niet volledig beschermt tepink diefstal van munten door malware op je computer.</translation>
+        <translation>Pinkcoin zal nu sluiten om het versleutel proces te voltooien. Onthou dat het versleutelen van je portemonnee je niet volledig beschermt tegen diefstal van munten door malware op je computer.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -301,12 +301,12 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="-20"/>
         <source>Wallet decryption failed</source>
-        <translation>Portemonnee-ontsleuteling mislukt</translation>
+        <translation>Portemonnee-ontsleuteling is mislukt</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Wallet passphrase was successfully changed.</source>
-        <translation>Portemonneewachtwoord is met succes gewijzigd.</translation>
+        <translation>Portemonnee-ontsleuteling is met succes gewijzigd.</translation>
     </message>
 </context>
 <context>
@@ -359,7 +359,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+1"/>
         <source>Show the list of addresses for receiving payments</source>
-        <translation>Toon de lijst  aan adressen voor ontvanpink betalinpink</translation>
+        <translation>Toon de lijst met adressen voor het ontvangen van betalingen</translation>
     </message>
     <message>
         <location line="-7"/>
@@ -419,7 +419,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+6"/>
         <source>Downloaded %1 of %2 blocks of transaction history (%3% done).</source>
-        <translation>%1 van %2 aan transactie historie blokken gedownload (%3% klaar).</translation>
+        <translation>%1 van %2 aan transactiegeschiedenis blokken gedownload (%3% klaar).</translation>
     </message>
     <message>
         <location line="-247"/>
@@ -439,7 +439,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+18"/>
         <source>Export the data in the current tab to a file</source>
-        <translation>Exporteer de data in de huidige tab naar een bestand</translation>
+        <translation>Exporteer de data op het huidige tabblad naar een bestand</translation>
     </message>
     <message>
         <location line="-14"/>
@@ -449,7 +449,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+3"/>
         <source>Backup wallet to another location</source>
-        <translation>Backup portemonnee naar een andere locatie</translation>
+        <translation>Maak een Backup-portemonnee op een andere locatie</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -514,12 +514,12 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+8"/>
         <source>&amp;Settings</source>
-        <translation>&amp;Instellinpink</translation>
+        <translation>&amp;Instellingen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Help</source>
-        <translation>&amp;Hulp</translation>
+        <translation>&amp;Help</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -546,37 +546,37 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message numerus="yes">
         <location line="+70"/>
         <source>%n active connection(s) to Pinkcoin network</source>
-        <translation><numerusform>%n actieve verbinding naar Pinkcoin netwerk</numerusform><numerusform>%n actieve verbindinpink naar Pinkcoin netwerk</numerusform></translation>
+        <translation><numerusform>%n actieve verbinding naar Pinkcoin netwerk</numerusform><numerusform>%n actieve verbindingen naar Pinkcoin netwerk</numerusform></translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Downloaded %1 blocks of transaction history.</source>
-        <translation>%1 blokken van transactie geschiedenis gedownload.</translation>
+        <translation>%1 blokken van transactiegeschiedenis gedownload.</translation>
     </message>
     <message>
         <location line="+413"/>
         <source>Staking.&lt;br&gt;Your weight is %1&lt;br&gt;Network weight is %2&lt;br&gt;Expected time to earn reward is %3</source>
-        <translation>Staking. &lt;br&gt; Uw gewicht wordt  %1 &lt;br&gt; Network gewicht is %2 &lt;br&gt; Verwachte tijd om beloning te verdienen is %3</translation>
+        <translation>Staking. &lt;br&gt; Uw gewicht wordt  %1 &lt;br&gt; Netwerkgewicht is %2 &lt;br&gt; Verwachte tijd om een beloning te verdienen is %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Not staking because wallet is locked</source>
-        <translation>Niet staking omdat portemonnee aan het beveiligd is</translation>
+        <translation>Niet staking omdat de portemonnee beveiligd is</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is offline</source>
-        <translation>Niet staking omdat portemonnee aan het offline is</translation>
+        <translation>Niet staking omdat de portemonnee offline is</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is syncing</source>
-        <translation>Niet staking omdat portemonnee aan het synchroniseren is.</translation>
+        <translation>Niet staking omdat de portemonnee aan het synchroniseren is.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because you don&apos;t have mature coins</source>
-        <translation>Niet staking omdat je geen mature munten hebt</translation>
+        <translation>Niet staking omdat je geen volwassen munten hebt</translation>
     </message>
     <message numerus="yes">
         <location line="-403"/>
@@ -601,7 +601,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message numerus="yes">
         <location line="+4"/>
         <source>%n day(s) ago</source>
-        <translation><numerusform>%n dag geleden</numerusform><numerusform>%n dapink geleden</numerusform></translation>
+        <translation><numerusform>%n dag geleden</numerusform><numerusform>%n dagen geleden</numerusform></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -616,7 +616,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+10"/>
         <source>Last received block was generated %1.</source>
-        <translation>Laatst ontvanpink blok is gegenereerd op %1.</translation>
+        <translation>Laatst ontvangen blok is gegenereerd op %1.</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -626,12 +626,12 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+5"/>
         <source>Confirm transaction fee</source>
-        <translation>Bevestig transactie kosten</translation>
+        <translation>Bevestig transactiekosten</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Sent transaction</source>
-        <translation>Verzonden transactie</translation>
+        <translation>Transactie verzonden</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -691,7 +691,7 @@ Adres: %4
     <message>
         <location line="+0"/>
         <source>There was an error trying to save the wallet data to the new location.</source>
-        <translation>Er was een fout opgetreden bij het opslaan van de wallet data naar de nieuwe locatie.</translation>
+        <translation>Er is een fout opgetreden bij het opslaan van de wallet data naar de nieuwe locatie.</translation>
     </message>
     <message numerus="yes">
         <location line="+76"/>
@@ -711,7 +711,7 @@ Adres: %4
     <message numerus="yes">
         <location line="+4"/>
         <source>%n day(s)</source>
-        <translation><numerusform>%n dag</numerusform><numerusform>%n dapink</numerusform></translation>
+        <translation><numerusform>%n dag</numerusform><numerusform>%n dagen</numerusform></translation>
     </message>
     <message>
         <location line="+18"/>
