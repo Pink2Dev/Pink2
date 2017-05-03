@@ -654,7 +654,7 @@ void BitcoinGUI::createMenuBar()
 //    QLabel* pinkCorner = new QLabel(this);
 //    pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
 //    appMenuBar->setCornerWidget(pinkCorner, Qt::TopLeftCorner);
-    appMenuBar->setMaximumWidth(180);
+    appMenuBar->setMaximumWidth(200);
 
 
     QWidget *w = new QWidget(this);

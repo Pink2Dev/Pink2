@@ -57,10 +57,10 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
           <string notr="true"/>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <property name="spacing">
@@ -81,10 +81,10 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
           <item>
            <widget class="QFrame" name="frame_4">
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Plain</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
@@ -718,10 +718,10 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                   <string notr="true"/>
                  </property>
                  <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                  <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
+                  <enum>QFrame::Plain</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <property name="spacing">
@@ -748,10 +748,10 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                      </size>
                     </property>
                     <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
+                     <enum>QFrame::NoFrame</enum>
                     </property>
                     <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
+                     <enum>QFrame::Plain</enum>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_5">
                      <property name="leftMargin">

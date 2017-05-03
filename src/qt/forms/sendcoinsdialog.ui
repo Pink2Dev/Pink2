@@ -53,10 +53,13 @@
         </size>
        </property>
        <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
        </property>
        <layout class="QVBoxLayout" name="verticalLayoutCoinControl2">
         <property name="spacing">
@@ -708,7 +711,7 @@
           <x>0</x>
           <y>0</y>
           <width>811</width>
-          <height>398</height>
+          <height>400</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
