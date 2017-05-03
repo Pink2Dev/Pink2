@@ -69,6 +69,7 @@ OBJS= \
     obj/rpcblockchain.o \
     obj/rpcrawtransaction.o \
     obj/script.o \
+	obj/stakedb.o \
     obj/sync.o \
     obj/util.o \
     obj/wallet.o \
