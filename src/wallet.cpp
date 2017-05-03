@@ -4,9 +4,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "txdb.h"
+#include "stakedb.h"
 #include "wallet.h"
 #include "walletdb.h"
 #include "crypter.h"
+#include "init.h"
 #include "ui_interface.h"
 #include "base58.h"
 #include "kernel.h"
@@ -15,7 +17,7 @@
 
 using namespace std;
 
-unsigned int nStakeSplitAge = 1 * 1 * 60 * 60;
+//unsigned int nStakeSplitAge = 1 * 1 * 60 * 60;
 int64_t nStakeCombineThreshold = 1000 * COIN;
 
 // CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
@@ -2667,30 +2669,38 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     // Calculate coin age reward
+
+    int64_t nReward;
     {
         uint64_t nCoinAge;
         CTxDB txdb("r");
         if (!txNew.GetCoinAge(txdb, nCoinAge))
             return error("CreateCoinStake : failed to calculate coin age");
 
-        int64_t nReward = GetProofOfStakeReward(nCoinAge, nFees, pindexBest->nHeight + 1, txNew.nTime);
+        nReward = GetProofOfStakeReward(nCoinAge, nFees, pindexBest->nHeight + 1, txNew.nTime);
         if (nReward <= 0 && pindexBest->nHeight > 16240)
             return false;
 
-        nCredit += nReward;
+
     }
 
+    printf("\n\n\n\n***************************IMPORTANT*************************************\n"
+                   "**                     TRYING NEW CODE                                 **\n"
+                   "*************************************************************************\n\n\n\n");
+
+    int64_t stakeOutCount = CountStakeOut();
+    int64_t stakeOutReward =  AggregateStakeOut(txNew, nReward);
+
+    nCredit += nReward - stakeOutReward;
     // Set output amount
-    if (txNew.vout.size() == 3)
+    if (txNew.vout.size() == 3 + stakeOutCount)
     {
         txNew.vout[1].nValue = ((nCredit) / 2 / CENT) * CENT;
         txNew.vout[2].nValue = (nCredit) - txNew.vout[1].nValue;
-        // txNew.vout[3].nValue = 20 * COIN;
 
     }
     else {
         txNew.vout[1].nValue = nCredit;
-        // txNew.vout[2].nValue = 20;
     }
 
 
@@ -2709,6 +2719,56 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     // Successfully generated coinstake
     return true;
+}
+
+int64_t CWallet::AggregateStakeOut(CTransaction &txNew, int64_t &nReward)
+{
+    int64_t percentTotal = 0;
+    int64_t nRewardPCTotal = 0;
+
+    BOOST_FOREACH(mapAddress mapStake, pstakeDB->mapAddressPercent)
+    {
+        int64_t nPercent = (int64_t)stoi(mapStake.second);
+        CBitcoinAddress stakeOutAddress(mapStake.first);
+        if (nPercent > 0 && nPercent <= 100 && stakeOutAddress.IsValid())
+        {
+            percentTotal += nPercent;
+            if (percentTotal <= 100)
+            {
+                int64_t nRewardPC = (nReward * nPercent) / 100;
+                nRewardPCTotal += nRewardPC;
+
+                CScript stakeOut;
+                stakeOut.SetDestination(stakeOutAddress.Get());
+
+                txNew.vout.push_back(CTxOut(nRewardPC, stakeOut));
+                printf("\nStakeout Coins: %d to Address: %s", nRewardPC, stakeOutAddress.ToString().c_str());
+            } else {
+                printf("\nAttempt to stakeout over 100%%");
+                percentTotal -= nPercent;
+            }
+        }
+    }
+
+    return nRewardPCTotal;
+}
+
+int64_t CWallet::CountStakeOut()
+{
+    int64_t countOut = 0;
+    int64_t percentTotal = 0;
+
+    BOOST_FOREACH(mapAddress mapStake, pstakeDB->mapAddressPercent)
+    {
+        int64_t nPercent = (int64_t)stoi(mapStake.second);
+        CBitcoinAddress stakeOutAddress(mapStake.first);
+        if (nPercent > 0 && nPercent <= 100 && stakeOutAddress.IsValid())
+        {
+            percentTotal += nPercent;
+            if (percentTotal <= 100) countOut++;
+        }
+    }
+    return countOut;
 }
 
 
@@ -2859,6 +2919,20 @@ DBErrors CWallet::LoadWallet(bool& fFirstRunRet)
     return DB_LOAD_OK;
 }
 
+SDBErrors CWallet::LoadStakeDB(bool& fFirstRunRet)
+{
+    if (!fFileBacked)
+        return SDB_LOAD_OK;
+    fFirstRunRet = false;
+    SDBErrors nLoadStakeDBRet = CStakeDB(strWalletFile,"cr+").LoadWallet(this);
+
+    if (nLoadStakeDBRet != SDB_LOAD_OK)
+        return nLoadStakeDBRet;
+
+    NewThread(ThreadFlushStakeDB, &strWalletFile);
+    return SDB_LOAD_OK;
+}
+
 
 bool CWallet::SetAddressBookName(const CTxDestination& address, const string& strName)
 {
@@ -2907,6 +2981,38 @@ bool CWallet::DelAddressBookName(const CTxDestination& address)
     return CWalletDB(strWalletFile).EraseName(CBitcoinAddress(address).ToString());
 }
 
+bool CWallet::SetAddressBookStake(const CTxDestination& address, const string& strName, const string& strPercent)
+{
+    ChangeType nMode;
+    {
+        LOCK(cs_wallet); // mapAddressBook
+        std::map<CTxDestination, std::string>::iterator mi = mapAddressBook.find(address);
+        nMode = (mi == mapAddressBook.end()) ? CT_NEW : CT_UPDATED;
+
+        mapAddressBook[address] = strName;
+        mapAddressPercent[address] = strPercent;
+    }
+
+    ///string passPercent = strPercent;
+
+    NotifyAddressBookStakeChanged(this, address, strName, strPercent, nMode);
+
+    return CStakeDB(pstakeDB->strWalletFile).WriteStake(CBitcoinAddress(address).ToString(), strName, strPercent);
+}
+
+bool CWallet::DelAddressBookStake(const CTxDestination& address)
+{
+    {
+        LOCK(cs_wallet); // mapAddressBook
+
+        mapAddressBook.erase(address);
+        mapAddressPercent.erase(address);
+    }
+
+    NotifyAddressBookStakeChanged(this, address, "", "", CT_DELETED);
+
+    return CStakeDB(pstakeDB->strWalletFile).EraseStake(CBitcoinAddress(address).ToString());
+}
 
 void CWallet::PrintWallet(const CBlock& block)
 {
@@ -2958,6 +3064,11 @@ bool GetWalletFile(CWallet* pwallet, string &strWalletFileOut)
         return false;
     strWalletFileOut = pwallet->strWalletFile;
     return true;
+}
+
+bool GetPStakeDB(CWallet *pstakeDB)
+{
+    return pstakeDB;
 }
 
 //

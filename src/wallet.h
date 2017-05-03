@@ -17,6 +17,7 @@
 #include "script.h"
 #include "ui_interface.h"
 #include "util.h"
+#include "stakedb.h"
 #include "walletdb.h"
 #include "stealth.h"
 #include "smessage.h"
@@ -94,9 +95,11 @@ public:
     ///      fFileBacked (immutable after instantiation)
     ///      strWalletFile (immutable after instantiation)
     mutable CCriticalSection cs_wallet;
+    //mutable CCriticalSection cs_stake;
 
     bool fFileBacked;
     std::string strWalletFile;
+    //std::string strStakeDBFile;
 
     std::set<int64_t> setKeyPool;
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;
@@ -142,7 +145,10 @@ public:
     int64_t nOrderPosNext;
     std::map<uint256, int> mapRequestCount;
 
+
+    typedef std::pair<CTxDestination, std::string> mapAddress;
     std::map<CTxDestination, std::string> mapAddressBook;
+    std::map<CTxDestination, std::string> mapAddressPercent;
 
     CPubKey vchDefaultKey;
     int64_t nTimeFirstKey;
@@ -213,12 +219,11 @@ public:
     bool CreateTransaction(const std::vector<std::pair<CScript, int64_t> >& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, int64_t& nFeeRet, int32_t& nChangePos, int nSplitBlock, const CCoinControl *coinControl=NULL);
     bool CreateTransaction(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, CReserveKey& reservekey, int64_t& nFeeRet, const CCoinControl *coinControl=NULL);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey);
-    
-    
-    
 
     bool GetStakeWeight(const CKeyStore& keystore, uint64_t& nMinWeight, uint64_t& nMaxWeight, uint64_t& nWeight);
     bool CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, int64_t nFees, CTransaction& txNew, CKey& key);
+    int64_t AggregateStakeOut(CTransaction &txNew, int64_t &nReward);
+    int64_t CountStakeOut();
 
     std::string SendMoney(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee=false);
     std::string SendMoneyToDestination(const CTxDestination& address, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee=false);
@@ -300,6 +305,17 @@ public:
         }
         return nCredit;
     }
+    int64_t GetReward(const CTxOut &txOut) const
+    {
+        int64_t nReward = 0;
+        if (IsMine(txOut));
+            {
+                nReward += GetCredit(txOut);
+                if (!MoneyRange(nReward))
+                    printf("CWallet::GetCredit() : value out of range");
+            }
+         return nReward;
+    }
     int64_t GetChange(const CTransaction& tx) const
     {
         int64_t nChange = 0;
@@ -314,10 +330,15 @@ public:
     void SetBestChain(const CBlockLocator& loc);
 
     DBErrors LoadWallet(bool& fFirstRunRet);
+    SDBErrors LoadStakeDB(bool& fFirstRunRet);
 
     bool SetAddressBookName(const CTxDestination& address, const std::string& strName);
 
     bool DelAddressBookName(const CTxDestination& address);
+
+    bool SetAddressBookStake(const CTxDestination& address, const std::string& strName, const std::string& strPercent);
+
+    bool DelAddressBookStake(const CTxDestination& address);
 
     void UpdatedTransaction(const uint256 &hashTx);
 
@@ -359,6 +380,7 @@ public:
      * @note called with lock cs_wallet held.
      */
     boost::signals2::signal<void (CWallet *wallet, const CTxDestination &address, const std::string &label, bool isMine, ChangeType status)> NotifyAddressBookChanged;
+    boost::signals2::signal<void (CWallet *wallet, const CTxDestination &address, const std::string &label, const std::string percent, ChangeType status)> NotifyAddressBookStakeChanged;
     
 
     /** Wallet transaction added, removed or updated.
@@ -942,5 +964,6 @@ private:
 };
 
 bool GetWalletFile(CWallet* pwallet, std::string &strWalletFileOut);
+bool GetPStakeDB(CWallet* pstakeDB);
 
 #endif

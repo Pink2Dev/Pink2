@@ -82,7 +82,7 @@ const string strMessageMagic = "Pinkcoin Signed Message:\n";
 int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
-int64_t nMinimumStakeValue = 1; // Don't stake old 0 reward blocks.
+int64_t nMinimumStakeValue = 0; // Don't stake old 0 reward blocks.
 
 extern enum Checkpoints::CPMode CheckpointsMode;
 
@@ -493,6 +493,8 @@ bool CTransaction::CheckTransaction() const
     // Size limits
     if (::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
         return DoS(100, error("CTransaction::CheckTransaction() : size limits failed"));
+
+
 
     // Check for negative or overflow output values
     int64_t nValueOut = 0;
@@ -1001,10 +1003,10 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
         if (IsFlashStakeReward(nTime))
         {
             nSubsidy = 150 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
-            printf("/n/nIsFlashStake/n/n");
+            printf("\n\nIsFlashStake\n\n");
         } else {
             nSubsidy = 100 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
-            printf("/n/nIs NOT FlashStake/n/n");
+            printf("\n\nIs NOT FlashStake\n\n");
         }
 
     }
@@ -1409,6 +1411,7 @@ bool CTransaction::FetchInputs(CTxDB& txdb, const map<uint256, CTxIndex>& mapTes
 
 const CTxOut& CTransaction::GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const
 {
+
     MapPrevTx::const_iterator mi = inputs.find(input.prevout.hash);
     if (mi == inputs.end())
         throw std::runtime_error("CTransaction::GetOutputFor() : prevout.hash not found");

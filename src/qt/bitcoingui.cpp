@@ -30,6 +30,8 @@
 #include "rpcconsole.h"
 #include "wallet.h"
 
+#include "clabel.h"
+
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
 #endif
@@ -38,6 +40,10 @@
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
+#include <QFormLayout>
+#include <QBitmap>
+#include <QPixmap>
+#include <QPainter>
 #include <QIcon>
 #include <QTabWidget>
 #include <QVBoxLayout>
@@ -68,6 +74,7 @@
 #include <QTextStream>
 #include <QSignalMapper>
 #include <QSettings>
+#include <QWidgetAction>
 
 #include <iostream>
 
@@ -77,12 +84,45 @@ extern int64_t nLastCoinStakeSearchInterval;
 double GetPoSKernelPS();
 
 ActiveLabel::ActiveLabel(const QString & text, QWidget * parent):
-    QLabel(parent){}
+    QLabel(parent){
 
+    setAttribute(Qt::WA_Hover);
+
+}
+
+
+/*
 void ActiveLabel::mouseReleaseEvent(QMouseEvent * event)
 {
     emit clicked();
 }
+*/
+
+bool ActiveLabel::event(QEvent *e)
+{
+//    QHoverEvent me = static_cast<QHoverEvent>(e);
+    if(e->type() == QEvent::HoverMove)
+    {
+        //double xpos = me->pos().x();
+        //double ypos = me->pos().y();
+        emit hovered();
+        // qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
+        return true;
+    }
+    else if(e->type() == QEvent::HoverLeave)
+    {
+        emit unhovered();
+        return true;
+    }
+    else if(e->type() == QEvent::MouseButtonRelease)
+    {
+        emit clicked();
+        return true;
+    }
+
+    return QLabel::event(e);
+}
+
 
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
@@ -100,21 +140,34 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     nWeight(0)
 {
     setFixedSize(1050, 600);
+
+    #ifdef Q_OS_WIN
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
+    #else
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    #endif
+
     setWindowTitle(tr("Pinkcoin") + " - " + tr("Wallet"));
     QFontDatabase fontData;
     fontData.addApplicationFont(":/fonts/Ubuntu-Bold");
 
+
+
     qApp->setStyleSheet(\
                       "QMainWindow \
                       { \
-                        width:850px;\
                         \
+                        padding-left: 0px;\
+                        padding-right: 0px;\
+                        padding-bottom: 0px;\
+                        padding-top: 0px;\
+                        border: 0px;\
                         \
                       } \
                       \
                       #frame { } \
-                      QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} \
-                      QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 10px;} \
+                      QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border:0px;} \
+                      QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border: 0px;} \
                       \
                       #spacer2 { background:rgb(26, 0, 13);border:none; } \
                       #spacer { background:rgb(152, 50, 101);border:none; } \
@@ -130,43 +183,47 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
                       \
                       #toolbar \
                       { \
-                           border:1px; \
+                           border:0px; \
                            height:100%; \
-                           padding-top:20px; \
-                           padding-left: 20px; \
-                           padding-right: 20px;\
-                           background: rgb(152, 50, 101); \
+                           padding-top:0px; \
+                           padding-left: 0px; \
+                           padding-right: 0px;\
+                           background: rgb(255, 255, 255); \
                            text-align: left; \
-                           color: white; \
+                           color: black; \
                            min-width:200px; \
                            max-width:200px; \
                       } \
+                      \
                     QToolBar QToolButton \
                      { \
                        \
                            font-family:Ubuntu; \
                            font-size:16px; \
-                           padding-left:20px; \
-                           padding-top:5px; \
-                           padding-bottom:5px; \
-                           padding-right:20px;\
+                           border: 0px; \
+                           padding-left:0px; \
+                           padding-top:0px; \
+                           padding-bottom:0px; \
+                           padding-right:0px;\
                            width:200px; \
-                           color: rgb(255,255,255); \
+                           color: black; \
                            text-align: left; \
-                           background-color: rgb(152, 50, 101); \
+                           background-color: rgb(255, 255, 255); \
                       } \
-                     #OverviewButton:hover {background-color: rgb(255, 101, 183); border: none;} \
-                       #OverviewButton:checked {background-color: rgb(255, 80, 162); border: none;} \
-                       #SendButton:hover {background-color: rgb(255, 121, 183); border: none;} \
-                       #SendButton:checked {background-color: rgb(255, 80, 162); border: none;} \
-                       #ReceiveButton:hover {background-color:rgb(255, 101, 183); border: none;} \
-                       #ReceiveButton:checked {background-color: rgb(255, 80, 162); border: none;} \
-                       #HistoryButton:hover {background-color: rgb(255, 101, 183); border: none;} \
-                       #HistoryButton:checked {background-color: rgb(255, 80, 162); border: none;} \
-                       #AddressBookButton:hover {background-color: rgb(255, 101, 183); border: none;} \
-                       #AddressBookButton:checked {background-color: rgb(255, 80, 162); border: none;} \
-                       #MessageButton:hover {background-color: rgb(255, 101, 183); border: none;} \
-                       #MessageButton:checked {background-color: rgb(255, 80, 162); border: none;} \
+                     #OverviewButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #OverviewButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #SendButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #SendButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #ReceiveButton:hover {background-color:rgb(255, 141, 183); border: none;} \
+                       #ReceiveButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #HistoryButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #HistoryButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #AddressBookButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #AddressBookButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #SideStakeButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #SideStakeButton:checked {background-color: rgb(255, 121, 170); border: none;} \
+                       #MessageButton:hover {background-color: rgb(255, 141, 183); border: none;} \
+                       #MessageButton:checked {background-color: rgb(255, 121, 170); border: none;} \
                      #labelMiningIcon \
                       { \
                            padding-left:5px; \
@@ -222,17 +279,27 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     createTrayIcon();
 
     // Create tabs
+
     overviewPage = new OverviewPage();
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
+    QHBoxLayout *hbox = new QHBoxLayout();
+
     transactionView = new TransactionView(this);
+
     vbox->addWidget(transactionView);
-    transactionsPage->setLayout(vbox);
+
+    hbox->setContentsMargins(20, 5 ,0, 0);
+    hbox->addLayout(vbox);
+
+    transactionsPage->setLayout(hbox);
 
     addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::SendingTab);
 
     receiveCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab);
+
+    stakeCoinsPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::StakingTab);
 
     sendCoinsPage = new SendCoinsDialog(this);
     messagePage   = new MessagePage(this);
@@ -240,13 +307,28 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
 
     centralWidget = new QStackedWidget(this);
+    centralWidget->setObjectName("StackedWidget");
+    centralWidget->setStyleSheet("#StackedWidget{background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(255, 121, 170, 255), stop:1 rgba(255, 245, 250, 255));}");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
+    centralWidget->addWidget(stakeCoinsPage);
     centralWidget->addWidget(addressBookPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(messagePage);
+
+
     setCentralWidget(centralWidget);
+
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(0, 0, 1050, 600, 3, 3);
+    QPolygon maskPolygon = painterPath.toFillPolygon().toPolygon();
+
+    QRegion maskedRegion(maskPolygon, Qt::OddEvenFill);
+
+    setMask(maskedRegion);
+
+    //setMask(maskedRegion);
 
     // Create status bar
     //statusBar();
@@ -382,52 +464,109 @@ void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    QIcon *iOverView = new QIcon();
+
+    iOverView->addFile(":/icons/overview", QSize(), QIcon::Normal, QIcon::Off );
+    iOverView->addFile(":/icons/overview_s", QSize(), QIcon::Active, QIcon::Off);
+    iOverView->addFile(":/icons/overview_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iSend = new QIcon();
+
+    iSend->addFile(":/icons/send", QSize(), QIcon::Normal, QIcon::Off );
+    iSend->addFile(":/icons/send_s", QSize(), QIcon::Active, QIcon::Off);
+    iSend->addFile(":/icons/send_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iReceive= new QIcon();
+
+    iReceive->addFile(":/icons/receiving_addresses", QSize(), QIcon::Normal, QIcon::Off );
+    iReceive->addFile(":/icons/receiving_addresses_s", QSize(), QIcon::Active, QIcon::Off);
+    iReceive->addFile(":/icons/receiving_addresses_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iSideStake = new QIcon();
+
+    iSideStake->addFile(":/icons/sidestake", QSize(), QIcon::Normal, QIcon::Off );
+    iSideStake->addFile(":/icons/sidestake_s", QSize(), QIcon::Active, QIcon::Off);
+    iSideStake->addFile(":/icons/sidestake_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iAddressBook = new QIcon();
+
+    iAddressBook->addFile(":/icons/address-book", QSize(), QIcon::Normal, QIcon::Off );
+    iAddressBook->addFile(":/icons/address-book_s", QSize(), QIcon::Active, QIcon::Off);
+    iAddressBook->addFile(":/icons/address-book_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iHistory = new QIcon();
+
+    iHistory->addFile(":/icons/history", QSize(), QIcon::Normal, QIcon::Off );
+    iHistory->addFile(":/icons/history_s", QSize(), QIcon::Active, QIcon::Off);
+    iHistory->addFile(":/icons/history_s", QSize(), QIcon::Active, QIcon::On);
+
+    QIcon *iMessage = new QIcon();
+
+    iMessage->addFile(":/icons/message", QSize(), QIcon::Normal, QIcon::Off );
+    iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::Off);
+    iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::On);
+
+    //overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    overviewAction = new QAction(*iOverView, tr("&Overview"), this);
     overviewAction->setToolTip(tr("Show general overview of wallet"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send coins"), this);
+    sendCoinsAction = new QAction(*iSend, tr("&Send coins"), this);
     sendCoinsAction->setToolTip(tr("Send coins to a Pinkcoin address"));
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive coins"), this);
+    receiveCoinsAction = new QAction(*iReceive, tr("&Receive coins"), this);
     receiveCoinsAction->setToolTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr("&Transactions"), this);
-    historyAction->setToolTip(tr("Browse transaction history"));
-    historyAction->setCheckable(true);
-    historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
-    tabGroup->addAction(historyAction);
-
-    addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("&Address Book"), this);
+    addressBookAction = new QAction(*iAddressBook, tr("&Address Book"), this);
     addressBookAction->setToolTip(tr("Edit the list of stored addresses and labels"));
     addressBookAction->setCheckable(true);
-    addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(addressBookAction);
 
-    messageAction = new QAction(QIcon(":/icons/edit"), tr("&Messages"), this);
+    stakeCoinsAction = new QAction(*iSideStake, tr("&Side Stakes"), this);
+    stakeCoinsAction->setToolTip(tr("Edit the list of addresses for staking out."));
+    stakeCoinsAction->setCheckable(true);
+    stakeCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    tabGroup->addAction(stakeCoinsAction);
+
+    historyAction = new QAction(*iHistory, tr("&Transactions"), this);
+    historyAction->setToolTip(tr("Browse transaction history"));
+    historyAction->setCheckable(true);
+    historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(historyAction);
+
+    messageAction = new QAction(*iMessage, tr("&Messages"), this);
     messageAction->setToolTip(tr("View and Send Private Messages"));
     messageAction->setCheckable(true);
-    messageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    messageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(messageAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
+
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
+
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
+
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
+
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
+
+    connect(stakeCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(stakeCoinsAction, SIGNAL(triggered()), this, SLOT(gotoStakeCoinsPage()));
+
     connect(messageAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(messageAction, SIGNAL(triggered()), this, SLOT(gotoMessagePage()));
 
@@ -461,6 +600,9 @@ void BitcoinGUI::createActions()
     openRPCConsoleAction = new QAction(QIcon(":/icons/debugwindow"), tr("&Debug window"), this);
     openRPCConsoleAction->setToolTip(tr("Open debugging and diagnostic console"));
 
+    minimizeAction = new QAction(this);
+    closeAction = new QAction(this);
+
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -473,7 +615,10 @@ void BitcoinGUI::createActions()
     connect(lockWalletAction, SIGNAL(triggered()), this, SLOT(lockWallet()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
-	
+
+    connect(minimizeAction, SIGNAL(triggered()), this, SLOT(showMinimized()));
+    connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
+
 	/* zeewolf: Hot swappable wallet themes */
     if (themesList.count()>0)
     {
@@ -505,6 +650,51 @@ void BitcoinGUI::createMenuBar()
 #endif
 
     // Configure the menus
+
+//    QLabel* pinkCorner = new QLabel(this);
+//    pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
+//    appMenuBar->setCornerWidget(pinkCorner, Qt::TopLeftCorner);
+    appMenuBar->setMaximumWidth(180);
+
+
+    QWidget *w = new QWidget(this);
+    QHBoxLayout *layout = new QHBoxLayout(w);
+
+    QLabel* pinkCorner = new QLabel(w);
+    pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
+    layout->addWidget(pinkCorner);
+
+    layout->addWidget(appMenuBar);
+    w->setStyleSheet("background-color: rgba(0,0,0,255)");
+
+//    labelMinimizeIcon = new ActiveLabel("<html><head/><body><p><img src=\":/icons/min\"/></p></body></html>", this);
+//    labelCloseIcon = new ActiveLabel("<html><head/><body><p><img src=\":/icons/close\"/></p></body></html>", this);
+
+    labelMinimizeIcon = new ActiveLabel();
+    labelCloseIcon = new ActiveLabel();
+
+    labelMinimizeIcon->setText("<html><head/><body><p><img src=\":/icons/min\"/></p></body></html>");
+    labelCloseIcon->setText("<html><head/><body><p><img src=\":/icons/close\"/></p></body></html>");
+
+    connect(labelMinimizeIcon, SIGNAL(clicked()), minimizeAction, SLOT(trigger()));
+    connect(labelMinimizeIcon, SIGNAL(hovered()), this, SLOT(minHover()));
+    connect(labelMinimizeIcon, SIGNAL(unhovered()), this, SLOT(minUnhover()));
+
+    connect(labelCloseIcon, SIGNAL(clicked()), closeAction, SLOT(trigger()));
+    connect(labelCloseIcon, SIGNAL(hovered()), this, SLOT(closeHover()));
+    connect(labelCloseIcon, SIGNAL(unhovered()), this, SLOT(closeUnhover()));
+
+    layout->addStretch();
+
+    layout->addWidget(labelMinimizeIcon);
+    layout->addWidget(labelCloseIcon);
+
+    layout->setContentsMargins(0,0,0,0);
+
+
+    setMenuWidget(w);
+
+
     QMenu *file = appMenuBar->addMenu(tr("&File"));
     file->addAction(backupWalletAction);
     file->addAction(signMessageAction);
@@ -525,6 +715,10 @@ void BitcoinGUI::createMenuBar()
     help->addSeparator();
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
+
+    //appMenuBar->setMaximumWidth(180);
+
+
 	
 	/* zeewolf: Hot swappable wallet themes */
     if (themesList.count()>0)
@@ -536,6 +730,39 @@ void BitcoinGUI::createMenuBar()
     }
     /* zeewolf: Hot swappable wallet themes */
 }
+
+/*
+bool ActiveLabel::event(QEvent *e)
+{
+    QHoverEvent me = static_cast<QHoverEvent>(e);
+    if(e->type() == QEvent::HoverMove)
+    {
+        double xpos = me->pos().x();
+        double ypos = me->pos().y();
+        emit hovered(xpos, ypos);
+        qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
+        return true;
+    }
+    else if(e->type() == QEvent::HoverLeave)
+    {
+        emit unhovered();
+        return true;
+    }
+    else if(e->type() == QEvent::MouseButtonPress)
+    {
+        emit clicked();
+        return true;
+    }
+    else if(e->type() == QEvent::MouseButtonDblClick)
+    {
+        emit doubleClicked();
+        return true;
+    }
+
+    return QLabel::event(e);
+}
+
+*/
 
 void BitcoinGUI::createToolBars()
 {
@@ -552,13 +779,19 @@ void BitcoinGUI::createToolBars()
     mainToolbar->widgetForAction(sendCoinsAction)->setObjectName("SendButton");
     mainToolbar->addAction(receiveCoinsAction);
     mainToolbar->widgetForAction(receiveCoinsAction)->setObjectName("ReceiveButton");
-    mainToolbar->addAction(historyAction);
-    mainToolbar->widgetForAction(historyAction)->setObjectName("HistoryButton");
     mainToolbar->addAction(addressBookAction);
     mainToolbar->widgetForAction(addressBookAction)->setObjectName("AddressBookButton");
+    mainToolbar->addAction(stakeCoinsAction);
+    mainToolbar->widgetForAction(stakeCoinsAction)->setObjectName("SideStakeButton");
+    mainToolbar->addAction(historyAction);
+    mainToolbar->widgetForAction(historyAction)->setObjectName("HistoryButton");
     mainToolbar->addAction(messageAction);
     mainToolbar->widgetForAction(messageAction)->setObjectName("MessageButton");
     mainToolbar->setContextMenuPolicy(Qt::NoContextMenu);
+
+    mainToolbar->layout()->setContentsMargins(0,0,0,0);
+
+
 
     //connect(mainToolbar,      SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(mainToolbarOrientation(Qt::Orientation)));
     //mainToolbarOrientation(mainToolbar->orientation());
@@ -601,13 +834,15 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
 
         rpcConsole->setClientModel(clientModel);
         addressBookPage->setOptionsModel(clientModel->getOptionsModel());
+        stakeCoinsPage->setOptionsModel(clientModel->getOptionsModel());
         receiveCoinsPage->setOptionsModel(clientModel->getOptionsModel());
     }
 }
 
-void BitcoinGUI::setWalletModel(WalletModel *walletModel)
+void BitcoinGUI::setWalletModel(WalletModel *walletModel, WalletModel *stakeModel)
 {
     this->walletModel = walletModel;
+    this->stakeModel = stakeModel;
     if(walletModel)
     {
         // Report errors from wallet thread
@@ -633,6 +868,8 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
 
     }
+    if(stakeModel)
+        stakeCoinsPage->setModel(stakeModel->getAddressTableModel());
 }
 
 void BitcoinGUI::setMessageModel(MessageModel *messageModel)
@@ -715,6 +952,26 @@ void BitcoinGUI::aboutClicked()
     AboutDialog dlg;
     dlg.setModel(clientModel);
     dlg.exec();
+}
+
+void BitcoinGUI::minHover()
+{
+    labelMinimizeIcon->setText("<html><head/><body><p><img src=\":/icons/min_s\"/></p></body></html>");
+}
+
+void BitcoinGUI::minUnhover()
+{
+    labelMinimizeIcon->setText("<html><head/><body><p><img src=\":/icons/min\"/></p></body></html>");
+}
+
+void BitcoinGUI::closeHover()
+{
+    labelCloseIcon->setText("<html><head/><body><p><img src=\":/icons/close_s\"/></p></body></html>");
+}
+
+void BitcoinGUI::closeUnhover()
+{
+    labelCloseIcon->setText("<html><head/><body><p><img src=\":/icons/close\"/></p></body></html>");
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -993,6 +1250,13 @@ void BitcoinGUI::gotoAddressBookPage()
 {
     addressBookAction->setChecked(true);
     centralWidget->setCurrentWidget(addressBookPage);
+
+}
+
+void BitcoinGUI::gotoStakeCoinsPage()
+{
+    stakeCoinsAction->setChecked(true);
+    centralWidget->setCurrentWidget(stakeCoinsPage);
 
 }
 
@@ -1428,3 +1692,29 @@ void BitcoinGUI::keyPressEvent(QKeyEvent * e)
 }
 
 /* zeewolf: Hot swappable wallet themes */
+
+
+void BitcoinGUI::mousePressEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        mMoving = true;
+        mLastMousePosition = event->pos();
+    }
+}
+
+void BitcoinGUI::mouseMoveEvent(QMouseEvent* event)
+{
+    if( event->buttons().testFlag(Qt::LeftButton) && mMoving)
+    {
+        this->move(this->pos() + (event->pos() - mLastMousePosition));
+    }
+}
+
+void BitcoinGUI::mouseReleaseEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        mMoving = false;
+    }
+}

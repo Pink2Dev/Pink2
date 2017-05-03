@@ -22,8 +22,10 @@ public:
     enum Mode {
         NewReceivingAddress,
         NewSendingAddress,
+        NewStakingAddress,
         EditReceivingAddress,
-        EditSendingAddress
+        EditSendingAddress,
+        EditStakingAddress
     };
 
     explicit EditAddressDialog(Mode mode, QWidget *parent = 0);

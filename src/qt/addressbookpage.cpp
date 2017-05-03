@@ -61,6 +61,11 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget *parent) :
         ui->deleteButton->setVisible(false);
         ui->signMessage->setVisible(true);
         break;
+    case StakingTab:
+        ui->labelExplanation->setVisible(false);
+        ui->signMessage->setVisible(false);
+        ui->verifyMessage->setVisible(false);
+        ui->deleteButton->setVisible(true);
     }
 
     // Context menu actions
@@ -133,21 +138,55 @@ void AddressBookPage::setModel(AddressTableModel *model)
         proxyModel->setFilterRole(AddressTableModel::TypeRole);
         proxyModel->setFilterFixedString(AddressTableModel::Send);
         break;
+    case StakingTab:
+        proxyModel->setFilterRole(AddressTableModel::TypeRole);
+        proxyModel->setFilterFixedString(AddressTableModel::Stake);
+        break;
     }
     ui->tableView->setModel(proxyModel);
     ui->tableView->sortByColumn(0, Qt::AscendingOrder);
 
-    bool sTab = true;
-    if (tab)
-        sTab = false;
+    bool recTab = false;
+    bool stTab = false;
+    //if (tab == 1)
+    recTab = (tab == ReceivingTab);
+    stTab = (tab == StakingTab);
 
     // Set column widths
-    ui->tableView->horizontalHeader()->resizeSection(
-            AddressTableModel::PMKey, 320);
-    ui->tableView->horizontalHeader()->setResizeMode(
-            AddressTableModel::PMKey, QHeaderView::Fixed);
-    ui->tableView->setColumnHidden(
-            AddressTableModel::PMKey, sTab);
+
+    if (recTab)
+    {
+        ui->tableView->horizontalHeader()->resizeSection(
+                    AddressTableModel::PMKey, 320);
+        ui->tableView->horizontalHeader()->setResizeMode(
+                    AddressTableModel::PMKey, QHeaderView::Fixed);
+        ui->tableView->setColumnHidden(
+                    AddressTableModel::PMKey, false);
+
+    } else {
+        ui->tableView->horizontalHeader()->resizeSection(
+                    AddressTableModel::PMKey, 0);
+        ui->tableView->horizontalHeader()->setResizeMode(
+                    AddressTableModel::PMKey, QHeaderView::Fixed);
+        ui->tableView->setColumnHidden(
+                    AddressTableModel::PMKey, true);
+    }
+    if (stTab)
+    {
+        ui->tableView->horizontalHeader()->resizeSection(
+                    AddressTableModel::Percent, 50);
+        ui->tableView->horizontalHeader()->setResizeMode(
+                    AddressTableModel::Percent, QHeaderView::Fixed);
+        ui->tableView->setColumnHidden(
+                    AddressTableModel::Percent, false);
+    } else {
+        ui->tableView->horizontalHeader()->resizeSection(
+                    AddressTableModel::Percent, 0);
+        ui->tableView->horizontalHeader()->setResizeMode(
+                    AddressTableModel::Percent, QHeaderView::Fixed);
+        ui->tableView->setColumnHidden(
+                    AddressTableModel::Percent, true);
+    }
     ui->tableView->horizontalHeader()->resizeSection(
             AddressTableModel::Address, 320);
     ui->tableView->horizontalHeader()->setResizeMode(
@@ -220,11 +259,22 @@ void AddressBookPage::onEditAction()
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedRows();
     if(indexes.isEmpty())
         return;
+    EditAddressDialog::Mode useMode;
 
-    EditAddressDialog dlg(
-            tab == SendingTab ?
-            EditAddressDialog::EditSendingAddress :
-            EditAddressDialog::EditReceivingAddress);
+    switch (tab)
+    {
+        case SendingTab:
+        useMode = EditAddressDialog::EditSendingAddress;
+        break;
+        case ReceivingTab:
+        useMode = EditAddressDialog::EditReceivingAddress;
+        break;
+        case StakingTab:
+        useMode = EditAddressDialog::EditStakingAddress;
+        break;
+    }
+
+    EditAddressDialog dlg(useMode, this);
     dlg.setModel(model);
     QModelIndex origIndex = proxyModel->mapToSource(indexes.at(0));
     dlg.loadRow(origIndex.row());
@@ -265,14 +315,37 @@ void AddressBookPage::on_newAddressButton_clicked()
 {
     if(!model)
         return;
-    EditAddressDialog dlg(
-            tab == SendingTab ?
-            EditAddressDialog::NewSendingAddress :
-            EditAddressDialog::NewReceivingAddress, this);
-    dlg.setModel(model);
-    if(dlg.exec())
+    EditAddressDialog::Mode useMode;
+
+    bool okToContinue = true;
+
+    switch (tab)
     {
-        newAddressToSelect = dlg.getAddress();
+        case SendingTab:
+        useMode = EditAddressDialog::NewSendingAddress;
+        break;
+        case ReceivingTab:
+        useMode = EditAddressDialog::NewReceivingAddress;
+        break;
+        case StakingTab:
+        int okToSave = QMessageBox::warning(this, "Warning", "Please Note: Most services such as Exchanges do not currently support receiving\n"
+                                                  "side-stakes. If you set your stakes to go to an exchange or other service, they\n"
+                                                  "will not credit to your account. Please do not set your stakes to go to a service\n"
+                                                  "unless you're sure they support the feature.", QMessageBox::Ok, QMessageBox::Cancel);
+        if (okToSave != QMessageBox::Ok)
+            okToContinue = false;
+        useMode = EditAddressDialog::NewStakingAddress;
+        break;
+    }
+
+    if (okToContinue)
+    {
+        EditAddressDialog dlg(useMode, this);
+        dlg.setModel(model);
+        if(dlg.exec())
+        {
+            newAddressToSelect = dlg.getAddress();
+        }
     }
 }
 
@@ -316,6 +389,15 @@ void AddressBookPage::selectionChanged()
             deleteAction->setEnabled(false);
             ui->signMessage->setEnabled(true);
             ui->signMessage->setVisible(true);
+            ui->verifyMessage->setEnabled(false);
+            ui->verifyMessage->setVisible(false);
+            break;
+        case StakingTab:
+            ui->deleteButton->setEnabled(true);
+            ui->deleteButton->setVisible(true);
+            deleteAction->setEnabled(true);
+            ui->signMessage->setEnabled(false);
+            ui->signMessage->setVisible(false);
             ui->verifyMessage->setEnabled(false);
             ui->verifyMessage->setVisible(false);
             break;
@@ -377,6 +459,7 @@ void AddressBookPage::exportClicked()
     writer.addColumn("Label", AddressTableModel::Label, Qt::EditRole);
     writer.addColumn("Address", AddressTableModel::Address, Qt::EditRole);
     writer.addColumn("PM KEY", AddressTableModel::PMKey, Qt::EditRole);
+    writer.addColumn("Percent", AddressTableModel::Percent, Qt::EditRole);
 
     if(!writer.write())
     {

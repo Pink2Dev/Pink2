@@ -5,6 +5,7 @@
 
 #include "wallet.h"
 #include "walletdb.h"
+#include "stakedb.h"
 #include "bitcoinrpc.h"
 #include "init.h"
 #include "base58.h"
@@ -2363,4 +2364,154 @@ Value getstakesplitthreshold(const Array& params, bool fHelp)
 	result.push_back(Pair("split stake threshold set to ", int(pwalletMain->nStakeSplitThreshold)));
 	return result;
 
+}
+
+Value addstakeout(const Array &params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error(
+            "addstakeout <name> <address> <percentage>\n"
+            "Creates a rule to send a portion of your stakes to another address.\n"
+            "Usage: addstakeout <name> <address> <% of stake>\n");
+
+    string name = params[0].get_str();
+
+    if (name.length() > 100)
+    {
+        throw runtime_error("Please use a shorter name for this address");
+    }
+
+    string a = params[1].get_str();
+    CBitcoinAddress address(a);
+    if (!address.IsValid())
+    {
+        throw runtime_error("Please enter a valid Pinkcoin address.");
+    }
+
+    string sPercent = params[2].get_str();
+    string sStack = "";
+    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : (char)NULL;
+
+    if (sPercent != sStack)
+        throw runtime_error("Please only use whole numbers between 0 and 100 and no special characters for Percentage\n");
+
+
+
+    int nPercent = stoi(sPercent);
+
+
+    if (nPercent < 0 || nPercent > 100)
+    {
+        throw runtime_error("Please use a percentage between 0 and 100");
+    }
+
+    CStakeDB stakeDB(pstakeDB->strWalletFile);
+    CTxDestination addr = address.Get();
+
+    int percentAvailable = 100;
+
+    BOOST_FOREACH(CWallet::mapAddress mapPercent, pstakeDB->mapAddressPercent)
+    {
+        string percent = mapPercent.second;
+        percentAvailable -= stoi(percent);
+    }
+
+    int updatingPercent = 0;
+    if (pstakeDB->mapAddressPercent.find(addr) != pstakeDB->mapAddressPercent.end())
+        updatingPercent = stoi(pstakeDB->mapAddressPercent[addr]);
+
+
+    if (nPercent > (percentAvailable + updatingPercent))
+        throw runtime_error("Stake Percentage would increase total Stakeout over 100%\n"
+                            "Please Reduce Stakeout Percentage or Delete another Stakeout to make room.\n"
+                            "Current Available Stakeout Percentage: " + to_string(percentAvailable));
+
+    if (!stakeDB.WriteStake(a, name, sPercent))
+        throw runtime_error("Failed to save stake information, please debug.");
+
+    pstakeDB->mapAddressBook[addr] = name;
+    pstakeDB->mapAddressPercent[addr] = sPercent;
+
+    string success = "\n Successfully written " + name + ", Pinkcoin Address:" + a + " side-stake " + params[2].get_str() + "% to stake.dat!";
+    return success;
+
+}
+
+Value delstakeout(const Array &params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "delstakeout <address>\n"
+            "Deletes stakeout address from stake database.\n");
+
+    string a = params[0].get_str();
+    CBitcoinAddress address(a);
+
+    if (!address.IsValid())
+        throw runtime_error("Invalid address");
+
+    if (pstakeDB->mapAddressBook.find(address.Get()) == pstakeDB->mapAddressBook.end())
+        throw runtime_error("Address not in stake database");
+
+    string xName = pstakeDB->mapAddressBook[address.Get()];
+    string xPercent= pstakeDB->mapAddressPercent[address.Get()];
+
+    CStakeDB stakeDB(pstakeDB->strWalletFile);
+
+    if (!stakeDB.EraseStake(a))
+        throw runtime_error("Failed to erase stake. Please debug.");
+
+    pstakeDB->mapAddressBook.erase(address.Get());
+    pstakeDB->mapAddressPercent.erase(address.Get());
+
+
+    string success = "\n Successfully deleted " + xName + ", Pinkcoin Address:" + a + " side-stake " + xPercent + "% from stake.dat.";
+
+    return success;
+}
+
+Value liststakeout(const Array &params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "liststakeout\n"
+            "Returns the current Stakeout entries in stake database.\n");
+
+    Array stakeOut;
+    BOOST_FOREACH(CWallet::mapAddress address, pstakeDB->mapAddressBook)
+    {
+            Object addressInfo;
+            LOCK(pstakeDB->cs_wallet);
+            {
+                if(pstakeDB->mapAddressBook.find(CBitcoinAddress(address.first).Get()) != pstakeDB->mapAddressBook.end())
+                {
+
+                    string aName = pstakeDB->mapAddressBook[CBitcoinAddress(address.first).Get()];
+                    string aPercent = pstakeDB->mapAddressPercent[CBitcoinAddress(address.first).Get()];
+
+                    aPercent = aPercent + "%";
+
+                    addressInfo.push_back(Pair("Name: ", aName));
+                    addressInfo.push_back(Pair("Address: ", CBitcoinAddress(address.first).ToString()));
+                    addressInfo.push_back(Pair("Percentage: ", aPercent));
+                    //addressInfo.push_back(pstakeDB->mapAddressBook.find(CBitcoinAddress(address.first).Get())->second);
+                    //addressInfo.push_back(pstakeDB->mapAddressPercent.find(CBitcoinAddress(address.first).Get())->second);
+                }
+            }
+            stakeOut.push_back(addressInfo);
+    }
+
+    return stakeOut;
+
+}
+
+Value getstakeoutinfo(const Array &params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getstakeoutinfo\n"
+            "Returns your aggregated Stakeout Data information\n");
+
+    string success = "Currently under development.";
+    return success;
 }

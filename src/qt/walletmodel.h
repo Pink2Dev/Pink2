@@ -70,6 +70,7 @@ public:
     qint64 getBalance() const;
     qint64 getTotalMinted() const;
     qint64 getStake() const;
+    qint64 getStake(const uint256 TxHash) const;
     qint64 getUnconfirmedBalance() const;
     qint64 getConfirmingBalance() const;
     qint64 getImmatureBalance() const;
@@ -169,6 +170,7 @@ public slots:
     void updateTransaction(const QString &hash, int status);
     /* New, updated or removed address book entry */
     void updateAddressBook(const QString &address, const QString &label, bool isMine, int status);
+    void updateAddressBookStake(const QString &address, const QString &label, const QString &percent, int status);
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
 

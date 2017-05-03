@@ -248,10 +248,11 @@ int main(int argc, char *argv[])
 
                 ClientModel clientModel(&optionsModel);
                 WalletModel walletModel(pwalletMain, &optionsModel);
+                WalletModel stakeModel(pstakeDB, &optionsModel);
                 MessageModel messageModel(pwalletMain, &walletModel);
 
                 window.setClientModel(&clientModel);
-                window.setWalletModel(&walletModel);
+                window.setWalletModel(&walletModel, &stakeModel);
                 window.setMessageModel(&messageModel);
 
                 // If -min option passed, start window minimized.
@@ -271,7 +272,7 @@ int main(int argc, char *argv[])
 
                 window.hide();
                 window.setClientModel(0);
-                window.setWalletModel(0);
+                window.setWalletModel(0, 0);
                 window.setMessageModel(0);
                 guiref = 0;
             }

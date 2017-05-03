@@ -20,6 +20,7 @@ using namespace boost;
 
 
 unsigned int nWalletDBUpdated;
+unsigned int nStakeDBUpdated;
 
 
 

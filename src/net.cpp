@@ -23,7 +23,7 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 16;
+static const int MAX_OUTBOUND_CONNECTIONS = 64;
 
 void ThreadMessageHandler2(void* parg);
 void ThreadSocketHandler2(void* parg);
@@ -1269,8 +1269,12 @@ void MapPort()
 // The second name should resolve to a list of seed addresses.
 
 static const char *strDNSSeed[][2] = {
-    {"pinkarmy.ml", "pinkarmy.ml"},
-
+    {"primary", "pinkarmy.ml"},
+    {"frankfurt", "frankfurt.pinkarmy.ml"},
+    {"paris", "paris.pinkarmy.ml"},
+    {"singapore", "singapore.pinkarmy.ml"},
+    {"sydney", "sydney.pinkarmy.ml"},
+    {"tokyo", "tokyo.pinkarmy.ml"},
 };
 
 void ThreadDNSAddressSeed(void* parg)

@@ -15,6 +15,7 @@ class CBlockIndex;
 #include "json/json_spirit_reader_template.h"
 #include "json/json_spirit_writer_template.h"
 #include "json/json_spirit_utils.h"
+#include "wallet.h"
 
 #include "util.h"
 #include "checkpoints.h"
@@ -70,6 +71,7 @@ json_spirit::Object JSONRPCError(int code, const std::string& message);
 
 void ThreadRPCServer(void* parg);
 int CommandLineRPC(int argc, char *argv[]);
+//bool specialOutput(std::string strMethod, std::string *strOut);
 
 /** Convert parameter values for RPC call from strings to command-specific JSON objects. */
 json_spirit::Array RPCConvertValues(const std::string &strMethod, const std::vector<std::string> &strParams);
@@ -97,6 +99,7 @@ public:
     rpcfn_type actor;
     bool okSafeMode;
     bool unlocked;
+    bool fGetNodes;
 };
 
 /**
@@ -144,8 +147,11 @@ extern uint256 ParseHashO(const json_spirit::Object& o, std::string strKey);
 extern std::vector<unsigned char> ParseHexV(const json_spirit::Value& v, std::string strName);
 extern std::vector<unsigned char> ParseHexO(const json_spirit::Object& o, std::string strKey); 
 
+//extern std::string getnodes(const json_spirit::Array& params, bool fHelp);
+
 extern json_spirit::Value getconnectioncount(const json_spirit::Array& params, bool fHelp); // in rpcnet.cpp
 extern json_spirit::Value getpeerinfo(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getnodes(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value dumpwallet(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value importwallet(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value dumpprivkey(const json_spirit::Array& params, bool fHelp); // in rpcdump.cpp
@@ -229,7 +235,10 @@ extern json_spirit::Value clearwallettransactions(const json_spirit::Array& para
 extern json_spirit::Value scanforalltxns(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value scanforstealthtxns(const json_spirit::Array& params, bool fHelp);
 
-
+extern json_spirit::Value addstakeout(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value delstakeout(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value liststakeout(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getstakeoutinfo(const json_spirit::Array& params, bool fHelp);
 
 extern json_spirit::Value smsgenable(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value smsgdisable(const json_spirit::Array& params, bool fHelp);

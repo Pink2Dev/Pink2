@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "txdb.h"
 #include "walletdb.h"
+#include "stakedb.h"
 #include "bitcoinrpc.h"
 #include "net.h"
 #include "init.h"
@@ -30,6 +31,7 @@ using namespace std;
 using namespace boost;
 
 CWallet* pwalletMain;
+CWallet* pstakeDB;
 CClientUIInterface uiInterface;
 bool fConfChange;
 unsigned int nNodeLifespan;
@@ -93,7 +95,9 @@ void Shutdown(void* parg)
         bitdb.Flush(true);
         boost::filesystem::remove(GetPidFile());
         UnregisterWallet(pwalletMain);
+        UnregisterWallet(pstakeDB);
         delete pwalletMain;
+        delete pstakeDB;
         NewThread(ExitTimeout, NULL);
         MilliSleep(50);
         printf("Pinkcoin exited\n\n");
@@ -528,10 +532,15 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     std::string strDataDir = GetDataDir().string();
     std::string strWalletFileName = GetArg("-wallet", "wallet.dat");
+    std::string strStakeDBFileName = GetArg("-stakedb", "stake.dat");
 
     // strWalletFileName must be a plain filename without a directory
     if (strWalletFileName != boost::filesystem::basename(strWalletFileName) + boost::filesystem::extension(strWalletFileName))
         return InitError(strprintf(_("Wallet %s resides outside data directory %s."), strWalletFileName.c_str(), strDataDir.c_str()));
+
+    // strStakeDBFileName must be a plain filename without a directory
+    if (strStakeDBFileName != boost::filesystem::basename(strStakeDBFileName) + boost::filesystem::extension(strStakeDBFileName))
+        return InitError(strprintf(_("Wallet %s resides outside data directory %s."), strStakeDBFileName.c_str(), strDataDir.c_str()));
 
     // Make sure only a single Bitcoin process is using the data directory.
     boost::filesystem::path pathLockFile = GetDataDir() / ".lock";
@@ -608,6 +617,19 @@ bool AppInit2(boost::thread_group& threadGroup)
                                      " Original wallet.dat saved as wallet.{timestamp}.bak in %s; if"
                                      " your balance or transactions are incorrect you should"
                                      " restore from a backup."), strDataDir.c_str());
+            uiInterface.ThreadSafeMessageBox(msg, _("Pinkcoin"), CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION | CClientUIInterface::MODAL);
+        }
+        if (r == CDBEnv::RECOVER_FAIL)
+            return InitError(_("wallet.dat corrupt, salvage failed"));
+    }
+
+    if (filesystem::exists(GetDataDir() / strStakeDBFileName))
+    {
+        CDBEnv::VerifyResult r = bitdb.Verify(strStakeDBFileName, CStakeDB::Recover);
+        if (r == CDBEnv::RECOVER_OK)
+        {
+            string msg = strprintf(_("Warning: stake.dat corrupt, data salvaged!"
+                                     " Original stake.dat saved as stake.{timestamp}.bak in %s;"), strDataDir.c_str());
             uiInterface.ThreadSafeMessageBox(msg, _("Pinkcoin"), CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION | CClientUIInterface::MODAL);
         }
         if (r == CDBEnv::RECOVER_FAIL)
@@ -795,6 +817,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     printf("Loading wallet...\n");
     nStart = GetTimeMillis();
     bool fFirstRun = true;
+    bool fFirstStakeOut = true;
     pwalletMain = new CWallet(strWalletFileName);
     DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);
     if (nLoadWalletRet != DB_LOAD_OK)
@@ -818,6 +841,31 @@ bool AppInit2(boost::thread_group& threadGroup)
         else
             strErrors << _("Error loading wallet.dat") << "\n";
     }
+
+    pstakeDB = new CWallet(strStakeDBFileName);
+
+    SDBErrors nLoadStakeDBRet = pstakeDB->LoadStakeDB(fFirstStakeOut);
+    if (nLoadStakeDBRet != SDB_LOAD_OK)
+    {
+        if (nLoadStakeDBRet == SDB_CORRUPT)
+            strErrors << _("Error loading stake.dat: StakeDB corrupted") << "\n";
+        else if (nLoadStakeDBRet == SDB_NONCRITICAL_ERROR)
+        {
+            string msg(_("Warning: error reading stake.dat! Side-stake entries might be missing or incorrect."));
+            uiInterface.ThreadSafeMessageBox(msg, _("Pinkcoin"), CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION | CClientUIInterface::MODAL);
+        }
+        else if (nLoadStakeDBRet == SDB_TOO_NEW)
+            strErrors << _("Error loading stake.dat: StakeDB requires newer version of Pinkcoin") << "\n";
+        else if (nLoadStakeDBRet == SDB_NEED_REWRITE)
+        {
+            strErrors << _("StakeDB needed to be rewritten: restart Pinkcoin to complete") << "\n";
+            printf("%s", strErrors.str().c_str());
+            return InitError(strErrors.str());
+        }
+        else
+            strErrors << _("Error loading stake.dat") << "\n";
+    }
+
 
     if (GetBoolArg("-upgradewallet", fFirstRun))
     {
@@ -852,6 +900,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     printf(" wallet      %15dms\n", GetTimeMillis() - nStart);
 
     RegisterWallet(pwalletMain);
+    RegisterWallet(pstakeDB);
 
     CBlockIndex *pindexRescan = pindexBest;
     if (GetBoolArg("-rescan"))

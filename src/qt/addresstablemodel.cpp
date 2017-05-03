@@ -12,12 +12,14 @@
 
 const QString AddressTableModel::Send = "S";
 const QString AddressTableModel::Receive = "R";
+const QString AddressTableModel::Stake = "X";
 
 struct AddressTableEntry
 {
     enum Type {
         Sending,
-        Receiving
+        Receiving,
+        Staking
     };
 
     Type type;
@@ -25,10 +27,11 @@ struct AddressTableEntry
     QString address;
     QString pmkey;
     bool stealth;
+    QString percent;
 
     AddressTableEntry() {}
-    AddressTableEntry(Type type, const QString &label, const QString &address, const QString &pmkey, const bool &stealth = false):
-        type(type), label(label), address(address), pmkey(pmkey), stealth(stealth) {}
+    AddressTableEntry(Type type, const QString &label, const QString &address, const QString &pmkey, const bool &stealth = false, const QString &nPercent = ""):
+        type(type), label(label), address(address), pmkey(pmkey), stealth(stealth), percent(nPercent) {}
 };
 
 struct AddressTableEntryLessThan
@@ -72,6 +75,7 @@ public:
                 std::string a;
                 std::string PMKey = "";
                 a = address.ToString();
+                std::string nPercent = "";
 
                 if (fMine)
                 {
@@ -82,16 +86,26 @@ public:
                         printf("Error getting PM Key %i\n", i);
                 }
 
-                cachedAddressTable.append(AddressTableEntry(fMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending,
+                AddressTableEntry::Type tThis = fMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending;
+
+                if (wallet->mapAddressPercent.find(item.first) != wallet->mapAddressPercent.end())
+                {
+                    nPercent = wallet->mapAddressPercent[item.first];
+                    tThis = AddressTableEntry::Staking;
+                }
+
+                cachedAddressTable.append(AddressTableEntry(tThis,
                                   QString::fromStdString(strName),
                                   QString::fromStdString(address.ToString()),
-                                  QString::fromStdString(PMKey)));
+                                  QString::fromStdString(PMKey), false,
+                                  QString::fromStdString(nPercent)));
             }
 
             std::set<CStealthAddress>::iterator it;
             for (it = wallet->stealthAddresses.begin(); it != wallet->stealthAddresses.end(); ++it)
             {
                 bool fMine = !(it->scan_secret.size() < 1);
+
                 cachedAddressTable.append(AddressTableEntry(fMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending,
                                   QString::fromStdString(it->label),
                                   QString::fromStdString(it->Encoded()),
@@ -103,7 +117,7 @@ public:
         qSort(cachedAddressTable.begin(), cachedAddressTable.end(), AddressTableEntryLessThan());
     }
 
-    void updateEntry(const QString &address, const QString &label, bool isMine, int status)
+    void updateEntry(const QString &address, const QString &label, bool isMine, int status, const QString &percent)
     {
         // Find address / label in model
         QList<AddressTableEntry>::iterator lower = qLowerBound(
@@ -113,7 +127,8 @@ public:
         int lowerIndex = (lower - cachedAddressTable.begin());
         int upperIndex = (upper - cachedAddressTable.begin());
         bool inModel = (lower != upper);
-        AddressTableEntry::Type newEntryType = isMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending;
+        bool isStake = (percent != "");
+        AddressTableEntry::Type newEntryType = isStake ? AddressTableEntry::Staking : (isMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending);
 
         switch(status)
         {
@@ -128,8 +143,8 @@ public:
             parent->beginInsertRows(QModelIndex(), lowerIndex, lowerIndex);
 
             std::string pmkey = "";
-            std::string a;
-            a = address.toStdString();
+            std::string nPercent = percent.toStdString();
+            std::string a = address.toStdString();
             int i;
             if (isMine)
             {
@@ -138,7 +153,7 @@ public:
                     printf("Can't get PM Key for some reason\n");
             }
 
-            cachedAddressTable.insert(lowerIndex, AddressTableEntry(newEntryType, label, address, QString::fromStdString(pmkey)));
+            cachedAddressTable.insert(lowerIndex, AddressTableEntry(newEntryType, label, address, QString::fromStdString(pmkey), false, QString::fromStdString(nPercent)));
             parent->endInsertRows();
             break;
         }
@@ -150,6 +165,8 @@ public:
             }
             lower->type = newEntryType;
             lower->label = label;
+            if (percent != "")
+                lower->percent = percent;
             parent->emitDataChanged(lowerIndex);
             break;
         case CT_DELETED:
@@ -186,7 +203,7 @@ public:
 AddressTableModel::AddressTableModel(CWallet *wallet, WalletModel *parent) :
     QAbstractTableModel(parent),walletModel(parent),wallet(wallet),priv(0)
 {
-    columns << tr("Label") << tr("Address") << tr("PM Key");
+    columns << tr("Label") << tr("Address") << tr("PM Key") << tr("Percent");
     priv = new AddressTablePriv(wallet, this);
     priv->refreshAddressTable();
 }
@@ -237,6 +254,8 @@ QVariant AddressTableModel::data(const QModelIndex &index, int role) const
             return rec->address;
         case PMKey:
             return rec->pmkey;
+        case Percent:
+            return rec->percent;
         }
     }
     else if (role == Qt::FontRole)
@@ -256,6 +275,8 @@ QVariant AddressTableModel::data(const QModelIndex &index, int role) const
             return Send;
         case AddressTableEntry::Receiving:
             return Receive;
+        case AddressTableEntry::Staking:
+            return Stake;
         default: break;
         }
     }
@@ -288,11 +309,36 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
             {
                 strValue = value.toString().toStdString();
                 wallet->UpdateStealthAddress(strTemp, strValue, false);
+            } else if (rec->type == AddressTableEntry::Staking)
+            {
+                wallet->SetAddressBookStake(CBitcoinAddress(strTemp).Get(), value.toString().toStdString(), rec->percent.toStdString());
             } else
             {
                 wallet->SetAddressBookName(CBitcoinAddress(strTemp).Get(), value.toString().toStdString());
             }
             
+            break;
+        case Percent:
+            if(rec->percent == value.toString())
+            {
+                editStatus = NO_CHANGES;
+                return false;
+            }
+
+            strTemp = rec->address.toStdString();
+            if (IsStealthAddress(strTemp))
+            {
+                editStatus = NO_CHANGES;  // stealth addresses are not supported with side-staking
+                return false;
+            }
+
+            if (!checkStakePercent(rec->address.toStdString(), value.toString().toStdString()))
+            {
+                editStatus = INVALID_PERCENTAGE;
+                return false;
+            }
+
+            wallet->SetAddressBookStake(CBitcoinAddress(strTemp).Get(), rec->label.toStdString(), value.toString().toStdString());
             break;
         case Address:
             
@@ -333,6 +379,10 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
                     wallet->SetAddressBookName(CBitcoinAddress(value.toString().toStdString()).Get(), rec->label.toStdString());
                 }
             }
+            else if(rec->type == AddressTableEntry::Staking)
+            {
+                    wallet->SetAddressBookStake(CBitcoinAddress(value.toString().toStdString()).Get(), rec->label.toStdString(), rec->percent.toStdString());
+            }
             break;
         }
         return true;
@@ -362,7 +412,8 @@ Qt::ItemFlags AddressTableModel::flags(const QModelIndex &index) const
     // Can edit address and label for sending addresses,
     // and only label for receiving addresses.
     if(rec->type == AddressTableEntry::Sending ||
-      (rec->type == AddressTableEntry::Receiving && index.column()==Label))
+      (rec->type == AddressTableEntry::Receiving && index.column()==Label) ||
+       rec->type == AddressTableEntry::Staking )
     {
         retval |= Qt::ItemIsEditable;
     }
@@ -383,16 +434,19 @@ QModelIndex AddressTableModel::index(int row, int column, const QModelIndex &par
     }
 }
 
-void AddressTableModel::updateEntry(const QString &address, const QString &label, bool isMine, int status)
+void AddressTableModel::updateEntry(const QString &address, const QString &label, bool isMine, int status, const QString &percent)
 {
     // Update address book model from Bitcoin core
-    priv->updateEntry(address, label, isMine, status);
+    priv->updateEntry(address, label, isMine, status, percent);
 }
 
-QString AddressTableModel::addRow(const QString &type, const QString &label, const QString &address, int addressType)
+QString AddressTableModel::addRow(const QString &type, const QString &label, const QString &address, int addressType, const QString &percent)
 {
     std::string strLabel = label.toStdString();
     std::string strAddress = address.toStdString();
+    std::string nPercent = percent.toStdString();
+
+
 
     editStatus = OK;
     
@@ -420,7 +474,6 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
                 sxAddr.label = strLabel;
                 wallet->AddStealthAddress(sxAddr);
             }
-            
         } else
         {
             if (!walletModel->validateAddress(address))
@@ -436,9 +489,32 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
                     editStatus = DUPLICATE_ADDRESS;
                     return QString();
                 };
-                
                 wallet->SetAddressBookName(CBitcoinAddress(strAddress).Get(), strLabel);
             }
+        }
+    }
+    else if(type == Stake)
+    {
+        if (!walletModel->validateAddress(address))
+        {
+            editStatus = INVALID_ADDRESS;
+            return QString();
+        };
+        if (!checkStakePercent(address.toStdString(), nPercent))
+        {
+            editStatus = INVALID_PERCENTAGE;
+            return QString();
+        }
+        // Check for duplicate addresses
+        {
+            LOCK(wallet->cs_wallet);
+            if (wallet->mapAddressBook.count(CBitcoinAddress(strAddress).Get()))
+            {
+                editStatus = DUPLICATE_ADDRESS;
+                return QString();
+            };
+
+            wallet->SetAddressBookStake(CBitcoinAddress(strAddress).Get(), strLabel, nPercent);
         }
     }
     else if(type == Receive)
@@ -498,9 +574,12 @@ bool AddressTableModel::removeRows(int row, int count, const QModelIndex &parent
         // Also refuse to remove receiving addresses.
         return false;
     }
-    {
+    {     
         LOCK(wallet->cs_wallet);
-        wallet->DelAddressBookName(CBitcoinAddress(rec->address.toStdString()).Get());
+        if (rec->type == AddressTableEntry::Staking)
+            wallet->DelAddressBookStake(CBitcoinAddress(rec->address.toStdString()).Get());
+        else
+            wallet->DelAddressBookName(CBitcoinAddress(rec->address.toStdString()).Get());
     }
     return true;
 }
@@ -556,4 +635,68 @@ int AddressTableModel::lookupAddress(const QString &address) const
 void AddressTableModel::emitDataChanged(int idx)
 {
     emit dataChanged(index(idx, 0, QModelIndex()), index(idx, columns.length()-1, QModelIndex()));
+}
+
+bool AddressTableModel::checkStakePercent(std::string address, std::string percent)
+{
+    std::string sPercent = percent;
+
+    if (sPercent == "")
+        sPercent = "0";
+
+    std::string sStack = "";
+    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : (char)NULL;
+
+    if (sPercent != sStack)
+    {
+        printf("\nPlease only use whole numbers between 0 and 100 and no special characters for Percentage\n");
+        return false;
+    }
+
+    int nPercent = std::stoi(sPercent);
+
+
+    if (nPercent < 0 || nPercent > 100)
+    {
+        printf("\nPlease use a percentage between 0 and 100");
+        return false;
+    }
+
+    CBitcoinAddress a(address);
+    if (!a.IsValid())
+    {
+        printf("\nInvalid Bitcoin Address.");
+        return false;
+    }
+
+    int percentAvailable = 100;
+
+    BOOST_FOREACH(CWallet::mapAddress mapPercent, wallet->mapAddressPercent)
+    {
+            std::string percent = mapPercent.second;
+            if (percent == "")
+                percent = "0";
+
+            percentAvailable -= std::stoi(percent);
+    }
+
+    int updatingPercent = 0;
+    if (wallet->mapAddressPercent.find(a.Get()) != wallet->mapAddressPercent.end())
+    {
+        std::string sUpdatingPercent = wallet->mapAddressPercent[a.Get()];
+        if (sUpdatingPercent == "")
+            sUpdatingPercent = "0";
+
+        updatingPercent = std::stoi(sUpdatingPercent);
+    }
+
+    if (nPercent > (percentAvailable + updatingPercent))
+    {
+        printf("\nStake Percentage would increase total Stakeout over 100%\n"
+                            "Please Reduce Stakeout Percentage or Delete another Stakeout to make room.\n"
+                            "Current Available Stakeout Percentage: %s", std::to_string(percentAvailable).c_str());
+        return false;
+    }
+
+    return true;
 }

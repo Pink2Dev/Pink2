@@ -435,7 +435,22 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
 
 QString TransactionTableModel::formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed) const
 {
-    QString str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit);
+    QString str;
+
+
+    if(wtx->type == TransactionRecord::StakeMint)
+    {
+        const uint256 txID = wtx->hash;
+        qint64 nReward = walletModel->getStake(txID);
+        if (nReward > 0)
+            str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), nReward);
+        else
+            str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit);
+    }
+    else
+        str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit);
+
+
     if(showUnconfirmed)
     {
         if(!wtx->status.countsForBalance)
@@ -571,7 +586,19 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
     case LabelRole:
         return walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(rec->address));
     case AmountRole:
+    {
+        if (/*!walletModel->isMine(CBitcoinAddress(rec->address)) && */rec->type == TransactionRecord::StakeMint)
+        {
+            const uint256 txID = rec->hash;
+            qint64 nReward = walletModel->getStake(txID);
+            if (nReward > 0)
+                return nReward;
+            else
+               return rec->credit + rec->debit;
+        } else {
         return rec->credit + rec->debit;
+        }
+    }
     case TxIDRole:
         return QString::fromStdString(rec->getTxID());
     case ConfirmedRole:

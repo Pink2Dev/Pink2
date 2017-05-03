@@ -60,6 +60,23 @@ qint64 WalletModel::getStake() const
     return wallet->GetStake();
 }
 
+qint64 WalletModel::getStake(const uint256 TxHash) const
+{
+    int64_t nReward = 0;
+    uint256 hash = TxHash;
+
+    const CWalletTx& wtx = wallet->mapWallet[hash];
+
+    if(wtx.IsFromMe())
+        return nReward;
+
+    BOOST_FOREACH(const CTxOut& txOut, wtx.vout)
+    {
+        nReward += wallet->GetReward(txOut);
+    }
+    return nReward;
+}
+
 qint64 WalletModel::getImmatureBalance() const
 {
     return wallet->GetImmatureBalance();
@@ -129,6 +146,11 @@ void WalletModel::updateAddressBook(const QString &address, const QString &label
 {
     if(addressTableModel)
         addressTableModel->updateEntry(address, label, isMine, status);
+}
+void WalletModel::updateAddressBookStake(const QString &address, const QString &label, const QString &percent, int status)
+{
+    if(addressTableModel)
+        addressTableModel->updateEntry(address, label, false, status, percent);
 }
 
 bool WalletModel::validateAddress(const QString &address)
@@ -508,6 +530,17 @@ static void NotifyAddressBookChanged(WalletModel *walletmodel, CWallet *wallet, 
     }
 }
 
+static void NotifyAddressBookStakeChanged(WalletModel *walletmodel, CWallet *wallet, const CTxDestination &address, const std::string &label, const std::string &percent, ChangeType status)
+{
+        OutputDebugStringF("NotifyAddressBookChanged %s %s %s status=%i\n", CBitcoinAddress(address).ToString().c_str(), label.c_str(), percent.c_str(), status);
+        QMetaObject::invokeMethod(walletmodel, "updateAddressBookStake", Qt::QueuedConnection,
+                                  Q_ARG(QString, QString::fromStdString(CBitcoinAddress(address).ToString())),
+                                  Q_ARG(QString, QString::fromStdString(label)),
+                                  Q_ARG(QString, QString::fromStdString(percent)),
+                                  Q_ARG(int, status));
+
+}
+
 static void NotifyTransactionChanged(WalletModel *walletmodel, CWallet *wallet, const uint256 &hash, ChangeType status)
 {
     if (fDebug)
@@ -522,6 +555,7 @@ void WalletModel::subscribeToCoreSignals()
     // Connect signals to wallet
     wallet->NotifyStatusChanged.connect(boost::bind(&NotifyKeyStoreStatusChanged, this, _1));
     wallet->NotifyAddressBookChanged.connect(boost::bind(NotifyAddressBookChanged, this, _1, _2, _3, _4, _5));
+    wallet->NotifyAddressBookStakeChanged.connect(boost::bind(NotifyAddressBookStakeChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyTransactionChanged.connect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
 }
 
@@ -530,6 +564,7 @@ void WalletModel::unsubscribeFromCoreSignals()
     // Disconnect signals from wallet
     wallet->NotifyStatusChanged.disconnect(boost::bind(&NotifyKeyStoreStatusChanged, this, _1));
     wallet->NotifyAddressBookChanged.disconnect(boost::bind(NotifyAddressBookChanged, this, _1, _2, _3, _4, _5));
+    wallet->NotifyAddressBookStakeChanged.disconnect(boost::bind(NotifyAddressBookStakeChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyTransactionChanged.disconnect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
 }
 

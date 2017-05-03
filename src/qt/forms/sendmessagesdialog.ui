@@ -13,10 +13,13 @@
   <property name="windowTitle">
    <string>Send Messages</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
    <property name="bottomMargin">
     <number>8</number>
    </property>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3"/>
+   </item>
    <item>
     <widget class="QFrame" name="frameAddressFrom">
      <property name="sizePolicy">
@@ -106,7 +109,7 @@
         <x>0</x>
         <y>0</y>
         <width>830</width>
-        <height>279</height>
+        <height>291</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

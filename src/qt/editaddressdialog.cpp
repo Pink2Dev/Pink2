@@ -22,9 +22,27 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
         ui->addressEdit->setVisible(false);
         ui->stealthCB->setEnabled(true);
         ui->stealthCB->setVisible(true);
+        ui->Percent->setVisible(false);
+        ui->spinPercent->setVisible(false);
         break;
     case NewSendingAddress:
         setWindowTitle(tr("New sending address"));
+        ui->stealthCB->setVisible(false);
+        ui->Percent->setVisible(false);
+        ui->spinPercent->setVisible(false);
+        break;
+    case NewStakingAddress:
+        setWindowTitle(tr("New Address for Side-Stake"));
+        ui->Percent->setVisible(true);
+        ui->spinPercent->setEnabled(true);
+        ui->spinPercent->setVisible(true);
+        ui->stealthCB->setVisible(false);
+        break;
+    case EditStakingAddress:
+        setWindowTitle(tr("New Address for Side-Stake"));
+        ui->Percent->setVisible(true);
+        ui->spinPercent->setEnabled(true);
+        ui->spinPercent->setVisible(true);
         ui->stealthCB->setVisible(false);
         break;
     case EditReceivingAddress:
@@ -33,10 +51,14 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
         ui->addressEdit->setVisible(true);
         ui->stealthCB->setEnabled(false);
         ui->stealthCB->setVisible(true);
+        ui->Percent->setVisible(false);
+        ui->spinPercent->setVisible(false);
         break;
     case EditSendingAddress:
         setWindowTitle(tr("Edit sending address"));
         ui->stealthCB->setVisible(false);
+        ui->Percent->setVisible(false);
+        ui->spinPercent->setVisible(false);
         break;
     }
 
@@ -58,6 +80,7 @@ void EditAddressDialog::setModel(AddressTableModel *model)
     mapper->setModel(model);
     mapper->addMapping(ui->labelEdit, AddressTableModel::Label);
     mapper->addMapping(ui->addressEdit, AddressTableModel::Address);
+    mapper->addMapping(ui->spinPercent, AddressTableModel::Percent);
     mapper->addMapping(ui->stealthCB, AddressTableModel::Type);
 }
 
@@ -75,17 +98,30 @@ bool EditAddressDialog::saveCurrentRow()
     {
     case NewReceivingAddress:
     case NewSendingAddress:
-        {
+    {
         int typeInd  = ui->stealthCB->isChecked() ? AddressTableModel::AT_Stealth : AddressTableModel::AT_Normal;
         address = model->addRow(
                 mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
                 ui->labelEdit->text(),
                 ui->addressEdit->text(),
                 typeInd);
-        }
+    }
+        break;
+    case NewStakingAddress:
+    {
+
+        address = model->addRow(
+                    AddressTableModel::Stake,
+                    ui->labelEdit->text(),
+                    ui->addressEdit->text(),
+                    AddressTableModel::AT_Normal,
+                    ui->spinPercent->cleanText());
+
+    }
         break;
     case EditReceivingAddress:
     case EditSendingAddress:
+    case EditStakingAddress:
         if(mapper->submit())
         {
             address = ui->addressEdit->text();
@@ -129,6 +165,10 @@ void EditAddressDialog::accept()
             QMessageBox::critical(this, windowTitle(),
                 tr("New key generation failed."),
                 QMessageBox::Ok, QMessageBox::Ok);
+        case AddressTableModel::INVALID_PERCENTAGE:
+            QMessageBox::warning(this, windowTitle(),
+                 tr("Percentage exceeds available limit."),
+                 QMessageBox::Ok, QMessageBox::Ok);
             break;
 
         }

@@ -242,6 +242,7 @@ static const CRPCCommand vRPCCommands[] =
     { "getbestblockhash",       &getbestblockhash,       true,   false },
     { "getblockcount",          &getblockcount,          true,   false },
     { "getconnectioncount",     &getconnectioncount,     true,   false },
+    { "getnodes",               &getnodes,               true,   false },
     { "getpeerinfo",            &getpeerinfo,            true,   false },
     { "getdifficulty",          &getdifficulty,          true,   false },
     { "getinfo",                &getinfo,                true,   false },
@@ -319,6 +320,11 @@ static const CRPCCommand vRPCCommands[] =
     { "scanforstealthtxns",     &scanforstealthtxns,     false,  false},
     { "getwalletinfo",          &getwalletinfo,          true,   false},
     
+    { "addstakeout",            &addstakeout,            false,  false},
+    { "delstakeout",            &delstakeout,            false,  false},
+    { "liststakeout",           &liststakeout,           false,  false},
+    { "getstakeoutinfo",        &getstakeoutinfo,        false,  false},
+
     { "smsgenable",             &smsgenable,             false,  false},
     { "smsgdisable",            &smsgdisable,            false,  false},
     { "smsglocalkeys",          &smsglocalkeys,          false,  false},
@@ -332,11 +338,6 @@ static const CRPCCommand vRPCCommands[] =
     { "smsginbox",              &smsginbox,              false,  false},
     { "smsgoutbox",             &smsgoutbox,             false,  false},
     { "smsgbuckets",            &smsgbuckets,            false,  false},
-    
-    
-    
-    
-    
 };
 
 CRPCTable::CRPCTable()
@@ -1333,6 +1334,13 @@ int CommandLineRPC(int argc, char *argv[])
             throw runtime_error("too few parameters");
         string strMethod = argv[1];
 
+/*        string strOut;
+        if (specialOutput(strMethod, *strOut))
+        {
+            strPrint = strOut;
+            return nRet;
+        }
+*/
         // Parameters default to strings
         std::vector<std::string> strParams(&argv[2], &argv[argc]);
         Array params = RPCConvertValues(strMethod, strParams);
@@ -1378,7 +1386,33 @@ int CommandLineRPC(int argc, char *argv[])
     }
     return nRet;
 }
+/*
+void specialOutput(std::string strMethod, std::string *strOut)
+{
+    bool ret = false;
 
+    if (strMethod = "getnodes")
+    {
+        if (fHelp || params.size() != 0)
+            throw runtime_error(
+                "getnodes\n"
+                "Returns each connected network node as addnodes in conf friendly format.");
+
+        vector<CNodeStats> vstats;
+        CopyNodeStats(vstats);
+        Value ret = NULL;
+        string pNode = "";
+
+        BOOST_FOREACH(const CNodeStats& stats, vstats) {
+            pNode += "addnode=" + stats.addrName + crlf;
+        }
+
+        ret.push_back(pNode);
+        return ret;
+    }
+
+}
+*/
 
 
 

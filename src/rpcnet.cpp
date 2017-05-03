@@ -67,6 +67,28 @@ Value getpeerinfo(const Array& params, bool fHelp)
 
     return ret;
 }
+
+Value getnodes(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getnodes\n"
+            "Returns each connected network node as addnodes in conf friendly format.");
+
+    vector<CNodeStats> vstats;
+    CopyNodeStats(vstats);
+    string pNode = "";
+
+    BOOST_FOREACH(const CNodeStats& stats, vstats) {
+        if (stats.addrName.rfind(":9134") != string::npos)
+        {
+            string ipAddress = stats.addrName.substr(0, stats.addrName.length() - 5);
+            pNode += "addnode=" + ipAddress + "\n";
+        }
+    }
+
+    return (Value)pNode;
+}
  
 // ppcoin: send alert.  
 // There is a known deadlock situation with ThreadMessageHandler

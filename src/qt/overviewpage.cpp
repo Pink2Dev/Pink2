@@ -114,7 +114,7 @@ public:
 OverviewPage::OverviewPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OverviewPage),
-    currentBalance(-1),
+    currentBalance(0),
     currentStake(0),
     currentUnconfirmedBalance(-1),
     currentConfirmingBalance(-1),
@@ -124,10 +124,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     txdelegate->fontID = -1;
 
-    QFont overviewHeaders("Ubuntu", 10, QFont::Normal);
-    QFont overviewSpend("Ubuntu", 20, QFont::Normal);
+    QFont overviewHeaders("Ubuntu", 14, QFont::Normal);
+    QFont overviewSpend("Ubuntu", 18, QFont::Normal);
     QFont overviewBalances("Ubuntu", 14, QFont::Normal);
 
     ui->label->setFont(overviewHeaders);
@@ -137,15 +138,15 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->labelImmatureText->setFont(overviewHeaders);
     ui->labelTotalText->setFont(overviewHeaders);
 
-    ui->labelBalance->setFont(overviewBalances);
+    ui->labelBalance->setFont(overviewSpend);
     ui->labelBalance->setContentsMargins(0,0,0,5);
-    ui->labelStake->setFont(overviewBalances);
+    ui->labelStake->setFont(overviewSpend);
     ui->labelStake->setContentsMargins(0,0,0,5);
     ui->labelImmature->setFont(overviewBalances);
     ui->labelImmature->setContentsMargins(0,0,0,5);
     ui->labelUnconfirmed->setFont(overviewBalances);
     ui->labelUnconfirmed->setContentsMargins(0,0,0,5);
-    ui->labelTotal->setFont(overviewBalances);
+    ui->labelTotal->setFont(overviewSpend);
     ui->labelTotal->setContentsMargins(0,0,0,5);
     ui->labelBtcValue->setFont(overviewBalances);
     ui->labelBtcValue->setContentsMargins(0,0,0,5);
@@ -168,6 +169,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+
+
 
 #if QT_VERSION >= 0x050000
     // set a timer for price API
@@ -199,18 +202,18 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
     currentUnconfirmedBalance = unconfirmedBalance;
     currentConfirmingBalance = confirmingBalance;
     currentImmatureBalance = immatureBalance;
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
-    ui->labelTotalMinted->setText(BitcoinUnits::formatWithUnit(unit, minted));
-    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake));
-    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
-    ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
-    ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance));
+    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance, false, 2));
+    ui->labelTotalMinted->setText(BitcoinUnits::formatWithUnit(unit, minted, false, 2));
+    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake, false, 2));
+    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance, false, 2));
+    ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance, false, 2));
+    ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance, false, 2));
 
 
     if (confirmingBalance > unconfirmedBalance)
     {
             ui->label_3->setText("Confirming");
-            ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, confirmingBalance));
+            ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, confirmingBalance, false, 2));
     } else {
             if (ui->label_3->text() != "Unconfirmed")
                 ui->label_3->setText("Unconfirmed");
@@ -264,6 +267,7 @@ void OverviewPage::setModel(WalletModel *model)
 
     // update the display unit, to not use the default ("BTC")
     updateDisplayUnit();
+
 }
 
 void OverviewPage::updateDisplayUnit()

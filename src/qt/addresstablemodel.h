@@ -28,7 +28,8 @@ public:
         Label = 0,   /**< User specified label */
         Address = 1,  /**< Bitcoin address */
         PMKey = 2,
-        Type = 3  /**< Address type  */
+        Percent = 3, /**< Stakeout percentage */
+        Type = 4  /**< Address type  */
     };
 
     enum RoleIndex {
@@ -42,11 +43,13 @@ public:
         INVALID_ADDRESS,        /**< Unparseable address */
         DUPLICATE_ADDRESS,      /**< Address already in address book */
         WALLET_UNLOCK_FAILURE,  /**< Wallet could not be unlocked to create new receiving address */
-        KEY_GENERATION_FAILURE  /**< Generating a new public key for a receiving address failed */
+        KEY_GENERATION_FAILURE,  /**< Generating a new public key for a receiving address failed */
+        INVALID_PERCENTAGE,
     };
 
     static const QString Send;      /**< Specifies send address */
     static const QString Receive;   /**< Specifies receive address */
+    static const QString Stake;     /**< Specifies stakeout address */
 
     /** @name Methods overridden from QAbstractTableModel
         @{*/
@@ -63,11 +66,13 @@ public:
     /* Add an address to the model.
        Returns the added address on success, and an empty string otherwise.
      */
-    QString addRow(const QString &type, const QString &label, const QString &address, int addressType);
+    QString addRow(const QString &type, const QString &label, const QString &address, int addressType, const QString &percent = "0");
 
     /* Look up label for address in address book, if not found return empty string.
      */
     QString labelForAddress(const QString &address) const;
+
+    bool checkStakePercent(std::string address, std::string percent);
 
     /* Look up row index of an address in the model.
        Return -1 if not found.
@@ -92,7 +97,7 @@ signals:
 public slots:
     /* Update address list from core.
      */
-    void updateEntry(const QString &address, const QString &label, bool isMine, int status);
+    void updateEntry(const QString &address, const QString &label, bool isMine, int status, const QString &percent = "");
     void refreshAddresses();
 
     friend class AddressTablePriv;

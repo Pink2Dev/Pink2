@@ -40,9 +40,12 @@ public:
 
 signals:
     void clicked();
+    void hovered();
+    void unhovered();
 
 protected:
-    void mouseReleaseEvent (QMouseEvent * event) ;
+    bool event(QEvent *e);
+//    void mouseReleaseEvent (QMouseEvent * event) ;
 
 };
 
@@ -66,7 +69,7 @@ public:
         The wallet model represents a bitcoin wallet, and offers access to the list of transactions, address book and sending
         functionality.
     */
-    void setWalletModel(WalletModel *walletModel);
+    void setWalletModel(WalletModel *walletModel, WalletModel *stakeModel);
     /** Set the message model.
         The message model represents encryption message database, and offers access to the list of messages, address book and sending
         functionality.
@@ -79,9 +82,14 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
+    void mouseMoveEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
+    WalletModel *stakeModel;
     MessageModel *messageModel;
 
     QStackedWidget *centralWidget;
@@ -90,11 +98,14 @@ private:
     QWidget *transactionsPage;
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
+    AddressBookPage *stakeCoinsPage;
     MessagePage *messagePage;
     SendCoinsDialog *sendCoinsPage;
     SignVerifyMessageDialog *signVerifyMessageDialog;
 
     ActiveLabel *labelEncryptionIcon;
+    ActiveLabel *labelMinimizeIcon;
+    ActiveLabel *labelCloseIcon;
     QLabel *labelStakingIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
@@ -109,6 +120,7 @@ private:
     QAction *historyAction;
     QAction *quitAction;
     QAction *sendCoinsAction;
+    QAction *stakeCoinsAction;
     QAction *addressBookAction;
     QAction *messageAction;
     QAction *signMessageAction;
@@ -123,6 +135,10 @@ private:
     QAction *changePassphraseAction;
     QAction *unlockWalletAction;
     QAction *lockWalletAction;
+    QAction *minimizeAction;
+    QAction *minimizeActionUnhover;
+    QAction *closeAction;
+    QAction *closeActionUnhover;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
 
@@ -150,6 +166,9 @@ private:
     void createToolBars();
     /** Create system tray (notification) icon */
     void createTrayIcon();
+
+    QPoint mLastMousePosition;
+    bool mMoving;
 
 public slots:
     /** Set number of connections shown in the UI */
@@ -183,6 +202,8 @@ private slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to Side Stake page */
+    void gotoStakeCoinsPage();
     /** Switch to address book page */
     void gotoAddressBookPage();
     /** Switch to receive coins page */
@@ -201,6 +222,12 @@ private slots:
     void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
+
+    void minHover();
+    void minUnhover();
+
+    void closeHover();
+    void closeUnhover();
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
     void trayIconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -244,3 +271,4 @@ private slots:
 };
 
 #endif
+
