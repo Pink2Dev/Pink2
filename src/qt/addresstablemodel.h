@@ -72,7 +72,7 @@ public:
      */
     QString labelForAddress(const QString &address) const;
 
-    bool checkStakePercent(std::string address, std::string percent);
+    bool checkStakePercent(std::string address, std::string &percent);
 
     /* Look up row index of an address in the model.
        Return -1 if not found.

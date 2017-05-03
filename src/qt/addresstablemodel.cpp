@@ -319,6 +319,7 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
             
             break;
         case Percent:
+        {
             if(rec->percent == value.toString())
             {
                 editStatus = NO_CHANGES;
@@ -332,14 +333,17 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
                 return false;
             }
 
-            if (!checkStakePercent(rec->address.toStdString(), value.toString().toStdString()))
+            std::string nPercent = value.toString().toStdString();
+
+            if (!checkStakePercent(rec->address.toStdString(), nPercent))
             {
                 editStatus = INVALID_PERCENTAGE;
                 return false;
             }
-
-            wallet->SetAddressBookStake(CBitcoinAddress(strTemp).Get(), rec->label.toStdString(), value.toString().toStdString());
+            wallet->SetAddressBookStake(CBitcoinAddress(strTemp).Get(), rec->label.toStdString(), nPercent);
+        }
             break;
+
         case Address:
             
             std::string sTemp = value.toString().toStdString();
@@ -637,23 +641,51 @@ void AddressTableModel::emitDataChanged(int idx)
     emit dataChanged(index(idx, 0, QModelIndex()), index(idx, columns.length()-1, QModelIndex()));
 }
 
-bool AddressTableModel::checkStakePercent(std::string address, std::string percent)
+bool AddressTableModel::checkStakePercent(std::string address, std::string &percent)
 {
     std::string sPercent = percent;
 
     if (sPercent == "")
         sPercent = "0";
 
-    std::string sStack = "";
-    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : (char)NULL;
-
-    if (sPercent != sStack)
+    if (sPercent[0] == '-')
     {
-        printf("\nPlease only use whole numbers between 0 and 100 and no special characters for Percentage\n");
+        printf("Negative Percentages are not allowed");
         return false;
     }
 
-    int nPercent = std::stoi(sPercent);
+    std::string sStack = "";
+
+    // For Simplicity, we're going to assume any special characters are decimal points.
+    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : '.';
+
+    // We only allow one decimal point because we're converting to float.
+    size_t dotCount = count(sStack.begin(), sStack.end(), '.');
+
+    // Make sure there's only 1 decimal, if any, and that there is actually a number to convert as well.
+    if (dotCount > 1 || sStack.length() == dotCount)
+    {
+        printf("Please only use real numbers with no special characters for Percentage\n");
+        return false;
+    }
+
+    // Limit precision to 6 decimal places.
+    size_t needle = sStack.find(".");
+    if (needle != std::string::npos && sStack.substr(needle, sStack.length()).length() > 7)
+    {
+        sStack.replace(needle + 7, sStack.length(), "");
+        //size_t sDiff = sStack.substr(needle, sStack.length()).length() - 7;
+        //sStack = sStack.substr(0, sStack.length() - sDiff);
+    }
+
+    if (sStack[0] == '.')
+        sStack = "0" + sStack;
+
+    // Pass our checked stack to sPercent for conversion to double.
+    sPercent = sStack;
+
+
+    double nPercent = atof(sPercent.c_str());
 
 
     if (nPercent < 0 || nPercent > 100)
@@ -669,26 +701,28 @@ bool AddressTableModel::checkStakePercent(std::string address, std::string perce
         return false;
     }
 
-    int percentAvailable = 100;
+    double percentAvailable = 100.000000;
 
     BOOST_FOREACH(CWallet::mapAddress mapPercent, wallet->mapAddressPercent)
     {
+        CBitcoinAddress thisAddr(mapPercent.first);
+        if (thisAddr.ToString() != a.ToString())
+        {
             std::string percent = mapPercent.second;
-            if (percent == "")
-                percent = "0";
-
-            percentAvailable -= std::stoi(percent);
+            percentAvailable -= atof(percent.c_str());
+        }
     }
 
-    int updatingPercent = 0;
-    if (wallet->mapAddressPercent.find(a.Get()) != wallet->mapAddressPercent.end())
-    {
-        std::string sUpdatingPercent = wallet->mapAddressPercent[a.Get()];
-        if (sUpdatingPercent == "")
-            sUpdatingPercent = "0";
+    double updatingPercent = 0;
+    //if (wallet->mapAddressPercent.find(a.Get()) != wallet->mapAddressPercent.end())
+    //{
+    //    std::string sUpdatingPercent = wallet->mapAddressPercent[a.Get()];
+    //    if (sUpdatingPercent == "")
+    //        sUpdatingPercent = "0";
+    //
+    //    updatingPercent = atoi(sUpdatingPercent.c_str());
+    //}
 
-        updatingPercent = std::stoi(sUpdatingPercent);
-    }
 
     if (nPercent > (percentAvailable + updatingPercent))
     {
@@ -698,5 +732,7 @@ bool AddressTableModel::checkStakePercent(std::string address, std::string perce
         return false;
     }
 
+    // pass back our sanitized Percent;
+    percent =  sPercent;
     return true;
 }

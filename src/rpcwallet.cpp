@@ -2389,15 +2389,39 @@ Value addstakeout(const Array &params, bool fHelp)
     }
 
     string sPercent = params[2].get_str();
+
+    if (sPercent[0] == '-')
+        throw runtime_error("Negative Percentages are not allowed");
+
     string sStack = "";
-    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : (char)NULL;
 
-    if (sPercent != sStack)
-        throw runtime_error("Please only use whole numbers between 0 and 100 and no special characters for Percentage\n");
+    // For Simplicity, we're going to assume any special characters are decimal points.
+    for (unsigned int i = 0; i < sPercent.length(); i++) sStack += isdigit(sPercent[i]) ? sPercent[i] : '.';
+
+    // We only allow one decimal point because we're converting to float.
+    size_t dotCount = count(sStack.begin(), sStack.end(), '.');
+
+    // Make sure there's only 1 decimal, if any, and that there is actually a number to convert as well.
+    if (dotCount > 1 || sStack.length() == dotCount)
+        throw runtime_error("Please only use real numbers with no special characters for Percentage\n");
+
+    // Limit precision to 6 decimal places.
+    size_t needle = sStack.find(".");
+    if (needle != string::npos && sStack.substr(needle, sStack.length()).length() > 7)
+    {
+        sStack.replace(needle + 7, sStack.length(), "");
+        //size_t sDiff = sStack.substr(needle, sStack.length()).length() - 7;
+        //sStack = sStack.substr(0, sStack.length() - sDiff);
+    }
+
+    if (sStack[0] == '.')
+        sStack = "0" + sStack;
+
+    // Pass our checked stack to sPercent for conversion to double.
+    sPercent = sStack;
 
 
-
-    int nPercent = stoi(sPercent);
+    double nPercent = atof(sPercent.c_str());
 
 
     if (nPercent < 0 || nPercent > 100)
@@ -2408,17 +2432,21 @@ Value addstakeout(const Array &params, bool fHelp)
     CStakeDB stakeDB(pstakeDB->strWalletFile);
     CTxDestination addr = address.Get();
 
-    int percentAvailable = 100;
+    double percentAvailable = 100.000000;
 
     BOOST_FOREACH(CWallet::mapAddress mapPercent, pstakeDB->mapAddressPercent)
     {
-        string percent = mapPercent.second;
-        percentAvailable -= stoi(percent);
+        CBitcoinAddress thisAddr(mapPercent.first);
+        if (thisAddr.ToString() != address.ToString())
+        {
+            string percent = mapPercent.second;
+            percentAvailable -= atof(percent.c_str());
+        }
     }
 
-    int updatingPercent = 0;
-    if (pstakeDB->mapAddressPercent.find(addr) != pstakeDB->mapAddressPercent.end())
-        updatingPercent = stoi(pstakeDB->mapAddressPercent[addr]);
+    double updatingPercent = 0;
+    //if (pstakeDB->mapAddressPercent.find(addr) != pstakeDB->mapAddressPercent.end())
+    //    updatingPercent = atof(pstakeDB->mapAddressPercent[addr].c_str());
 
 
     if (nPercent > (percentAvailable + updatingPercent))
@@ -2432,7 +2460,7 @@ Value addstakeout(const Array &params, bool fHelp)
     pstakeDB->mapAddressBook[addr] = name;
     pstakeDB->mapAddressPercent[addr] = sPercent;
 
-    string success = "\n Successfully written " + name + ", Pinkcoin Address:" + a + " side-stake " + params[2].get_str() + "% to stake.dat!";
+    string success = "\n Successfully written " + name + ", Pinkcoin Address:" + a + " side-stake " + sPercent + "% to stake.dat!";
     return success;
 
 }
@@ -2494,8 +2522,6 @@ Value liststakeout(const Array &params, bool fHelp)
                     addressInfo.push_back(Pair("Name: ", aName));
                     addressInfo.push_back(Pair("Address: ", CBitcoinAddress(address.first).ToString()));
                     addressInfo.push_back(Pair("Percentage: ", aPercent));
-                    //addressInfo.push_back(pstakeDB->mapAddressBook.find(CBitcoinAddress(address.first).Get())->second);
-                    //addressInfo.push_back(pstakeDB->mapAddressPercent.find(CBitcoinAddress(address.first).Get())->second);
                 }
             }
             stakeOut.push_back(addressInfo);

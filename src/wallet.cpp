@@ -2723,12 +2723,12 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
 int64_t CWallet::AggregateStakeOut(CTransaction &txNew, int64_t &nReward)
 {
-    int64_t percentTotal = 0;
+    double percentTotal = 0;
     int64_t nRewardPCTotal = 0;
 
     BOOST_FOREACH(mapAddress mapStake, pstakeDB->mapAddressPercent)
     {
-        int64_t nPercent = (int64_t)stoi(mapStake.second);
+        double nPercent = atof(mapStake.second.c_str());
         CBitcoinAddress stakeOutAddress(mapStake.first);
         if (nPercent > 0 && nPercent <= 100 && stakeOutAddress.IsValid())
         {
@@ -2756,11 +2756,11 @@ int64_t CWallet::AggregateStakeOut(CTransaction &txNew, int64_t &nReward)
 int64_t CWallet::CountStakeOut()
 {
     int64_t countOut = 0;
-    int64_t percentTotal = 0;
+    double percentTotal = 0;
 
     BOOST_FOREACH(mapAddress mapStake, pstakeDB->mapAddressPercent)
     {
-        int64_t nPercent = (int64_t)stoi(mapStake.second);
+        double nPercent = atof(mapStake.second.c_str());
         CBitcoinAddress stakeOutAddress(mapStake.first);
         if (nPercent > 0 && nPercent <= 100 && stakeOutAddress.IsValid())
         {
