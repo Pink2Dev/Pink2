@@ -1512,7 +1512,15 @@ void BitcoinGUI::updateStakingIcon()
 
             chanceToStake = (nWeight * 10000) / nNetworkWeight;
 
-            for (uint64_t i=0; i<30; i++ )
+            time_t rawtime;
+            time ( &rawtime );
+            uint64_t nStakesPerHour;
+            if(IsFlashStake(rawtime))
+                nStakesPerHour = 60;
+            else
+                nStakesPerHour = 10;
+
+            for (uint64_t i=0; i<nStakesPerHour; i++ )
             {
                 diff = 10000 - chanceToStake;
                 chanceToStake += (nWeight * diff) / nNetworkWeight;
