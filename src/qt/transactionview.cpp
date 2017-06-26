@@ -287,6 +287,10 @@ void TransactionView::updateTotalAmount()
 
 void TransactionView::exportClicked()
 {
+    if (!model || !model->getOptionsModel()) {
+        return;
+    }
+
     // CSV is currently the only supported format
     QString filename = GUIUtil::getSaveFileName(
             this,
