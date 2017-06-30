@@ -237,7 +237,7 @@ Eric Young (eay@cryptsoft.com) y software UPnP escrito por Thomas Bernard.</tran
     <message>
         <location line="+46"/>
         <source>Confirm wallet encryption</source>
-        <translation>Confirmar encripción del monedero</translation>
+        <translation>Confirmar cifrado del monedero</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1342,7 +1342,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
         <location line="+33"/>
         <location line="+231"/>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Pinkcoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>La información mostrada puede corresponder a una fecha anterior. Su monedero se acutaliza automáticamente al conectar con la red de Pinkcoin, pero este proceso no se ha completado todavía.</translation>
+        <translation>La información mostrada puede estar fuera de fecha. Su monedera se sincroniza automáticamente con la red Pinkcoin después de que se establece una conexión, pero este proceso no se ha completado todavía.</translation>
     </message>
     <message>
         <location line="-160"/>
