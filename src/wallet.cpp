@@ -2684,10 +2684,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     }
 
-    printf("\n\n\n\n***************************IMPORTANT*************************************\n"
-                   "**                     TRYING NEW CODE                                 **\n"
-                   "*************************************************************************\n\n\n\n");
-
     int64_t stakeOutCount = CountStakeOut();
     int64_t stakeOutReward =  AggregateStakeOut(txNew, nReward);
 
