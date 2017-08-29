@@ -308,7 +308,7 @@ public:
     int64_t GetReward(const CTxOut &txOut) const
     {
         int64_t nReward = 0;
-        if (IsMine(txOut));
+        if (IsMine(txOut))
             {
                 nReward += GetCredit(txOut);
                 if (!MoneyRange(nReward))
