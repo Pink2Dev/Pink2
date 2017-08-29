@@ -997,18 +997,18 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsigned int nTime)
 {
     int64_t nSubsidy = 0;
+    int64_t nHalving = 0;
 
     if (nHeight >= 16240)
     {
         if (IsFlashStakeReward(nTime))
         {
-            nSubsidy = 150 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
-            printf("\n\nIsFlashStake\n\n");
+            nHalving = nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT;
+            nSubsidy = (150 * COIN) >> nHalving;
         } else {
-            nSubsidy = 100 * COIN / (1 + (nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT));
-            printf("\n\nIs NOT FlashStake\n\n");
+            nHalving = nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT;
+            nSubsidy = (100 * COIN) >> nHalving;
         }
-
     }
 
     if (fDebug && GetBoolArg("-printcreation"))
