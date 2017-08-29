@@ -328,32 +328,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     setMask(maskedRegion);
 
-    //setMask(maskedRegion);
-
     // Create status bar
-    //statusBar();
 
-    // Status bar notification icons
-    //QFrame *frameBlocks = new QFrame();
-    //frameBlocks->setContentsMargins(0,0,0,0);
-    //frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    //QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
-    //frameBlocksLayout->setContentsMargins(3,0,3,0);
-    //frameBlocksLayout->setSpacing(3);
     labelEncryptionIcon = new ActiveLabel();
 
     labelStakingIcon = new QLabel();
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
-    //frameBlocksLayout->addStretch();
-    //frameBlocksLayout->addWidget(labelEncryptionIcon);
-    //frameBlocksLayout->addStretch();
-    //frameBlocksLayout->addWidget(labelStakingIcon);
-    //frameBlocksLayout->addStretch();
-    //frameBlocksLayout->addWidget(labelConnectionsIcon);
-    //frameBlocksLayout->addStretch();
-    //frameBlocksLayout->addWidget(labelBlocksIcon);
-    //frameBlocksLayout->addStretch();
 
     if (GetBoolArg("-staking", true))
     {
@@ -373,19 +354,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setVisible(false);
 
     progressBar->setStyleSheet("QProgressBar { background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(156,219,254), stop: 1 rgb(156,219,254)); border-radius: 7px; margin: 0px; }");
-
-    // Override style sheet for progress bar for styles that have a segmented progress bar,
-    // as they make the text unreadable (workaround for issue #1071)
-    // See https://qt-project.org/doc/qt-4.8/gallery.html
-    //QString curStyle = qApp->style()->metaObject()->className();
-    //if(curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle")
-    //{
-    //    progressBar->setStyleSheet("QProgressBar { background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #FF8000, stop: 1 orange); border-radius: 7px; margin: 0px; }");
-    //}
-
-    //statusBar()->addWidget(progressBarLabel);
-    //statusBar()->addWidget(progressBar);
-    //statusBar()->addPermanentWidget(frameBlocks);
 
     addToolBarBreak(Qt::BottomToolBarArea);
     QToolBar *toolbar2 = addToolBar(tr("Tabs toolbar"));
@@ -407,7 +375,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setFixedWidth(600);
     progressBarLabel->setStyleSheet("QLabel { color: white; } ");
 
-    //frameSpacer2->addStretch();
     frameSpacer2->addWidget(progressBarLabel);
     frameSpacer2->addWidget(progressBar);
     frameSpacer2->addStretch();
@@ -440,18 +407,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Clicking on "Sign Message" in the receive coins page sends you to the sign message tab
     connect(receiveCoinsPage, SIGNAL(signMessage(QString)), this, SLOT(gotoSignMessageTab(QString)));
 
-    //QSettings settings;
-    //QByteArray stateArray = settings.value("mainWindowState", "").toByteArray();
-    //restoreState(stateArray);
-
     gotoOverviewPage();
 }
 
 BitcoinGUI::~BitcoinGUI()
 {
-//    QSettings settings;
-//    QByteArray stateArray = saveState();
-//    settings.setValue("mainWindowState", stateArray);
 
     if(trayIcon) // Hide tray icon, as deleting will let it linger until quit (on Ubuntu)
         trayIcon->hide();
@@ -651,9 +611,6 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
 
-//    QLabel* pinkCorner = new QLabel(this);
-//    pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
-//    appMenuBar->setCornerWidget(pinkCorner, Qt::TopLeftCorner);
     appMenuBar->setMaximumWidth(220);
 
 
@@ -666,9 +623,6 @@ void BitcoinGUI::createMenuBar()
 
     layout->addWidget(appMenuBar);
     w->setStyleSheet("background-color: rgba(0,0,0,255)");
-
-//    labelMinimizeIcon = new ActiveLabel("<html><head/><body><p><img src=\":/icons/min\"/></p></body></html>", this);
-//    labelCloseIcon = new ActiveLabel("<html><head/><body><p><img src=\":/icons/close\"/></p></body></html>", this);
 
     labelMinimizeIcon = new ActiveLabel();
     labelCloseIcon = new ActiveLabel();
@@ -731,38 +685,6 @@ void BitcoinGUI::createMenuBar()
     /* zeewolf: Hot swappable wallet themes */
 }
 
-/*
-bool ActiveLabel::event(QEvent *e)
-{
-    QHoverEvent me = static_cast<QHoverEvent>(e);
-    if(e->type() == QEvent::HoverMove)
-    {
-        double xpos = me->pos().x();
-        double ypos = me->pos().y();
-        emit hovered(xpos, ypos);
-        qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
-        return true;
-    }
-    else if(e->type() == QEvent::HoverLeave)
-    {
-        emit unhovered();
-        return true;
-    }
-    else if(e->type() == QEvent::MouseButtonPress)
-    {
-        emit clicked();
-        return true;
-    }
-    else if(e->type() == QEvent::MouseButtonDblClick)
-    {
-        emit doubleClicked();
-        return true;
-    }
-
-    return QLabel::event(e);
-}
-
-*/
 
 void BitcoinGUI::createToolBars()
 {
@@ -791,10 +713,6 @@ void BitcoinGUI::createToolBars()
 
     mainToolbar->layout()->setContentsMargins(0,0,0,0);
 
-
-
-    //connect(mainToolbar,      SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(mainToolbarOrientation(Qt::Orientation)));
-    //mainToolbarOrientation(mainToolbar->orientation());
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -1625,14 +1543,7 @@ void BitcoinGUI::loadTheme(QString theme)
 
             // Apply the result qss file to Qt
 
-            /*if (styleSheet.contains("$", Qt::CaseInsensitive)) {
-                QRegExp rx("(\\$[-\\w]+)");
-                rx.indexIn(styleSheet);
-                QString captured = rx.cap(1);
-                QMessageBox::warning(this, "Theme syntax error", "You have used variable that is not declared " + captured + ". Theme will not be applied.");
-            } else {*/
-                qApp->setStyleSheet(styleSheet);
-            /*}*/
+            qApp->setStyleSheet(styleSheet);
         }
     } else {
         // If not theme name given - clear styles
