@@ -414,7 +414,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
-    nMinerSleep = GetArg("-minersleep", 50);
+    nMinerSleep = GetArg("-minersleep", 800);
 
     CheckpointsMode = Checkpoints::STRICT;
     std::string strCpMode = GetArg("-cppolicy", "strict");
