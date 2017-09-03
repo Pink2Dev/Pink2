@@ -986,8 +986,10 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
         nSubsidy = 364800000 * COIN; // Pinkcoin Coinbase.
 
     if (nHeight >= 17000)
+    {
         nHalving = nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT;
         nSubsidy = (50 * COIN) >> nHalving;
+    }
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%d\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
