@@ -4,12 +4,12 @@
     <message>
         <location filename="../forms/aboutdialog.ui" line="+14"/>
         <source>About Pinkcoin</source>
-        <translation>ブラックコインについて</translation>
+        <translation>ピンクコインについて</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>&lt;b&gt;Pinkcoin&lt;/b&gt; version</source>
-        <translation>&lt;b&gt;ブラックコイン&lt;/b&gt;バージョン</translation>
+        <translation>&lt;b&gt;ピンクコイン&lt;/b&gt;バージョン</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -68,7 +68,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="-46"/>
         <source>These are your Pinkcoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>これは支払いを受けるためのブラックコインのアドレス。支払い管理をするのため、各送信者へ、それぞれのアドレスを伝えたほうがいいです。</translation>
+        <translation>これは支払いを受けるためのピンクコインのアドレスです。支払い管理をするために、各送信者へそれぞれのアドレスを伝えたほうがいいです。</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -184,7 +184,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+33"/>
         <source>Serves to disable the trivial sendmoney when OS account compromised. Provides no real security.</source>
-        <translation>ユーザアカウントはハッキングされたばい、瑣末のsendmoney無効にする。機密保護には効果はない。</translation>
+        <translation>ユーザアカウントはハッキングされた場合、瑣末のsendmoney無効にする。機密保護には効果はない。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -239,12 +239,12 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+1"/>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
-        <translation>ご注意：暗号化したウォレットのパスワードを忘れたばい、b&gt;すべてのコインを失う&lt;/b&gt;!</translation>
+        <translation>ご注意：暗号化したウォレットのパスワードを忘れた場合、b&gt;すべてのコインを失う&lt;/b&gt;!</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Are you sure you wish to encrypt your wallet?</source>
-        <translation>ウォレットを暗号化、よろしいですか?</translation>
+        <translation>ウォレットを暗号化してもよろしいですか?</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -266,7 +266,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="-58"/>
         <source>Pinkcoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>ただいま、暗号化手順を完成するため、ブラックコインQTは閉じます。尚、ウォレットを暗号化をされたにしても、PCのウイルスから盗難防止の報償できないことを、ご理解をお願い足します。</translation>
+        <translation>暗号化を完了するため、一度ピンクコインQTは閉じます。尚、ウォレットを暗号化をされても、PCのウイルスから盗難防止の保証ができないことをご理解をお願いたします。</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -380,7 +380,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+4"/>
         <source>Show information about Pinkcoin</source>
-        <translation>ブラックコインの情報を表示</translation>
+        <translation>ピンクコインの情報を表示</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -430,12 +430,12 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="-62"/>
         <source>Send coins to a Pinkcoin address</source>
-        <translation>ブラックコインアドレスへコインを送る</translation>
+        <translation>ピンクコインアドレスへコインを送る</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Modify configuration options for Pinkcoin</source>
-        <translation>ブラックコインの設定を変化する</translation>
+        <translation>ピンクコインの設定を変化する</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -475,7 +475,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="-200"/>
         <source>Pinkcoin</source>
-        <translation>ブラックコイン</translation>
+        <translation>ピンクコイン</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -485,7 +485,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+178"/>
         <source>&amp;About Pinkcoin</source>
-        <translation>ブラックコインについて</translation>
+        <translation>ピンクコインについて</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -542,12 +542,12 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
         <location line="+0"/>
         <location line="+60"/>
         <source>Pinkcoin client</source>
-        <translation>ブラックコインクライアントソフトウェア</translation>
+        <translation>ピンクコインクライアントソフトウェア</translation>
     </message>
     <message numerus="yes">
         <location line="+70"/>
         <source>%n active connection(s) to Pinkcoin network</source>
-        <translation><numerusform>ブラックコインネットワークへの%n アクティブな接続</numerusform></translation>
+        <translation><numerusform>ピンクコインネットワークへの%n アクティブな接続</numerusform></translation>
     </message>
     <message>
         <location line="+40"/>
@@ -572,7 +572,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is syncing</source>
-        <translation>ウォレットは同期最中ため、賭けていません。</translation>
+        <translation>ウォレットは同期中のため、賭けていません。</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -622,7 +622,7 @@ MIT/X11 ソフトウェア ライセンスの下で配布されています。�
     <message>
         <location line="+59"/>
         <source>This transaction is over the size limit.  You can still send it for a fee of %1, which goes to the nodes that process your transaction and helps to support the network.  Do you want to pay the fee?</source>
-        <translation>この処理は大きさの制限を超えている。%1料金を払ったばい、通信可能性です。料金は手続きをするノードへ支払って、ネットワークのサッポートになります。料金を払いますか。</translation>
+        <translation>この処理はサイズ制限を超えています。%1の手数料を払った場合、送信が可能となります。手数料は手続きをするノードに送られ、ネットワークをサポートするのに役立ちます。手数料を払いますか？</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -661,7 +661,7 @@ Address: %4
         <location line="-15"/>
         <location line="+15"/>
         <source>URI can not be parsed! This can be caused by an invalid Pinkcoin address or malformed URI parameters.</source>
-        <translation>URIのパーズができませんでした！。原因は無効なブラックコインアドレスか不正なURIパラメータ。</translation>
+        <translation>URIのパーズができませんでした！。原因は無効なピンクコインアドレスか不正なURIパラメータです。</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -691,7 +691,7 @@ Address: %4
     <message>
         <location line="+0"/>
         <source>There was an error trying to save the wallet data to the new location.</source>
-        <translation>ウォレットのデータが新しい場所へ保存するにはエラーになりました。</translation>
+        <translation>ウォレットデータを新しい場所に保存しようとしてエラーが発生しました。</translation>
     </message>
     <message numerus="yes">
         <location line="+76"/>
@@ -721,7 +721,7 @@ Address: %4
     <message>
         <location filename="../bitcoin.cpp" line="+109"/>
         <source>A fatal error occurred. Pinkcoin can no longer continue safely and will quit.</source>
-        <translation>致命的エラー。安全に続きができないため、バラックコインQTは閉じます。</translation>
+        <translation>致命的エラー。安全が確保できないためピンクコインQTは閉じます。</translation>
     </message>
 </context>
 <context>
@@ -762,7 +762,7 @@ Address: %4
     <message>
         <location line="+48"/>
         <source>Fee:</source>
-        <translation>料金:</translation>
+        <translation>手数料:</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -777,7 +777,7 @@ Address: %4
     <message>
         <location filename="../forms/coincontroldialog.ui" line="+51"/>
         <source>After Fee:</source>
-        <translation>料金の後</translation>
+        <translation>手数料後</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -792,7 +792,7 @@ Address: %4
     <message>
         <location line="+13"/>
         <source>Tree mode</source>
-        <translation>木モード</translation>
+        <translation>ツリーモード</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -863,12 +863,12 @@ Address: %4
     <message>
         <location line="+2"/>
         <source>Copy fee</source>
-        <translation>料金をコピー</translation>
+        <translation>手数料をコピー</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy after fee</source>
-        <translation>料金の後をコピー</translation>
+        <translation>手数料の後をコピー</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -944,9 +944,9 @@ Address: %4
  Can vary +/- 1 Byte per input.</source>
         <translation>このラベルが赤くなったら、処理の大きさは10000バイトより大きいです。
 
-少なくとも%1 KBあたりの料金は必要となります。
+少なくとも%1 KBあたりの手数料が必要となります。
 
-入力データによって、料金の+/-1 バイトが可能です。</translation>
+入力データによって、手数料の+/-1 バイトが可能です。</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -955,11 +955,12 @@ Address: %4
 This label turns red, if the priority is smaller than &quot;medium&quot;.
 
  This means a fee of at least %1 per kb is required.</source>
-        <translation>高い優先ありの処理の方はブロックに書き込み可能性が高い。
+        <translation>高い優先度を持つトランザクションは、ブロックに入る可能性が高くなります。
 
-このラベルは優先の設定は中より低いです。
+優先度が「中」よりも小さい場合、このラベルは赤色に変わります。
 
-少なくとも%1 KBあたりの料金は必要となります。</translation>
+少なくとも%1 KBあたりの手数料は必要となります。
+</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -968,11 +969,11 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
  This means a fee of at least %2 is required. 
 
  Amounts below 0.546 times the minimum relay fee are shown as DUST.</source>
-        <translation>任意の受信者は%1より少ない額をもらったばい、このラベルは赤くなる。
+        <translation>任意の受信者は%1より少ない額をもらった場合、このラベルは赤くなる。
 
-少なくとも%2の料金は必要となります。
+少なくとも%2の手数料は必要となります。
 
-最小なリレー料金　x　0.546より下の額は、ほこりになります。</translation>
+最小なリレー手数料　x　0.546より下の額は、ほこりになります。</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -981,7 +982,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
  This means a fee of at least %2 is required.</source>
         <translation>このラベルが赤くなたら、お釣りは%1より少ない。
 
-少なくとも%2の料金は必要となります。</translation>
+少なくとも%2の手数料が必要となります。</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -1025,7 +1026,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+10"/>
         <source>The address associated with this address book entry. This can only be modified for sending addresses.</source>
-        <translation>このアドレス帳の入力のアドレス。通信アドレスした変更ができない。</translation>
+        <translation>このアドレス帳の入力のアドレス。通信アドレスしか変更ができない。</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="+20"/>
@@ -1055,7 +1056,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-5"/>
         <source>The entered address &quot;%1&quot; is not a valid Pinkcoin address.</source>
-        <translation>入力されたアドレス &quot;%1&quot; 、有効なブラックコインアドレスではない。</translation>
+        <translation>入力されたアドレス &quot;%1&quot; 、有効なピンクコインアドレスではない。</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1074,7 +1075,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
         <location filename="../guiutil.cpp" line="+420"/>
         <location line="+12"/>
         <source>Pinkcoin-Qt</source>
-        <translation>ブラックコインQT</translation>
+        <translation>ピンクコインQT</translation>
     </message>
     <message>
         <location line="-12"/>
@@ -1127,7 +1128,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+6"/>
         <source>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</source>
-        <translation>手続きを早めるためのオプショナル料金。だいたいの処理は1KB。料金の0.01が勧めです。</translation>
+        <translation>手続きを早めるためのオプショナル手数料。だいたいの処理は1KB。手数料は0.01がお勧めです。</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1137,7 +1138,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+31"/>
         <source>Reserved amount does not participate in staking and is therefore spendable at any time.</source>
-        <translation>貯金は賭ける参加しないため、いつでも支出できる。</translation>
+        <translation>貯金はステークに参加しないため、いつでも支出できます。</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1147,12 +1148,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+31"/>
         <source>Automatically start Pinkcoin after logging in to the system.</source>
-        <translation>システムのログイン次第、自動的にブラックコインをスタート。</translation>
+        <translation>システムのログイン次第、自動的にピンクコインをスタート。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Start Pinkcoin on system login</source>
-        <translation>システムログイン次第、ブラックコインをスタート</translation>
+        <translation>システムログイン次第、ピンクコインをスタート</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1172,7 +1173,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+6"/>
         <source>Automatically open the Pinkcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>自動的にルーターでブラックコインクライエントソフトウェアのポートを開く。ルーターはUPnPのサポートあり、UPnPを有効にするならできる。</translation>
+        <translation>自動的にルーターでピンクコインクライアントソフトウェアのポートを開く。ルーターはUPnPのサポートあり、UPnPを有効にするならできる。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1182,7 +1183,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+7"/>
         <source>Connect to the Pinkcoin network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>ブラックコインのネットワークへSOCKSプロキシで接続する（例：TORで接続するばい）</translation>
+        <translation>ピンクコインのネットワークへSOCKSプロキシで接続する（例：TORで接続する場合）</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1272,7 +1273,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+9"/>
         <source>Whether to show Pinkcoin addresses in the transaction list or not.</source>
-        <translation>処理の歴史でブラックコインのアドレスを表示する／しない。</translation>
+        <translation>処理の履歴にピンクコインのアドレスを表示する／しない。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1319,7 +1320,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
         <location line="-9"/>
         <location line="+9"/>
         <source>This setting will take effect after restarting Pinkcoin.</source>
-        <translation>この設定はブラックコインをリスタートした後に有効する。</translation>
+        <translation>この設定はピンクコインをリスタートした後に有効する。</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1338,7 +1339,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
         <location line="+33"/>
         <location line="+231"/>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Pinkcoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>表示されている情報は時間遅れている。接続したら、ウォレットは自動的にブラックコインネットワークと同期しますが過程は完了してません。</translation>
+        <translation>表示されている情報は時間が遅れている。接続したら、ウォレットは自動的にピンクコインネットワークと同期しますが過程は完了してません。</translation>
     </message>
     <message>
         <location line="-160"/>
@@ -1554,7 +1555,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+7"/>
         <source>Show the Pinkcoin-Qt help message to get a list with possible Pinkcoin command-line options.</source>
-        <translation>ブラックコインQTのコマンドラインのヘルプ情報を表示する。</translation>
+        <translation>ピンクコインQTのコマンドラインのヘルプ情報を表示する。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1574,12 +1575,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-104"/>
         <source>Pinkcoin - Debug window</source>
-        <translation>ブラックコイン：デバッグウインドウ</translation>
+        <translation>ピンクコイン：デバッグウインドウ</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Pinkcoin Core</source>
-        <translation>ブラックコインコア</translation>
+        <translation>ピンクコインコア</translation>
     </message>
     <message>
         <location line="+279"/>
@@ -1589,7 +1590,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+7"/>
         <source>Open the Pinkcoin debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation>現行のディレクトリからデバッグログファイルを開く。大きなファイルのばい、少し時間かかる。</translation>
+        <translation>現行のディレクトリからデバッグログファイルを開く。大きなファイルの場合は少し時間がかかります。</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -1599,7 +1600,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../rpcconsole.cpp" line="-33"/>
         <source>Welcome to the Pinkcoin RPC console.</source>
-        <translation>ブラックコインRPCコンソールへようこそ。</translation>
+        <translation>ピンクコインRPCコンソールへようこそ。</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1688,7 +1689,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+32"/>
         <source>Fee:</source>
-        <translation>料金:</translation>
+        <translation>手数料:</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1703,7 +1704,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+32"/>
         <source>After Fee:</source>
-        <translation>料金の後</translation>
+        <translation>手数料の後</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1728,7 +1729,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+20"/>
         <source>Remove all transaction fields</source>
-        <translation>全分の処理欄を削除する</translation>
+        <translation>すべての処理欄を削除する</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1758,7 +1759,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
         <source>Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</source>
-        <translation>ブラックコインアドレスの入力 (例；2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
+        <translation>ピンクコインアドレスの入力 (例；2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1773,12 +1774,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+1"/>
         <source>Copy fee</source>
-        <translation>料金をコピー</translation>
+        <translation>手数料をコピー</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy after fee</source>
-        <translation>料金の後をコピー</translation>
+        <translation>手数料の後をコピー</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1808,7 +1809,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+5"/>
         <source>Confirm send coins</source>
-        <translation>コインを送る確認</translation>
+        <translation>コイン送信の確認</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1858,7 +1859,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+251"/>
         <source>WARNING: Invalid Pinkcoin address</source>
-        <translation>警告：無効なブラックコインアドレス</translation>
+        <translation>警告：無効なピンクコインアドレス</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1932,7 +1933,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
         <source>Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</source>
-        <translation>ブラックコインアドレスの入力 (例；2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
+        <translation>ピンクコインアドレスの入力 (例；2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
     </message>
 </context>
 <context>
@@ -1993,7 +1994,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+21"/>
         <source>Sign the message to prove you own this Pinkcoin address</source>
-        <translation>所有権の証明するためこのメサッジを署名する</translation>
+        <translation>所有権の証明するためこのメッセージを署名する</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2036,7 +2037,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
         <source>Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</source>
-        <translation>ブラックコインのアドレスを入力(例：2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
+        <translation>ピンクコインのアドレスを入力(例：2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2046,7 +2047,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+3"/>
         <source>Enter Pinkcoin signature</source>
-        <translation>ブラックコインのデジタル署名を入力</translation>
+        <translation>ピンクコインのデジタル署名を入力</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -2076,7 +2077,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+8"/>
         <source>Private key for the entered address is not available.</source>
-        <translation>入力されたアドレスのプライベート キーが無効です。</translation>
+        <translation>入力されたアドレスのプライベートキーが無効です。</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2251,7 +2252,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+3"/>
         <source>Generated coins must mature 20 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>コインを費やす前に発現されたコインは510ブロック間成熟しなければなりません。このブロックを発現させたときに、ブロックチェインに足すためにネットワークへ放送しました。ブロックチェインに追加失敗したばい、レベルは「受け入られていない」に変わって、費やせられない状況になります。自分のノードと他のノードと同時に新しいブロックを発現させたときに、時折に起こること。</translation>
+        <translation>コインを費やす前に発現されたコインは20ブロック間成熟しなければなりません。このブロックを発現させたときに、ブロックチェインに足すためにネットワークへ放送しました。ブロックチェインに追加失敗した場合、レベルは「受け入られていない」に変わって、費やせられない状況になります。自分のノードと他のノードと同時に新しいブロックを発現させたときに、時折に起こること。</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2617,7 +2618,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../bitcoinstrings.cpp" line="+33"/>
         <source>Pinkcoin version</source>
-        <translation>ブラックコインバージョン</translation>
+        <translation>ピンクコインバージョン</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2697,12 +2698,12 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+5"/>
         <source>Bind to given address. Use [host]:port notation for IPv6</source>
-        <translation>アドレスに結ぶ。IPv6のばい、[host]:port 表記法を使ってください。</translation>
+        <translation>アドレスに結ぶ。IPv6の場合、[host]:port 表記法を使ってください。</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Stake your coins to support network and gain reward (default: 1)</source>
-        <translation>褒奨金をもらうためと、ブラックコインネットワークをサッポートするために、コインを賭ける(デファルト：1)</translation>
+        <translation>報酬の獲得とピンクコインネットワークをサポートするために、コインを賭ける(デファルト：1)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2732,7 +2733,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-5"/>
         <source>Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds  </source>
-        <translation>エラー：額,複雑,最近もらった資金、どれかの理由で処理は少なくとも %sの料金が必要です。</translation>
+        <translation>エラー：額,複雑,最近もらった資金、どれかの理由で処理は少なくとも %sの手数料が必要です。</translation>
     </message>
     <message>
         <location line="-87"/>
@@ -2802,7 +2803,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="+61"/>
         <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Pinkcoin will not work properly.</source>
-        <translation> 警告：コンピュータの日付と時間を調べてください。時間ずらしかったばい、ブラックコイン QTは正しく行動しない。</translation>
+        <translation> 警告：コンピュータの日付と時間を調べてください。時間ずらした場合、ピンクコイン QTは正しく動作しません。</translation>
     </message>
     <message>
         <location line="-31"/>
@@ -2812,7 +2813,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location line="-18"/>
         <source>Warning: wallet.dat corrupt, data salvaged! Original wallet.dat saved as wallet.{timestamp}.bak in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
-        <translation>警告: wallet.dat のデータはの汚染で、でデータを復旧しました！ オリジナルの wallet.dat は wallet.{timestamp}.bak として %s に保存されました; もしもあなたの残高や処理が正しくないばい、バックアップから復元してください。</translation>
+        <translation>警告: wallet.dat 破損、データを復旧しました！ オリジナルの wallet.dat は wallet.{timestamp}.bak として %s に保存されました; もしもあなたの残高や処理が正しくない場合、バックアップから復元してください。</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -3006,20 +3007,20 @@ rpcuser=pinkcoinrpc
 rpcpassword=%s
 (このパサワードを覚えなくても大丈夫です)
 ユーザ名とパスワードは同じであってはなりません。
-ファイルは存在しないばいは、所有者が読み取り可能な専用のファイルを作成してください。
-問題のことを知らせるために、alertnotifyの設定を有効にしたほうがいいです。
-例：alertnotify=echo %%s | mail -s &quot;ブラックコイン警告&quot; admin@foo.com
+ファイルは存在しない場合は、所有者が読み取り可能な専用のファイルを作成してください。
+問題を知らせるために、alertnotifyの設定を有効にしたほうがいいです。
+例：alertnotify=echo %%s | mail -s &quot;ピンクコイン警告&quot; admin@foo.com
 </translation>
     </message>
     <message>
         <location line="+51"/>
         <source>Find peers using internet relay chat (default: 0)</source>
-        <translation>インターネットリレーチャット(IRC)でピアアを探す。(デファルト:1 {0}?)</translation>
+        <translation>インターネットリレーチャット(IRC)でピアを探す。(デファルト:1 {0}?)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Sync time with other nodes. Disable if time on your system is precise e.g. syncing with NTP (default: 1)</source>
-        <translation>他のノードと時刻の同期する。確な時刻のコンピューターのばい、無効する。例：NTP同期設定有効ある(デファルト：1)</translation>
+        <translation>他のノードと時刻の同期する。システムの時間が正確である場合は無効にします。例：NTP同期設定有効ある(デファルト：1)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -3134,12 +3135,12 @@ rpcpassword=%s
     <message>
         <location line="+1"/>
         <source>Cannot obtain a lock on data directory %s.  Pinkcoin is probably already running.</source>
-        <translation>%sディレクトリにをロックオンできない。ブラックコインQTは、もう発行してるでしょう。</translation>
+        <translation>%sディレクトリにをロックオンできない。ピンクコインQTは、すでに起動しているでしょう。</translation>
     </message>
     <message>
         <location line="-98"/>
         <source>Pinkcoin</source>
-        <translation>ブラックコイン</translation>
+        <translation>ピンクコイン</translation>
     </message>
     <message>
         <location line="+140"/>
@@ -3174,12 +3175,12 @@ rpcpassword=%s
     <message>
         <location line="+4"/>
         <source>Error loading wallet.dat: Wallet requires newer version of Pinkcoin</source>
-        <translation>wallet.dat 読み込みエラー: 　ブラックコインQTの最新バージョンが必要です</translation>
+        <translation>wallet.dat 読み込みエラー: 　ピンクコインQTの最新バージョンが必要です</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wallet needed to be rewritten: restart Pinkcoin to complete</source>
-        <translation>ウォレットのデータをリライトしなければならい：ブラックコインQTをリスタートしてください</translation>
+        <translation>ウォレットのデータをリライトしなければならい：ピンクコインQTをリスタートしてください</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3249,12 +3250,12 @@ rpcpassword=%s
     <message>
         <location line="+122"/>
         <source>Unable to bind to %s on this computer. Pinkcoin is probably already running.</source>
-        <translation>このコンピューターで%sに結ぶことができなかった。ブラックコインQTは、もう発行してるでしょう。</translation>
+        <translation>このコンピューターで%sに結ぶことができなかった。ピンクコインQTは、すでに起動しているでしょう。</translation>
     </message>
     <message>
         <location line="-97"/>
         <source>Fee per KB to add to transactions you send</source>
-        <translation>送る処理を足して、KBあたりの料金</translation>
+        <translation>送る処理を足して、KBあたりの手数料</translation>
     </message>
     <message>
         <location line="+55"/>

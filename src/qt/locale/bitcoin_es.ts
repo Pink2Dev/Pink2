@@ -1141,7 +1141,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+31"/>
         <source>Reserved amount does not participate in staking and is therefore spendable at any time.</source>
-        <translation>La cantidad reservada no participa en tu Inversión de Apoyo a la Red &lquo;IAR&rquo; y por lo tanto se puede gastar o transferir en cualquier momento.</translation>
+        <translation>La cantidad reservada no participa en tu Inversión de Apoyo a la Red &quot;IAR&quot; y por lo tanto se puede gastar o transferir en cualquier momento.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -3018,7 +3018,7 @@ rpcpassword=%s
 (no necesita recordar este password)
 El nombre de usuario y contraseña no debe ser el mismo.
 Si no existe el archivo, créalo con permisos de sólo lectura para el dueño.
-También se recomienda establecer &quo;alertnotify&quo; para ser notificado de los problemas;
+También se recomienda establecer &quot;alertnotify&quot; para ser notificado de los problemas;
 por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo.com
 </translation>
     </message>
