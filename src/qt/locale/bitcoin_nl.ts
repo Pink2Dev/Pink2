@@ -47,7 +47,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+22"/>
         <source>Double-click to edit address or label</source>
-        <translation>Dubbelklik om het adres of label te wijzipink</translation>
+        <translation>Dubbelklik om het adres of label te wijzigen</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -67,7 +67,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="-46"/>
         <source>These are your Pinkcoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Dit zijn al jou Pinkcoin adressen om betalinpink mee te ontvanpink. Je kunt iedere verzender een apart adres geven zodat je kunt volpink wie jou betaald.</translation>
+        <translation>Dit zijn al jou Pinkcoin adressen om betalingen mee te ontvangen. Je kunt iedere verzender een apart adres geven zodat je kunt volgen wie jou betaald.</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -137,7 +137,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+0"/>
         <source>Could not write to file %1.</source>
-        <translation>Kan niet schrijven naat bestand %1</translation>
+        <translation>Kan niet schrijven naar bestand %1</translation>
     </message>
 </context>
 <context>
@@ -248,7 +248,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+15"/>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
-        <translation>BELANGRIJK: Elke eerder gemaakte backup van uw portemonneebestand dient u te vervanpink door het nieuw gegenereerde, versleutelde portemonneebestand. Om veiligheidsredenen zullen eerdere backups van het niet-versleutelde portemonneebestand onbruikbaar worden zodra u uw nieuwe, versleutelde, portemonnee begint te gebruiken.</translation>
+        <translation>BELANGRIJK: Elke eerder gemaakte backup van uw portemonneebestand dient u te vervangen door het nieuw gegenereerde, versleutelde portemonneebestand. Om veiligheidsredenen zullen eerdere backups van het niet-versleutelde portemonneebestand onbruikbaar worden zodra u uw nieuwe, versleutelde, portemonnee begint te gebruiken.</translation>
     </message>
     <message>
         <location line="+103"/>
@@ -265,7 +265,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="-58"/>
         <source>Pinkcoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Pinkcoin zal nu sluiten om het versleutel proces te voltooien. Onthou dat het versleutelen van je portemonnee je niet volledig beschermt tepink diefstal van munten door malware op je computer.</translation>
+        <translation>Pinkcoin zal nu sluiten om het versleutel proces te voltooien. Onthou dat het versleutelen van je portemonnee je niet volledig beschermt tegen diefstal van munten door malware op je computer.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -359,7 +359,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+1"/>
         <source>Show the list of addresses for receiving payments</source>
-        <translation>Toon de lijst  aan adressen voor ontvanpink betalinpink</translation>
+        <translation>Toon de lijst  aan adressen voor ontvangen betalingen</translation>
     </message>
     <message>
         <location line="-7"/>
@@ -514,7 +514,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+8"/>
         <source>&amp;Settings</source>
-        <translation>&amp;Instellinpink</translation>
+        <translation>&amp;Instellingen</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -546,7 +546,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message numerus="yes">
         <location line="+70"/>
         <source>%n active connection(s) to Pinkcoin network</source>
-        <translation><numerusform>%n actieve verbinding naar Pinkcoin netwerk</numerusform><numerusform>%n actieve verbindinpink naar Pinkcoin netwerk</numerusform></translation>
+        <translation><numerusform>%n actieve verbinding naar Pinkcoin netwerk</numerusform><numerusform>%n actieve verbindingen naar Pinkcoin netwerk</numerusform></translation>
     </message>
     <message>
         <location line="+40"/>
@@ -556,27 +556,27 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+413"/>
         <source>Staking.&lt;br&gt;Your weight is %1&lt;br&gt;Network weight is %2&lt;br&gt;Expected time to earn reward is %3</source>
-        <translation>Staking. &lt;br&gt; Uw gewicht wordt  %1 &lt;br&gt; Network gewicht is %2 &lt;br&gt; Verwachte tijd om beloning te verdienen is %3</translation>
+        <translation>Staking. &lt;br&gt; Uw gewicht is  %1 &lt;br&gt; Network gewicht is %2 &lt;br&gt; Verwachte tijd om een beloning te ontvangen is %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Not staking because wallet is locked</source>
-        <translation>Niet staking omdat portemonnee aan het beveiligd is</translation>
+        <translation>Niet aan het staken omdat de portemonnee beveiligd is</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is offline</source>
-        <translation>Niet staking omdat portemonnee aan het offline is</translation>
+        <translation>Niet aan het staken omdat de portemonnee offline is</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is syncing</source>
-        <translation>Niet staking omdat portemonnee aan het synchroniseren is.</translation>
+        <translation>Niet aan het staken omdat de portemonnee aan het synchroniseren is.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because you don&apos;t have mature coins</source>
-        <translation>Niet staking omdat je geen mature munten hebt</translation>
+        <translation>Niet aan het staken omdat je geen volwassen munten hebt</translation>
     </message>
     <message numerus="yes">
         <location line="-403"/>
@@ -616,7 +616,7 @@ Dit product bevat software ontwikkeld door het OpenSSL Project voor gebruik in d
     <message>
         <location line="+10"/>
         <source>Last received block was generated %1.</source>
-        <translation>Laatst ontvanpink blok is gegenereerd op %1.</translation>
+        <translation>Laatst ontvangen blok is gegenereerd op %1.</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -711,7 +711,7 @@ Adres: %4
     <message numerus="yes">
         <location line="+4"/>
         <source>%n day(s)</source>
-        <translation><numerusform>%n dag</numerusform><numerusform>%n dapink</numerusform></translation>
+        <translation><numerusform>%n dag</numerusform><numerusform>%n dagen</numerusform></translation>
     </message>
     <message>
         <location line="+18"/>
@@ -782,7 +782,7 @@ Adres: %4
     <message>
         <location line="+35"/>
         <source>Change:</source>
-        <translation>Wijzipink:</translation>
+        <translation>Wijzigen:</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -822,7 +822,7 @@ Adres: %4
     <message>
         <location line="+5"/>
         <source>Confirmations</source>
-        <translation>Bevestiginpink</translation>
+        <translation>Bevestigingen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -944,7 +944,7 @@ Adres: %4
  Can vary +/- 1 Byte per input.</source>
         <translation>Dit label wordt rood, als de transactie grootte groter is dan 10000 bytes.&lt;br&gt;
 
-Dit betekend een fee van minimaal %1 per kb is noodzakelijk.&lt;br&gt;
+Dit betekend een vergoeding van minimaal %1 per kb is noodzakelijk.&lt;br&gt;
 
 Kan varieren van +/- 1 Byte per invulling</translation>
     </message>
@@ -959,7 +959,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
 
 Dit label wordt rood, als de prioriteit kleiner is dan &quot;normaal&quot;.
 
-Dit betekend een fee van minimaal %1 per kb is noodzakelijk.</translation>
+Dit betekend een vergoeding van minimaal %1 per kb is noodzakelijk.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -972,7 +972,7 @@ Dit betekend een fee van minimaal %1 per kb is noodzakelijk.</translation>
 
 Dit betekent dat een vergoeding van ten minste 2% is vereist. 
 
-Bedrapink onder 0.546 keer het minimum vergoeding worden weergegeven als DUST.</translation>
+Bedragen onder 0.546 keer de minimum vergoeding worden weergegeven als DUST.</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -981,7 +981,7 @@ Bedrapink onder 0.546 keer het minimum vergoeding worden weergegeven als DUST.</
  This means a fee of at least %2 is required.</source>
         <translation>Dit label wordt rood, als de verandering kleiner is dan %1.
 
-Dit betekend dat een fee van %2 is vereist.</translation>
+Dit betekend dat een vergoeding van %2 is vereist.</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -1060,7 +1060,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+10"/>
         <source>Could not unlock wallet.</source>
-        <translation>Kon de portemonnee niet openen.</translation>
+        <translation>Kon de portemonnee niet ontgrendelen.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1099,7 +1099,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+1"/>
         <source>Set language, for example &quot;de_DE&quot; (default: system locale)</source>
-        <translation>Stel taal in, bijvoorbeeld &quot;de_DE&quot; (standaard: systeeminstellinpink)</translation>
+        <translation>Stel taal in, bijvoorbeeld &quot;de_DE&quot; (standaard: systeeminstellingen)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1127,7 +1127,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+6"/>
         <source>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</source>
-        <translation>Optioneel transactiekosten per kB dat helpt ervoor zorpink dat uw transacties worden snel verwerkt. De meeste transacties zijn 1 kB. Fee 0.01 aanbevolen.</translation>
+        <translation>Optionele transactiekosten per kB helpt ervoor te zorgen dat uw transacties sneller wordt verwerkt. De meeste transacties zijn 1 kB. Vergoeding van 0.01 is aanbevolen.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1147,7 +1147,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+31"/>
         <source>Automatically start Pinkcoin after logging in to the system.</source>
-        <translation>Automatisch starten van Pinkcoin na inlogpink van het systeem.</translation>
+        <translation>Automatisch starten van Pinkcoin na inloggen van het systeem.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1157,7 +1157,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+7"/>
         <source>Detach block and address databases at shutdown. This means they can be moved to another data directory, but it slows down shutdown. The wallet is always detached.</source>
-        <translation>Los blok en adressenbestanden bij het afsluiten. Dit betekent dat ze naar een ander data-map worden verplaatst, maar het vertraagt ​​shutdown. De portemonnee is altijd vrijstaand.</translation>
+        <translation>Ontkoppel blok en adressenbestanden bij het afsluiten. Dit betekent dat ze naar een ander data-map worden verplaatst, maar het vertraagt ​​shutdown. De portemonnee is altijd vrijstaand.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1187,7 +1187,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+3"/>
         <source>&amp;Connect through SOCKS proxy:</source>
-        <translation>&amp;Verbind door SOCKS proxy:</translation>
+        <translation>&amp;Verbind met een SOCKS proxy:</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1237,7 +1237,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+7"/>
         <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Quit in the menu.</source>
-        <translation>Minimaliseer het venster in de plaats van de applicatie af te sluiten als het venster gesloten wordt. Wanneer deze optie aan staan, kan de applicatie alleen worden afgesloten door Afsluiten te kiezen in het menu.</translation>
+        <translation>Minimaliseer het venster in plaats van de applicatie af te sluiten als het venster gesloten wordt. Wanneer deze optie aan staan, kan de applicatie alleen worden afgesloten door Afsluiten te kiezen in het menu.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1257,7 +1257,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+13"/>
         <source>The user interface language can be set here. This setting will take effect after restarting Pinkcoin.</source>
-        <translation>De user interface-taal kan hier ingesteld worden. Deze instelling word toegepast na Pinkcoin opnieuw op te starten.</translation>
+        <translation>De user interface-taal kan hier ingesteld worden. Deze instelling word toegepast door Pinkcoin opnieuw op te starten.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1282,7 +1282,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+7"/>
         <source>Whether to show coin control features or not.</source>
-        <translation>Munt controle functies weergeven of niet.</translation>
+        <translation>Coin control functies weergeven of niet.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1373,7 +1373,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+13"/>
         <source>Mined balance that has not yet matured</source>
-        <translation>Gedolven saldo dat nog niet tot wasdom is gekomen</translation>
+        <translation>Mined saldo dat nog niet volwassen is</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1393,12 +1393,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-108"/>
         <source>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</source>
-        <translation>Totaal van de transacties die nog moeten worden bevestigd, en nog niet mee voor het huidige balans</translation>
+        <translation>Totaal van de transacties die nog moeten worden bevestigd, en nog niet meetellen voor de huidige balans</translation>
     </message>
     <message>
         <location line="-29"/>
         <source>Total of coins that was staked, and do not yet count toward the current balance</source>
-        <translation>Totaal aantal munten dat was staked, en nog niet telt voor huidige balans.</translation>
+        <translation>Totaal aantal munten dat was staked, en nog niet telt voor de huidige balans.</translation>
     </message>
     <message>
         <location filename="../overviewpage.cpp" line="+113"/>
@@ -1462,7 +1462,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+0"/>
         <source>PNG Images (*.png)</source>
-        <translation>PNG Afbeeldinpink (*.png)</translation>
+        <translation>PNG Afbeeldingen (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1554,7 +1554,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+7"/>
         <source>Show the Pinkcoin-Qt help message to get a list with possible Pinkcoin command-line options.</source>
-        <translation>Laat het Pinkcoin-QT help bericht zien om een lijst te krijpink met mogelijke Pinkcoin command-regel opties.</translation>
+        <translation>Laat het Pinkcoin-QT help bericht zien om een lijst te krijgen met mogelijke Pinkcoin command-regel opties.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1629,7 +1629,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+76"/>
         <source>Coin Control Features</source>
-        <translation>Coin controle opties</translation>
+        <translation>Coin control opties</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1644,7 +1644,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+19"/>
         <source>Insufficient funds!</source>
-        <translation>Onvoldoende fonds!</translation>
+        <translation>Onvoldoende saldo!</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -1673,7 +1673,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
         <location line="+86"/>
         <location line="+32"/>
         <source>0.00 PINK</source>
-        <translation>123.456 PINK</translation>
+        <translation>0.00 PINK</translation>
     </message>
     <message>
         <location line="-191"/>
@@ -1708,7 +1708,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+35"/>
         <source>Change</source>
-        <translation>Wijzipink</translation>
+        <translation>Wijzigen</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -1718,7 +1718,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+106"/>
         <source>Send to multiple recipients at once</source>
-        <translation>Verstuur aan verschillende ontvangers ineens</translation>
+        <translation>Verstuur aan verschillende ontvangers in één keer</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1803,7 +1803,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+86"/>
         <source>&lt;b&gt;%1&lt;/b&gt; to %2 (%3)</source>
-        <translation>&lt;b&gt; %1 &lt;/b&gt; to %2 (%3)</translation>
+        <translation>&lt;b&gt; %1 &lt;/b&gt; naar %2 (%3)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1843,7 +1843,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+6"/>
         <source>Duplicate address found, can only send to each address once per send operation.</source>
-        <translation>Dubbel adres gevonden, u kunt slechts eenmaal naar een bepaald adres verzenden per verstuurtransactie</translation>
+        <translation>Dubbel adres gevonden, u kunt slechts eenmaal naar een bepaald adres verzenden per transactie</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1892,7 +1892,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
         <location line="+24"/>
         <location filename="../sendcoinsentry.cpp" line="+25"/>
         <source>Enter a label for this address to add it to your address book</source>
-        <translation>Vul een label in voor dit adres om het toe te voepink aan uw adresboek</translation>
+        <translation>Vul een label in voor dit adres om het toe te voegen aan uw adresboek</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1940,7 +1940,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location filename="../forms/signverifymessagedialog.ui" line="+14"/>
         <source>Signatures - Sign / Verify a Message</source>
-        <translation>Handtekeninpink - Onderteken een bericht / Verifiëer een handtekening</translation>
+        <translation>Handtekeningen - Onderteken een bericht / Verifiëer een handtekening</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1951,7 +1951,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-118"/>
         <source>You can sign messages with your addresses to prove you own them. Be careful not to sign anything vague, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>U kunt berichten ondertekenen met een van uw adressen om te bewijzen dat u dit adres bezit. Pas op dat u geen onduidelijke dinpink ondertekent, want phishingaanvallen zouden u kunnen misleiden om zo uw identiteit te stelen. Onderteken alleen berichten waarmee u het volledig eens bent.</translation>
+        <translation>U kunt berichten ondertekenen met een van uw adressen om te bewijzen dat u dit adres bezit. Pas op dat u geen onduidelijke dingen ondertekent, want phishingaanvallen zouden u kunnen misleiden om zo uw identiteit te stelen. Onderteken alleen berichten waarmee u het volledig eens bent.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2130,7 +2130,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+8"/>
         <source>conflicted</source>
-        <translation>conflicted</translation>
+        <translation>in botsing</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2145,7 +2145,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+2"/>
         <source>%1 confirmations</source>
-        <translation>%1 bevestiginpink</translation>
+        <translation>%1 bevestigingen</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2189,7 +2189,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
         <location line="-77"/>
         <location line="+2"/>
         <source>own address</source>
-        <translation>eipink adres</translation>
+        <translation>eigen adres</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -2208,7 +2208,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message numerus="yes">
         <location line="-102"/>
         <source>matures in %n more block(s)</source>
-        <translation><numerusform>komt tot wasdom na %n nieuw blok</numerusform><numerusform>komt tot wasdom na %n nieuwe blokken</numerusform></translation>
+        <translation><numerusform>wordt volwassen na %n nieuw blokken</numerusform><numerusform>wordt volwassen na %n nieuwe blokken</numerusform></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2251,7 +2251,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+3"/>
         <source>Generated coins must mature 20 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to &quot;not accepted&quot; and it won&apos;t be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Gegenereerd munten moeten 20 blokken maturen voordat ze kunnen worden besteed. Wanneer je een blok genereerd, het naar het netwerk is verzonden en toegevoegd aan de blokketen, zal de status veranderen naar &quot;niet geaccepteerd&quot;and kan het niet uitgegeven worden.  Dit kan soms gebeuren als een ander knooppunt genereert een blok binnen een paar seconden na jou.</translation>
+        <translation>Gegenereerd munten moeten 20 blokken maturen voordat ze kunnen worden besteed. Wanneer je een blok genereerd, het naar het netwerk is verzonden en toegevoegd aan de blokketen, zal de status veranderen naar &quot;niet geaccepteerd&quot; en kan het niet uitgegeven worden.  Dit kan soms gebeuren als een andere node een block genereert een paar seconden voor of na jou.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2286,7 +2286,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-211"/>
         <source>, has not been successfully broadcast yet</source>
-        <translation>, is nog niet met succes uitgezonden</translation>
+        <translation>, is nog niet met succes verzonden</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2337,7 +2337,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+12"/>
         <source>Confirmed (%1 confirmations)</source>
-        <translation>Bevestigd (%1 bevestiginpink)</translation>
+        <translation>Bevestigd (%1 bevestigingen)</translation>
     </message>
     <message numerus="yes">
         <location line="-15"/>
@@ -2357,12 +2357,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+3"/>
         <source>Confirming (%1 of %2 recommended confirmations)</source>
-        <translation>Bevestipink.. (%1 van de %2 bevestiginpink)</translation>
+        <translation>Bevestigen (%1 van de %2 bevestigingen)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Conflicted</source>
-        <translation>Conflicted</translation>
+        <translation>in botsing</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2372,7 +2372,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+3"/>
         <source>This block was not received by any other nodes and will probably not be accepted!</source>
-        <translation>Dit blok is niet ontvanpink bij andere nodes en zal waarschijnlijk niet worden geaccepteerd!</translation>
+        <translation>Deze blok is niet ontvangen door andere nodes en zal waarschijnlijk niet worden geaccepteerd!</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2382,12 +2382,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+42"/>
         <source>Received with</source>
-        <translation>Ontvanpink met</translation>
+        <translation>Ontvangen met</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Received from</source>
-        <translation>Ontvanpink van</translation>
+        <translation>Ontvangen van</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2402,7 +2402,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+2"/>
         <source>Mined</source>
-        <translation>Gedolven</translation>
+        <translation>Mined</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -2412,12 +2412,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+190"/>
         <source>Transaction status. Hover over this field to show number of confirmations.</source>
-        <translation>Transactiestatus. Houd de muiscursor boven dit veld om het aantal bevestiginpink te laten zien.</translation>
+        <translation>Transactiestatus. Houd de muiscursor boven dit veld om het aantal bevestigingen te laten zien.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Date and time that the transaction was received.</source>
-        <translation>Datum en tijd waarop deze transactie is ontvanpink.</translation>
+        <translation>Datum en tijd waarop deze transactie is ontvangen.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2427,12 +2427,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+2"/>
         <source>Destination address of transaction.</source>
-        <translation>Ontvanpinkd adres van transactie.</translation>
+        <translation>Ontvang adres van transactie.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Amount removed from or added to balance.</source>
-        <translation>Bedrag verwijderd van of toegevoegd aan saldo</translation>
+        <translation>Bedrag verwijderd of toegevoegd aan saldo</translation>
     </message>
 </context>
 <context>
@@ -2476,7 +2476,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+11"/>
         <source>Received with</source>
-        <translation>Ontvanpink met</translation>
+        <translation>Ontvangen met</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2491,7 +2491,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+1"/>
         <source>Mined</source>
-        <translation>Gedolven</translation>
+        <translation>Mined</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2677,42 +2677,42 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+6"/>
         <source>Listen for connections on &lt;port&gt; (default: 51717 or testnet: 51977)</source>
-        <translation>Luister voor verbindinpink op &lt;poort&gt; (standaard: 51717 of testnet: 51977)</translation>
+        <translation>Luister voor verbindingen op &lt;poort&gt; (standaard: 51717 of testnet: 51977)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Maintain at most &lt;n&gt; connections to peers (default: 125)</source>
-        <translation>Onderhoud maximaal &lt;n&gt; verbindinpink naar peers (standaard: 125)</translation>
+        <translation>Onderhoud maximaal &lt;n&gt; verbindingen naar peers (standaard: 125)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Connect to a node to retrieve peer addresses, and disconnect</source>
-        <translation>Verbind naar een node om adressen van anderen op te halen, en verbreek vervolpinks de verbinding</translation>
+        <translation>Verbind naar een node om adressen van anderen op te halen, en verbreek vervolgens de verbinding</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Specify your own public address</source>
-        <translation>Specificeer uw eipink publieke adres</translation>
+        <translation>Specificeer uw eigen publieke adres</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Bind to given address. Use [host]:port notation for IPv6</source>
-        <translation>Koppel aan gegeven adres. Gebruik [host]:poort notatie voor IPv6</translation>
+        <translation>Koppel het gegeven adres. Gebruik [host]:poort notatie voor IPv6</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Stake your coins to support network and gain reward (default: 1)</source>
-        <translation>Stake je munten om netwerk te supporten en krijg hiervoor beloning (standaard: 1)</translation>
+        <translation>Stake je munten om het netwerk te ondersteunen en krijg hiervoor beloningen (standaard: 1)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Threshold for disconnecting misbehaving peers (default: 100)</source>
-        <translation>Drempel om verbinding te verbreken naar zich misdrapinkde peers (standaard: 100)</translation>
+        <translation>Drempel om verbinding te verbreken naar zich misdragende peers (standaard: 100)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Number of seconds to keep misbehaving peers from reconnecting (default: 86400)</source>
-        <translation>Aantal seconden dat zich misdrapinkde peers niet opnieuw mopink verbinden (standaard: 86400)</translation>
+        <translation>Aantal seconden dat zich misdragende peers niet opnieuw mogen verbinden (standaard: 86400)</translation>
     </message>
     <message>
         <location line="-44"/>
@@ -2732,7 +2732,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-5"/>
         <source>Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds  </source>
-        <translation>Fout: Deze transactie vereist een transactie vergoeding van ten minste %s vanwege de hoeveelheid, complexiteit, of het gebruik van recent ontvanpink gelden</translation>
+        <translation>Fout: Deze transactie vereist een transactie vergoeding van ten minste %s vanwege de hoeveelheid, complexiteit, of het gebruik van recent ontvangen munten</translation>
     </message>
     <message>
         <location line="-87"/>
@@ -2777,7 +2777,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-24"/>
         <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>
-        <translation>Accepteer verbindinpink van buitenaf (standaard: 1 als geen -proxy of -connect is opgegeven)</translation>
+        <translation>Accepteer verbindingen van buitenaf (standaard: 1 als geen -proxy of -connect is opgegeven)</translation>
     </message>
     <message>
         <location line="-38"/>
@@ -2787,7 +2787,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+117"/>
         <source>Error initializing database environment %s! To recover, BACKUP THAT DIRECTORY, then remove everything from it except for wallet.dat.</source>
-        <translation>Fout bij het ​​initialiseren van de database omgeving %s! Om te herstellen, BACKUP die directory, verwijder dan alles van behalve het wallet.dat.</translation>
+        <translation>Fout bij het ​​initialiseren van de database omgeving %s! Om te herstellen, BACKUP die directory, verwijder dan alles behalve de wallet.dat.</translation>
     </message>
     <message>
         <location line="-20"/>
@@ -2802,7 +2802,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+61"/>
         <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Pinkcoin will not work properly.</source>
-        <translation>Waarschuwing: Controleer of de datum en tijd van de computer juist zijn! Als uw klok verkeerd is Pinkcoin zal niet goed werken.</translation>
+        <translation>Waarschuwing: Controleer of de datum en tijd van de computer juist zijn! Als uw klok verkeerd staat zal Pinkcoin niet goed werken.</translation>
     </message>
     <message>
         <location line="-31"/>
@@ -2812,12 +2812,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-18"/>
         <source>Warning: wallet.dat corrupt, data salvaged! Original wallet.dat saved as wallet.{timestamp}.bak in %s; if your balance or transactions are incorrect you should restore from a backup.</source>
-        <translation>Waarschuwing: wallet.dat is corrupt, data is veiliggesteld! Originele wallet.dat is opgeslapink als wallet.{tijdstip}.bak in %s; als uw balans of transacties incorrect zijn dient u een backup terug te zetten.</translation>
+        <translation>Waarschuwing: wallet.dat is corrupt, data is veiliggesteld! Originele wallet.dat is opgeslagen als wallet.{tijdstip}.bak in %s; als uw balans of transacties incorrect zijn dient u een backup terug te zetten.</translation>
     </message>
     <message>
         <location line="-30"/>
         <source>Attempt to recover private keys from a corrupt wallet.dat</source>
-        <translation>Poog de geheime sleutels uit een corrupt wallet.dat bestand terug te halen</translation>
+        <translation>Probeer de geheime sleutels uit een corrupt wallet.dat bestand terug te halen</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2827,17 +2827,17 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-62"/>
         <source>Connect only to the specified node(s)</source>
-        <translation>Verbind alleen naar de gespecificeerde node(s)</translation>
+        <translation>Verbind alleen met de gespecificeerde node(s)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Discover own IP address (default: 1 when listening and no -externalip)</source>
-        <translation>Ontdek eipink IP-adres (standaard: 1 als er wordt geluisterd en geen -externalip is opgegeven)</translation>
+        <translation>Ontdek eigen IP-adres (standaard: 1 als er wordt geluisterd en geen -externalip is opgegeven)</translation>
     </message>
     <message>
         <location line="+94"/>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
-        <translation>Mislukt om op welke poort dan ook te luisteren. Gebruik -listen=0 as u dit wilt.</translation>
+        <translation>Mislukt om op welke poort dan ook te luisteren. Gebruik -listen=0 als u dit wilt.</translation>
     </message>
     <message>
         <location line="-90"/>
@@ -2949,12 +2949,12 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-25"/>
         <source>Use proxy to reach tor hidden services (default: same as -proxy)</source>
-        <translation>Gebruik proxy tor verborpink diensten (standaard: zelfde als -proxy)</translation>
+        <translation>Gebruik proxy tor verborgen diensten (standaard: zelfde als -proxy)</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Username for JSON-RPC connections</source>
-        <translation>Gebruikersnaam voor JSON-RPC-verbindinpink</translation>
+        <translation>Gebruikersnaam voor JSON-RPC-verbindingen</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2964,7 +2964,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="+57"/>
         <source>WARNING: syncronized checkpoint violation detected, but skipped!</source>
-        <translation>WAARSCHUWING: gesynchroniseerd checkpoint overtreding is geconstateerd, maar overgeslapink!</translation>
+        <translation>WAARSCHUWING: gesynchroniseerd checkpoint overtreding is geconstateerd, maar overgeslagen!</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2984,7 +2984,7 @@ Dit betekend dat een fee van %2 is vereist.</translation>
     <message>
         <location line="-54"/>
         <source>Password for JSON-RPC connections</source>
-        <translation>Wachtwoord voor JSON-RPC-verbindinpink</translation>
+        <translation>Wachtwoord voor JSON-RPC-verbindingen</translation>
     </message>
     <message>
         <location line="-84"/>
@@ -3001,10 +3001,10 @@ for example: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo
 </source>
         <translation>%s, u moet een rpcpassword instellen in het configuratiebestand: 
 %s 
-Het wordt aanbevolen de volpinkde willekeurig wachtwoord gebruiken: 
+Het wordt aanbevolen het volgende willekeurige wachtwoord te gebruiken: 
 rpcuser = pinkcoinrpc 
 rpcpassword = %s 
-(je hoeft niet dit wachtwoord te onthouden) 
+(je hoeft dit wachtwoord niet te onthouden) 
 De gebruikersnaam en het wachtwoord MAG NIET hetzelfde zijn. 
 Als het bestand niet bestaat, maakt u met leesbare-alleen-eigenaar bestandsbeheermachtiginpink.  
 Het wordt ook aanbevolen om alertnotify instellen zodat u een melding van problemen;  
@@ -3023,12 +3023,12 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+15"/>
         <source>When creating transactions, ignore inputs with value less than this (default: 0.01)</source>
-        <translation>Bij het maken van transacties, negeer inganpink met waarde minder dan dit (standaard: 0,01)</translation>
+        <translation>Bij het maken van een transacties, negeer invoeringen met een waarde minder dan dit (standaard: 0,01)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Allow JSON-RPC connections from specified IP address</source>
-        <translation>Sta JSON-RPC verbindinpink van opgegeven IP-adres toe</translation>
+        <translation>Sta JSON-RPC verbindingen van opgegeven IP-adres toe</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3038,12 +3038,12 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+1"/>
         <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
-        <translation>Voer commando uit zodra het beste blok verandert (%s in cmd wordt vervanpink door blockhash)</translation>
+        <translation>Voer commando uit zodra het beste blok verandert (%s in cmd wordt vervangen door blockhash)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>
-        <translation>Voer opdracht uit zodra een portemonneetransactie verandert (%s in cmd wordt vervanpink door TxID)</translation>
+        <translation>Voer opdracht uit zodra een portemonneetransactie verandert (%s in cmd wordt vervangen door TxID)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3058,7 +3058,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+2"/>
         <source>Execute command when a relevant alert is received (%s in cmd is replaced by message)</source>
-        <translation>Voer opdracht uit zodra een relevante waarschuwing wordt ontvanpink (%s in cmd wordt vervanpink door bericht)</translation>
+        <translation>Voer opdracht uit zodra een relevante waarschuwing wordt ontvangen (%s in cmd wordt vervangen door bericht)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3083,7 +3083,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+1"/>
         <source>How thorough the block verification is (0-6, default: 1)</source>
-        <translation>Hoe grondig het blokverificatie is (0-6, standaard: 1)</translation>
+        <translation>Hoe grondig de blokverificatie is (0-6, standaard: 1)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3093,7 +3093,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+8"/>
         <source>Use OpenSSL (https) for JSON-RPC connections</source>
-        <translation>Gebruik OpenSSL (https) voor JSON-RPC-verbindinpink</translation>
+        <translation>Gebruik OpenSSL (https) voor JSON-RPC-verbindingen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3133,7 +3133,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="+1"/>
         <source>Cannot obtain a lock on data directory %s.  Pinkcoin is probably already running.</source>
-        <translation>Kan een slot op data directory %s niet verkrijpink. Pinkcoin wordt waarschijnlijk al uitgevoerd.</translation>
+        <translation>Kan een slot op data directory %s niet verkrijgen. Pinkcoin wordt waarschijnlijk al uitgevoerd.</translation>
     </message>
     <message>
         <location line="-98"/>
@@ -3243,7 +3243,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="-103"/>
         <source>Add a node to connect to and attempt to keep the connection open</source>
-        <translation>Voeg een node om naar te verbinden toe en probeer de verbinding open te houden</translation>
+        <translation>Voeg een node toe om naar te verbinden en probeer de verbinding open te houden</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -3253,7 +3253,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
     <message>
         <location line="-97"/>
         <source>Fee per KB to add to transactions you send</source>
-        <translation>Vergoeding per KB toe te voepink aan de transacties die u verzendt</translation>
+        <translation>Vergoeding per KB toe te voegen aan de transacties die u verzendt</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -3307,7 +3307,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@
 If the file does not exist, create it with owner-readable-only file permissions.</source>
         <translation>U dient rpcpassword=&lt;wachtwoord&gt; in te stellen in het configuratiebestand:
 %s
-Als het bestand niet bestaat, maak het dan aan, met een alleen-lezen permissie.</translation>
+Als het bestand niet bestaat, maak het dan aan, met alleen-lezen permissies.</translation>
     </message>
 </context>
 </TS>

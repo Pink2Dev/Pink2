@@ -38,7 +38,7 @@ COPYING o http://www.opensource.org/licenses/mit-license.php.
 
 Este producto incluye software desarrollado por OpenSSL Project para su uso en
 el OpenSSL Toolkit (http://www.openssl.org/) y software criptográfico escrito por
-Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</translation>
+Eric Young (eay@cryptsoft.com) y software UPnP escrito por Thomas Bernard.</translation>
     </message>
 </context>
 <context>
@@ -71,7 +71,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="-46"/>
         <source>These are your Pinkcoin addresses for receiving payments. You may want to give a different one to each sender so you can keep track of who is paying you.</source>
-        <translation>Estas son las direcciones de Pinkcoin para recibir pagos. Es posible que desee dar una diferente a cada remitente para que pueda realizar un seguimiento de quien te está pagando.</translation>
+        <translation>Estas son tus direcciones de Pinkcoin para recibir pagos. Quizá sea una buena idea crear una diferente para cada remitente y así llevar un seguimiento de quién te está pagando.</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -81,12 +81,12 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+11"/>
         <source>Show &amp;QR Code</source>
-        <translation>Enseñar &amp;QR Code</translation>
+        <translation>Mostrar &amp;Código QR</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Sign a message to prove you own a Pinkcoin address</source>
-        <translation>Firmar un mensaje para demostrar que es dueño de su dirección de Pinkcoin</translation>
+        <translation>Firmar un mensaje para demostrar que una dirección de Pinkcoin es tuya</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -96,17 +96,17 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+25"/>
         <source>Delete the currently selected address from the list</source>
-        <translation>Borrar de la lista la dirección seleccionada</translation>
+        <translation>Borrar la dirección seleccionada</translation>
     </message>
     <message>
         <location line="-14"/>
         <source>Verify a message to ensure it was signed with a specified Pinkcoin address</source>
-        <translation>Verifique el mensaje para asegurarse que fue firmado por una dirección específica de Pinkcoin</translation>
+        <translation>Verificar mensaje para asegurarse de que fue firmado por una dirección de Pinkcoin específica</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Verify Message</source>
-        <translation>&amp;Verifique Mensaje</translation>
+        <translation>&amp;Verificar Mensaje</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -126,17 +126,17 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+250"/>
         <source>Export Address Book Data</source>
-        <translation>Exportar Data de Libro de Direcciones</translation>
+        <translation>Exportar Libreta de Direcciones</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comma separated file (*.csv)</source>
-        <translation>Archivos de columnas separadas por coma (*.csv)</translation>
+        <translation>Archivo de valores separados por comas (*.csv)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Error exporting</source>
-        <translation>Error exportando</translation>
+        <translation>Error al exportar</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -172,7 +172,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+21"/>
         <source>Enter passphrase</source>
-        <translation>Introducir contraseña</translation>
+        <translation>Introduce la contraseña</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -182,7 +182,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+14"/>
         <source>Repeat new passphrase</source>
-        <translation>Repita la nueva contraseña</translation>
+        <translation>Repite la nueva contraseña</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -192,22 +192,22 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+3"/>
         <source>For staking only</source>
-        <translation>Para &quot;Staking&quot; solamente</translation>
+        <translation>Para &quot;IAR&quot; solamente</translation>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="+35"/>
         <source>Enter the new passphrase to the wallet.&lt;br/&gt;Please use a passphrase of &lt;b&gt;10 or more random characters&lt;/b&gt;, or &lt;b&gt;eight or more words&lt;/b&gt;.</source>
-        <translation>Introduzca la nueva contraseña del monedero.&lt;br/&gt;Por favor elija una con &lt;b&gt;10 o más caracteres aleatorios&lt;/b&gt;, u &lt;b&gt;ocho o más palabras&lt;/b&gt;.</translation>
+        <translation>Introduce la nueva contraseña del monedero.&lt;br/&gt;Por favor elije una con &lt;b&gt;10 o más caracteres aleatorios&lt;/b&gt;, u &lt;b&gt;ocho o más palabras&lt;/b&gt;.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Encrypt wallet</source>
-        <translation>Cifrar el monedero</translation>
+        <translation>Encriptar el monedero</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>This operation needs your wallet passphrase to unlock the wallet.</source>
-        <translation>Esta operación requiere su contraseña para desbloquear el monedero.</translation>
+        <translation>Esta operación requiere la contraseña para desbloquear el monedero.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -217,12 +217,12 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+3"/>
         <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
-        <translation>Esta operación requiere su contraseña para descifrar el monedero.</translation>
+        <translation>Esta operación requiere la contraseña para desencriptar el monedero.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Decrypt wallet</source>
-        <translation>Descifrar el monedero</translation>
+        <translation>Desencriptar el monedero</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -232,7 +232,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+1"/>
         <source>Enter the old and new passphrase to the wallet.</source>
-        <translation>Introduzca la contraseña anterior del monedero y la nueva. </translation>
+        <translation>Introduce la contraseñas del monedero (antigua y nueva). </translation>
     </message>
     <message>
         <location line="+46"/>
@@ -242,17 +242,17 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+1"/>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR COINS&lt;/b&gt;!</source>
-        <translation>Advertencia: Si encripta su cartera y pierde su frase de contraseña, puede &lt;b&gt;PERDER TODAS SUS MONEDAS&lt;/ b&gt;!</translation>
+        <translation>Advertencia: Si encriptas tu monedero y pierdes la contraseña, puedes &lt;b&gt;PERDER TODAS TUS MONEDAS&lt;/ b&gt;!</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Are you sure you wish to encrypt your wallet?</source>
-        <translation>¿Seguro que desea cifrar su monedero?</translation>
+        <translation>¿Seguro que quieres encriptar tu monedero?</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
-        <translation>IMPORTANTE: Cualquier copia de seguridad que haya realizado previamente de su archivo de monedero debe reemplazarse con el nuevo archivo de monedero cifrado. Por razones de seguridad, las copias de seguridad previas del archivo de monedero no cifradas serán inservibles en cuanto comience a usar el nuevo monedero cifrado.</translation>
+        <translation>IMPORTANTE: Cualquier copia de seguridad que hayas realizado previamente debe reemplazarse por el nuevo archivo de monedero encriptado. Por razones de seguridad, las copias de seguridad previas del archivo de monedero no encriptadas serán inservibles en cuanto comience a usar el nuevo monedero encriptado.</translation>
     </message>
     <message>
         <location line="+103"/>
@@ -264,12 +264,12 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
         <location line="-133"/>
         <location line="+60"/>
         <source>Wallet encrypted</source>
-        <translation>Monedero cifrado</translation>
+        <translation>Monedero encriptado</translation>
     </message>
     <message>
         <location line="-58"/>
         <source>Pinkcoin will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your coins from being stolen by malware infecting your computer.</source>
-        <translation>Pinkcoin cerrará para terminar el proceso de encriptación. Recuerde que la encriptación de su monedero no puede proteger completamente que sus monedas sean robadas por malware infectando su computadora.</translation>
+        <translation>Pinkcoin cerrará para terminar el proceso de encriptación. Recuerde que la encriptación de tu monedero no es suficiente para proteger completamente que sus monedas sean robadas por malware que haya infectado tu ordenador.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -277,12 +277,12 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
         <location line="+44"/>
         <location line="+6"/>
         <source>Wallet encryption failed</source>
-        <translation>Ha fallado el cifrado del monedero</translation>
+        <translation>Ha fallado la encripción del monedero</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</source>
-        <translation>Ha fallado el cifrado del monedero debido a un error interno. El monedero no ha sido cifrado.</translation>
+        <translation>Ha fallado la encripción del monedero debido a un error interno. El monedero no ha sido encriptado.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -293,19 +293,19 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="-38"/>
         <source>Wallet unlock failed</source>
-        <translation>Ha fallado el desbloqueo del monedero</translation>
+        <translation>No ha sido posible desbloquear el monedero</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+12"/>
         <location line="+19"/>
         <source>The passphrase entered for the wallet decryption was incorrect.</source>
-        <translation>La contraseña introducida para descifrar el monedero es incorrecta.</translation>
+        <translation>La contraseña introducida para desencriptar el monedero es incorrecta.</translation>
     </message>
     <message>
         <location line="-20"/>
         <source>Wallet decryption failed</source>
-        <translation>Ha fallado el descifrado del monedero</translation>
+        <translation>La desencripción del monedero ha fallado</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -353,7 +353,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+1"/>
         <source>Edit the list of stored addresses and labels</source>
-        <translation>Editar la lista de direcciones y etiquetas almacenadas</translation>
+        <translation>Editar la lista de direcciones y etiquetas</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -403,7 +403,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+4"/>
         <source>&amp;Encrypt Wallet...</source>
-        <translation>&amp;Cifrar monedero…</translation>
+        <translation>&amp;Encriptar monedero…</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -448,7 +448,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="-14"/>
         <source>Encrypt or decrypt wallet</source>
-        <translation>Cifrar o descifrar el monedero</translation>
+        <translation>Encriptar o desencriptar el monedero</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -458,7 +458,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+2"/>
         <source>Change the passphrase used for wallet encryption</source>
-        <translation>Cambiar la contraseña utilizada para el cifrado del monedero</translation>
+        <translation>Cambiar la contraseña utilizada para encriptar el monedero</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -533,7 +533,7 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+8"/>
         <source>Actions toolbar</source>
-        <translation>Barra de herramientas de acciones</translation>
+        <translation>Barra de acciones</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -560,27 +560,27 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+413"/>
         <source>Staking.&lt;br&gt;Your weight is %1&lt;br&gt;Network weight is %2&lt;br&gt;Expected time to earn reward is %3</source>
-        <translation>Staking.&lt;br&gt;Su contribución es %1&lt;br&gt;Contribución de la red es %2&lt;br&gt;Tiempo esperado para ganar la recompensa es %3</translation>
+        <translation>IAR Activada.&lt;br&gt;Tu contribución es %1&lt;br&gt;la contribución de la red es %2&lt;br&gt;El tiempo estimado hasta ganar una recompensa es %3</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Not staking because wallet is locked</source>
-        <translation>No esta &quot;Staking&quot; porque monedera está bloqueada</translation>
+        <translation>La Inversión de Apoyo a la Red está desactivada porque el monedero está bloqueado</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is offline</source>
-        <translation>No esta &quot;Staking&quot; porque monedera está desconectada</translation>
+        <translation>La Inversión de Apoyo a la Red está desactivada porque el monedero está desconectado</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because wallet is syncing</source>
-        <translation>No esta &quot;Staking&quot; porque monedera está sincronizando</translation>
+        <translation>La Inversión de Apoyo a la Red está desactivada porque el monedero está sincronizando</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Not staking because you don&apos;t have mature coins</source>
-        <translation>No esta &quot;Staking&quot; ya que no tiene monedas maduras</translation>
+        <translation>La Inversión de Apoyo a la Red está desactivada ya que no tienes monedas suficientemente maduras</translation>
     </message>
     <message numerus="yes">
         <location line="-403"/>
@@ -620,17 +620,17 @@ Eric Young (eay@cryptsoft.com) y el software UPnP escrito por Thomas Bernard.</t
     <message>
         <location line="+10"/>
         <source>Last received block was generated %1.</source>
-        <translation>Último bloque recibido se generó en %1.</translation>
+        <translation>El último bloque recibido fue generado %1.</translation>
     </message>
     <message>
         <location line="+59"/>
         <source>This transaction is over the size limit.  You can still send it for a fee of %1, which goes to the nodes that process your transaction and helps to support the network.  Do you want to pay the fee?</source>
-        <translation>Esta transacción se encuentra sobre el límite de tamaño. Usted todavía puede enviarlo a un costo de %1, lo que va a los nodos que procesan sus transacciones y ayuda a apoyar la red. ¿Quieres pagar la cuota?</translation>
+        <translation>Esta transacción supera el límite de cuantía para enviar gratis. Puedes realizarla por un costo mínimo de %1. Esta pequeña cantidad irá destinada a los nodos que procesan tus transacciones y de este modo apoyarás a la red entera. ¿Quieres pagar la cuota?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Confirm transaction fee</source>
-        <translation>Confirme tarifa de transacción</translation>
+        <translation>Confirma la tarifa de transacción</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -670,27 +670,27 @@ Dirección: %4
     <message>
         <location line="+18"/>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
-        <translation>El monedero está &lt;b&gt;cifrado&lt;/b&gt; y actualmente &lt;b&gt;desbloqueado&lt;/b&gt;</translation>
+        <translation>El monedero está &lt;b&gt;encriptado&lt;/b&gt; y actualmente &lt;b&gt;desbloqueado&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
-        <translation>El monedero está &lt;b&gt;cifrado&lt;/b&gt; y actualmente &lt;b&gt;bloqueado&lt;/b&gt;</translation>
+        <translation>El monedero está &lt;b&gt;encriptado&lt;/b&gt; y actualmente &lt;b&gt;bloqueado&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Backup Wallet</source>
-        <translation>Copia de Seguridad de Monedero</translation>
+        <translation>Copia de Seguridad del Monedero</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Wallet Data (*.dat)</source>
-        <translation>Data de Monedero (*.dat)</translation>
+        <translation>Fichero de datos del Monedero (*.dat)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backup Failed</source>
-        <translation>Copia de Seguridad a fracasado</translation>
+        <translation>La Copia de Seguridad ha fallado</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -720,12 +720,12 @@ Dirección: %4
     <message>
         <location line="+18"/>
         <source>Not staking</source>
-        <translation>No estás &quot;Staking&quot;</translation>
+        <translation>IAR Desactivada</translation>
     </message>
     <message>
         <location filename="../bitcoin.cpp" line="+109"/>
         <source>A fatal error occurred. Pinkcoin can no longer continue safely and will quit.</source>
-        <translation>Se ha producido un error fatal. Pinkcoin ya no puede continuar de forma segura y cerrará.</translation>
+        <translation>Se ha producido un error fatal. Pinkcoin ya no puede continuar de forma segura y se cerrará.</translation>
     </message>
 </context>
 <context>
@@ -791,7 +791,7 @@ Dirección: %4
     <message>
         <location line="+69"/>
         <source>(un)select all</source>
-        <translation>(des)marcar todos</translation>
+        <translation>deseleccionar todo</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -806,7 +806,7 @@ Dirección: %4
     <message>
         <location line="+45"/>
         <source>Amount</source>
-        <translation>Cuantía</translation>
+        <translation>Cantidad</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -852,7 +852,7 @@ Dirección: %4
         <location line="+1"/>
         <location line="+26"/>
         <source>Copy amount</source>
-        <translation>Copiar cuantía</translation>
+        <translation>Copiar cantidad</translation>
     </message>
     <message>
         <location line="-25"/>
@@ -867,12 +867,12 @@ Dirección: %4
     <message>
         <location line="+2"/>
         <source>Copy fee</source>
-        <translation>Copiar donación</translation>
+        <translation>Copiar tasa de donación</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy after fee</source>
-        <translation>Copiar después de aplicar donación</translation>
+        <translation>Copiar después de aplicar tasa de donación</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -932,7 +932,7 @@ Dirección: %4
     <message>
         <location line="+155"/>
         <source>DUST</source>
-        <translation>DUST</translation>
+        <translation>Calderilla (DUST)</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -946,9 +946,9 @@ Dirección: %4
  This means a fee of at least %1 per kb is required.
 
  Can vary +/- 1 Byte per input.</source>
-        <translation>Esta etiqueta se convierte en rojo, si el tamaño de la transacción es mayor que 10000 bytes.
+        <translation>Esta etiqueta se vuelve roja cuando el tamaño de la transacción es mayor que 10000 bytes.
 
-Esto significa que se requiere una cuota de al menos el %1 por kb.
+Esto significa que para realizar la transacción se requiere una donación de al menos %1 por kb.
 
 Puede variar + / - 1 Byte por entrada.</translation>
     </message>
@@ -959,24 +959,24 @@ Puede variar + / - 1 Byte por entrada.</translation>
 This label turns red, if the priority is smaller than &quot;medium&quot;.
 
  This means a fee of at least %1 per kb is required.</source>
-        <translation>Las transacciones con mayor prioridad son más probables en entrar hacia un bloque. 
+        <translation>Las transacciones con prioridad más alta tienen más posibilidades de entrar en un bloque.
 
-Esta etiqueta se convierte en rojo, si la prioridad es menor que &quot;medium&quot;.
+Esta etiqueta se vuelve roja cuando la prioridad es menor que &quot;medium&quot;.
 
-Esto significa que se requiere una cuota de al menos el %1 por kb.</translation>
+Esto significa que se requiere una donación de al menos %1 por kb.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This label turns red, if any recipient receives an amount smaller than %1.
 
- This means a fee of at least %2 is required. 
+ This means a fee of at least %2 is required.
 
  Amounts below 0.546 times the minimum relay fee are shown as DUST.</source>
         <translation>Esta etiqueta se convierte en rojo, si cualquier recipiente recibe una cantidad menor que %1.
 
-Esto significa que se requiere una cuota de al menos %2.
+Esto significa que se requiere una donación de al menos %2.
 
-Las cantidades inferiores a 0.546 veces la cuota mínima del relé se muestran en forma de DUST.</translation>
+Las cantidades inferiores a 0.546 veces la cuota mínima del relé se muestran en forma de calderilla (DUST).</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1019,7 +1019,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+10"/>
         <source>The label associated with this address book entry</source>
-        <translation>La etiqueta asociada con esta entrada de la libreta de direcciones</translation>
+        <translation>La etiqueta asociada a esta entrada de la libreta de direcciones</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1029,7 +1029,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+10"/>
         <source>The address associated with this address book entry. This can only be modified for sending addresses.</source>
-        <translation>La dirección asociada con esta entrada de la libreta de direcciones. Esto sólo puede ser modificada para direcciones de envío.</translation>
+        <translation>La dirección asociada a esta entrada de la libreta de direcciones. Sólo puede ser modificada en direcciones de envío.</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="+20"/>
@@ -1093,17 +1093,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>command-line options</source>
-        <translation>opciones de líneas de comandos</translation>
+        <translation>opciones de línea de comandos</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>UI options</source>
-        <translation>opciones del interfaz de usuario</translation>
+        <translation>opciones de interfaz</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set language, for example &quot;de_DE&quot; (default: system locale)</source>
-        <translation>Defina el idioma, por ejemplo &quot;de_DE&quot; (predeterminado: región del sistema)</translation>
+        <translation>Define el idioma, por ejemplo &quot;de_DE&quot; (predeterminado: región del sistema)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1131,17 +1131,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+6"/>
         <source>Optional transaction fee per kB that helps make sure your transactions are processed quickly. Most transactions are 1 kB. Fee 0.01 recommended.</source>
-        <translation>Tarifa de transacción opcional por kB que ayuda a asegurarse de que sus transacciones se procesan rápidamente. La mayoría de las transacciones son 1 kB. Cuota de 0.01 recomendada.</translation>
+        <translation>La donacion voluntaria por cada kB de transacción ayuda a asegurarse de que tus transacciones se procesan rápidamente. La mayoría de las transacciones son 1 kB. Donativo de 0.01 recomendado.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Pay transaction &amp;fee</source>
-        <translation>Comisión de &amp;transacciones</translation>
+        <translation>Pagar donativo con &amp;transacción</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Reserved amount does not participate in staking and is therefore spendable at any time.</source>
-        <translation>Cantidad reservada no participa en el &quot;Staking&quot; y por lo tanto se puede gastar en cualquier momento.</translation>
+        <translation>La cantidad reservada no participa en tu Inversión de Apoyo a la Red &lquo;IAR&rquo; y por lo tanto se puede gastar o transferir en cualquier momento.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1151,7 +1151,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+31"/>
         <source>Automatically start Pinkcoin after logging in to the system.</source>
-        <translation>Iniciar Pinkcoin automáticamente después de entrar en el sistema.</translation>
+        <translation>Iniciar Pinkcoin automáticamente al iniciar el sistema.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1161,12 +1161,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+7"/>
         <source>Detach block and address databases at shutdown. This means they can be moved to another data directory, but it slows down shutdown. The wallet is always detached.</source>
-        <translation>Separe el bloque y las bases de datos de direcciones al apagar el equipo. Esto significa que se puede mover a otro directorio de datos, pero desacelera el apagado. El monedero siempre está separado.</translation>
+        <translation>Separar el bloque y las bases de datos de direcciones al apagar el equipo. Esto significa que se puede mover a otro directorio de datos, pero aumenta el tiempo que se tarda en apagar el equipo. El monedero siempre está separado.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Detach databases at shutdown</source>
-        <translation>&amp;Separe la bases de datos al apagar el equipo</translation>
+        <translation>&amp;Separar la bases de datos al apagar el equipo</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1176,7 +1176,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+6"/>
         <source>Automatically open the Pinkcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Abrir automáticamente el puerto de cliente Pinkcoin en el router. Esto sólo funciona cuando el router es compatible con UPnP y está habilitado.</translation>
+        <translation>Abrir automáticamente el puerto de cliente Pinkcoin en el router. Esto sólo funciona cuando el router es compatible con UPnP y este está habilitado.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1186,7 +1186,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+7"/>
         <source>Connect to the Pinkcoin network through a SOCKS proxy (e.g. when connecting through Tor).</source>
-        <translation>Conéctese a la red de Pinkcoin a través de un SOCKS proxy (e.g. cuando se conecta a través de Tor)</translation>
+        <translation>Conectar a la red de Pinkcoin a través de un SOCKS proxy (ej. cuando se conecta a través de Tor)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1201,7 +1201,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+19"/>
         <source>IP address of the proxy (e.g. 127.0.0.1)</source>
-        <translation>Dirección IP del proxy (e.g. 127.0.0.1)</translation>
+        <translation>Dirección IP del proxy (ej. 127.0.0.1)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1256,12 +1256,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+8"/>
         <source>User Interface &amp;language:</source>
-        <translation>I&amp;dioma de la interfaz de usuario</translation>
+        <translation>I&amp;dioma de interfaz</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>The user interface language can be set here. This setting will take effect after restarting Pinkcoin.</source>
-        <translation>El idioma del interfaz de usuario se puede configurar aquí. Esta configuración se aplicará después de reiniciar Pinkcoin.</translation>
+        <translation>El idioma de la interfaz de usuario se puede configurar aquí. Esta configuración se aplicará después de reiniciar Pinkcoin.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1271,17 +1271,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+13"/>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Elegir la subdivisión predeterminada para mostrar cantidades en la interfaz y cuando se envían bitcoins.</translation>
+        <translation>Elegir la subdivisión predeterminada para mostrar cantidades en la interfaz y cuando se envían Pinkcoins.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Whether to show Pinkcoin addresses in the transaction list or not.</source>
-        <translation>Tanto para mostrar direcciones de Pinkcoin en la lista de transacciones o no.</translation>
+        <translation>Mostrar o no las direcciones de Pinkcoin en la lista de transacciones.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Display addresses in transaction list</source>
-        <translation>&amp;Mostrar las direcciones en la lista de transacciones</translation>
+        <translation>&amp;Mostrar direcciones en la lista de transacciones</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1291,7 +1291,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+3"/>
         <source>Display coin &amp;control features (experts only!)</source>
-        <translation>Mostrar moneda y Coin Control (expertos solamente!)</translation>
+        <translation>Mostrar Coin Control (expertos solamente!)</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -1323,7 +1323,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
         <location line="-9"/>
         <location line="+9"/>
         <source>This setting will take effect after restarting Pinkcoin.</source>
-        <translation>Esta configuración se aplicará después de reiniciar Pinkcoin.</translation>
+        <translation>Esta configuración se aplicará después de reiniciar tu monedero Pinkcoin.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1347,7 +1347,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-160"/>
         <source>Stake:</source>
-        <translation>Stake:</translation>
+        <translation>IAR:</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1367,12 +1367,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+16"/>
         <source>Your current spendable balance</source>
-        <translation>Su actual balance disponible</translation>
+        <translation>Su saldo disponible</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Immature:</source>
-        <translation>No disponible:</translation>
+        <translation>Aún inmaduras:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1387,7 +1387,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+16"/>
         <source>Your current total balance</source>
-        <translation>Su balance actual total</translation>
+        <translation>Su saldo total</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -1397,12 +1397,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-108"/>
         <source>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</source>
-        <translation>Total de transacciones que aún no se han confirmado, y aún no cuentan para el balance actual</translation>
+        <translation>Total de transacciones que aún no se han confirmado, y aún no se ven reflejadas en el saldo total</translation>
     </message>
     <message>
         <location line="-29"/>
         <source>Total of coins that was staked, and do not yet count toward the current balance</source>
-        <translation>Total de las monedas que fueron &quot;Staked&quot;, y aún no cuentan para el balance actual</translation>
+        <translation>Total de las monedas que fueron invertidas en apoyo a la red Pinkcoin, y aún no cuentan para el balance actual</translation>
     </message>
     <message>
         <location filename="../overviewpage.cpp" line="+113"/>
@@ -1416,7 +1416,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location filename="../forms/qrcodedialog.ui" line="+14"/>
         <source>QR Code Dialog</source>
-        <translation>Código Diálogo QR</translation>
+        <translation>Diálogo de Código QR</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1431,7 +1431,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-44"/>
         <source>Label:</source>
-        <translation>Etiqueta:</translation>
+        <translation>Concepto:</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -1441,22 +1441,22 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+71"/>
         <source>&amp;Save As...</source>
-        <translation>&amp;Guardar como....</translation>
+        <translation>&amp;Guardar como...</translation>
     </message>
     <message>
         <location filename="../qrcodedialog.cpp" line="+62"/>
         <source>Error encoding URI into QR Code.</source>
-        <translation>Error codificando URI en código QR​​.</translation>
+        <translation>Error codificando URI en código QR.</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>The entered amount is invalid, please check.</source>
-        <translation>La cantidad introducida es inválida, compruebe por favor.</translation>
+        <translation>La cantidad introducida no es válida, comprueba que cumpla los requisitos y vuelve a intentarlo por favor.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
-        <translation>La URI es demasiado larga, pruebe a acortar el texto para la etiqueta / mensaje</translation>
+        <translation>La URI resultante es demasiado larga, prueba a acortar el texto del concepto o el mensaje en sí</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1707,7 +1707,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+32"/>
         <source>After Fee:</source>
-        <translation>Después de tasas:</translation>
+        <translation>Después del donativo:</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -1777,12 +1777,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>Copy fee</source>
-        <translation>Copiar donación</translation>
+        <translation>Copiar donativo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy after fee</source>
-        <translation>Copiar después de aplicar donación</translation>
+        <translation>Copiar después de aplicar el donativo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1812,7 +1812,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+5"/>
         <source>Confirm send coins</source>
-        <translation>Confirmar el envío de bitcoins</translation>
+        <translation>Confirmar el envío de Pinkcoins</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1827,12 +1827,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+29"/>
         <source>The recipient address is not valid, please recheck.</source>
-        <translation>La dirección de recepción no es válida, compruébela de nuevo.</translation>
+        <translation>La dirección de recepción no es válida, por favor compruébela e introdúzcala de nuevo.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>The amount to pay must be larger than 0.</source>
-        <translation>La cantidad por pagar tiene que ser mayor de 0.</translation>
+        <translation>La cantidad debe ser superior a 0.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1852,7 +1852,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+5"/>
         <source>Error: Transaction creation failed.</source>
-        <translation>Error: Falla al crear la transacción.</translation>
+        <translation>Error: Fallo al crear la transacción.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1955,7 +1955,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-118"/>
         <source>You can sign messages with your addresses to prove you own them. Be careful not to sign anything vague, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>Puede firmar mensajes con sus direcciones para demostrar que las posee. Tenga cuidado de no firmar cualquier cosa vaga, ya que los ataques de phishing pueden tratar de engañarle para suplantar su identidad. Firme solo declaraciones totalmente detalladas con las que usted esté de acuerdo.</translation>
+        <translation>Puedes firmar mensajes con tus direcciones para demostrar que las posees. Ten cuidado de no firmar cualquier mensaje de dudosa procedencia, ya que los ataques de phishing pueden tratar de engañarle para suplantar tu identidad. Firma solo declaraciones totalmente detalladas con las que estés de acuerdo y conozcas su procedencia, si haces lo contrario, es bajo tu exclusiva responsabilidad ante lo que pueda suceder.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1987,12 +1987,12 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+12"/>
         <source>Enter the message you want to sign here</source>
-        <translation>Introduzca el mensaje que desea firmar aquí</translation>
+        <translation>Introduce el mensaje que deseas firmar aquí</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Copy the current signature to the system clipboard</source>
-        <translation>Copiar la firma actual al portapapeles del sistema</translation>
+        <translation>Copiar esta firma al portapapeles</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2019,7 +2019,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-64"/>
         <source>Enter the signing address, message (ensure you copy line breaks, spaces, tabs, etc. exactly) and signature below to verify the message. Be careful not to read more into the signature than what is in the signed message itself, to avoid being tricked by a man-in-the-middle attack.</source>
-        <translation>Introduzca la dirección para la firma, el mensaje (asegurándose de copiar tal cual los saltos de línea, espacios, tabulaciones, etc.) y la firma a continuación para verificar el mensaje. Tenga cuidado de no asumir más información de lo que dice el propio mensaje firmado para evitar fraudes basados en ataques de tipo man-in-the-middle.</translation>
+        <translation>Introduce la dirección para la firma, el mensaje (asegurándote de copiar el texto tal cual, con todos los saltos de línea, espacios, tabulaciones, etc.) y la firma a continuación para verificar el mensaje. Ten cuidado de no asumir más información de lo que dice el propio mensaje firmado para evitar fraudes basados en ataques de tipo man-in-the-middle.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2029,7 +2029,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+40"/>
         <source>Verify the message to ensure it was signed with the specified Pinkcoin address</source>
-        <translation>Verifique el mensaje para asegurarse de que se firmó con la dirección Pinkcoin especificada.</translation>
+        <translation>Verifica el mensaje para asegurarte de que se firmó con la dirección Pinkcoin especificada.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2045,7 +2045,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-2"/>
         <source>Click &quot;Sign Message&quot; to generate signature</source>
-        <translation>Haga clic en &quot;Firmar mensaje&quot; para generar la firma</translation>
+        <translation>Haz clic en &quot;Firmar mensaje&quot; para generar la firma</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2064,7 +2064,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
         <location line="+73"/>
         <location line="+8"/>
         <source>Please check the address and try again.</source>
-        <translation>Verifique la dirección e inténtelo de nuevo.</translation>
+        <translation>Verifica la dirección e inténtalo de nuevo.</translation>
     </message>
     <message>
         <location line="-81"/>
@@ -2095,13 +2095,13 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+59"/>
         <source>The signature could not be decoded.</source>
-        <translation>No se puede decodificar la firma.</translation>
+        <translation>No se puede descodificar la firma.</translation>
     </message>
     <message>
         <location line="+0"/>
         <location line="+13"/>
         <source>Please check the signature and try again.</source>
-        <translation>Compruebe la firma e inténtelo de nuevo.</translation>
+        <translation>Comprueba la firma e inténtalo de nuevo.</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2290,7 +2290,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-211"/>
         <source>, has not been successfully broadcast yet</source>
-        <translation>, todavía no se ha sido difundido satisfactoriamente</translation>
+        <translation>, todavía no se ha sido emitido satisfactoriamente</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2371,7 +2371,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+3"/>
         <source>Immature (%1 confirmations, will be available after %2)</source>
-        <translation>No vencidos (%1 confirmaciones. Estarán disponibles al cabo de %2)</translation>
+        <translation>Aún inmaduras (%1 confirmaciones. Estarán disponibles al cabo de %2)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2401,7 +2401,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+2"/>
         <source>Payment to yourself</source>
-        <translation>Pago propio</translation>
+        <translation>Traspaso a cuenta propia</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2490,7 +2490,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+2"/>
         <source>To yourself</source>
-        <translation>A usted mismo</translation>
+        <translation>A mí mismo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2505,7 +2505,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+7"/>
         <source>Enter address or label to search</source>
-        <translation>Introduzca una dirección o etiqueta que buscar</translation>
+        <translation>Introduce una dirección o etiqueta que buscar</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2520,7 +2520,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>Copy label</source>
-        <translation>Copiar etiqueta</translation>
+        <translation>Copiar concepto</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2535,7 +2535,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>Edit label</source>
-        <translation>Editar etiqueta</translation>
+        <translation>Editar concepto</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2550,7 +2550,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>Comma separated file (*.csv)</source>
-        <translation>Archivos de columnas separadas por coma (*.csv)</translation>
+        <translation>Archivos de valores separados por comas (*.csv)</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2642,7 +2642,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+1"/>
         <source>Get help for a command</source>
-        <translation>Recibir ayuda para un comando
+        <translation>Recibir ayuda sobre un comando
 </translation>
     </message>
     <message>
@@ -2709,17 +2709,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+2"/>
         <source>Stake your coins to support network and gain reward (default: 1)</source>
-        <translation>Pon tus monedas en participación &quot;Stake&quot; para dar soporte a la red y ganar alguna recompensa (por defecto: 1)</translation>
+        <translation>Invierte tus monedas &quot;IAR&quot; para dar apoyo a la red Pinkcoin y ganar alguna recompensa (por defecto: 1)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Threshold for disconnecting misbehaving peers (default: 100)</source>
-        <translation>Umbral para la desconexión de pares con mal comportamiento (predeterminado: 100)</translation>
+        <translation>Umbral para la desconexión de &quot;peers&quot; de comportamiento errático (predeterminado: 100)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Number of seconds to keep misbehaving peers from reconnecting (default: 86400)</source>
-        <translation>Número de segundos en que se evita la reconexión de pares con mal comportamiento (predeterminado: 86400)</translation>
+        <translation>Número de segundos en que se evita la reconexión de &quot;peers&quot; de comportamiento errático (predeterminado: 86400)</translation>
     </message>
     <message>
         <location line="-44"/>
@@ -2729,17 +2729,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="+51"/>
         <source>Detach block and address databases. Increases shutdown time (default: 0)</source>
-        <translation>Separa el bloque y la base de datos de direcciones. Aumenta el tiempo de apagado (por defecto: 0)</translation>
+        <translation>Separa el bloque y la base de datos de direcciones. Aumenta el tiempo de apagado del equipo (por defecto: 0)</translation>
     </message>
     <message>
         <location line="+109"/>
         <source>Error: The transaction was rejected.  This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.</source>
-        <translation>Error: La transacción ha sido rechazada. Esto puede ocurrir si algunas de sus monedas en el monedero ya se gastaron, por ejemplo, si se usa una copia del wallet.dat y se gastaron las monedas de la copia pero no se han marcado como gastadas aquí.</translation>
+        <translation>Error: La transacción ha sido rechazada. Esto puede ocurrir si algunas de tus monedas ya se gastaron o, p.ej. si se usa una copia del wallet.dat y se gastaron las monedas de la copia pero no se han marcado como gastadas aquí.</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds  </source>
-        <translation>Error: Esta transacción requiere de una comisión de transacción de al menos %s debido a su tamaño, complejidad, o uso de fondos recibidos recientemente.</translation>
+        <translation>Error: Esta transacción requiere un donativo de al menos %s debido a su tamaño, complejidad, o uso de fondos recibidos recientemente.</translation>
     </message>
     <message>
         <location line="-87"/>
@@ -2749,7 +2749,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-11"/>
         <source>Accept command line and JSON-RPC commands</source>
-        <translation>Aceptar comandos consola y JSON-RPC
+        <translation>Aceptar comandos de consola y JSON-RPC
 </translation>
     </message>
     <message>
@@ -2760,7 +2760,7 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-5"/>
         <source>Error: Wallet locked, unable to create transaction  </source>
-        <translation>Error: Monedero bloqueado, no es posible crear una transacción</translation>
+        <translation>Error: Monedero bloqueado, no es posible crear transacciones</translation>
     </message>
     <message>
         <location line="-8"/>
@@ -2802,17 +2802,17 @@ Esto significa que se requiere una cuota de al menos %2.</translation>
     <message>
         <location line="-20"/>
         <source>Set maximum size of high-priority/low-fee transactions in bytes (default: 27000)</source>
-        <translation>Establecer el tamaño máximo de las transacciones alta-prioridad/baja-comisión en bytes (por defecto: 27000)</translation>
+        <translation>Establecer el tamaño máximo de las transacciones alta prioridad / donativo mínimo en bytes (por defecto: 27000)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Warning: -paytxfee is set very high! This is the transaction fee you will pay if you send a transaction.</source>
-        <translation>Aviso: ¡-paytxfee tiene un valor muy alto! Esta es la comisión que pagará si envía una transacción.</translation>
+        <translation>Aviso: ¡-paytxfee tiene un valor muy alto! Esta es la comisión / donativo que pagará si envía una transacción.</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Warning: Please check that your computer&apos;s date and time are correct! If your clock is wrong Pinkcoin will not work properly.</source>
-        <translation>Advertencia: Verifique que la fecha y hora del equipo sean correctas! Si su reloj es erróneo Pinkcoin no funcionará correctamente.</translation>
+        <translation>Advertencia: Verifica que la fecha y hora de tu equipo sean correctas! Si la hora del reloj es errónea Pinkcoin no funcionará correctamente.</translation>
     </message>
     <message>
         <location line="-31"/>
@@ -3017,8 +3017,8 @@ rpcuser=pinkcoinrpc
 rpcpassword=%s
 (no necesita recordar este password)
 El nombre de usuario y contraseña no debe ser el mismo.
-Si no existe el archivo, créelo con permisos de sólo lectura para el dueño.
-También se recomienda establecer alertnotify para ser notificado de los problemas;
+Si no existe el archivo, créalo con permisos de sólo lectura para el dueño.
+También se recomienda establecer &quo;alertnotify&quo; para ser notificado de los problemas;
 por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo.com
 </translation>
     </message>
@@ -3093,7 +3093,7 @@ por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo
     <message>
         <location line="+2"/>
         <source>How many blocks to check at startup (default: 2500, 0 = all)</source>
-        <translation>Cuantos bloques para comprobar al inicio (por defecto: 2500, 0 = todos)</translation>
+        <translation>Cuántos bloques para comprobar al inicio (por defecto: 2500, 0 = todos)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3131,12 +3131,12 @@ por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo
     <message>
         <location line="+53"/>
         <source>Error: Wallet unlocked for staking only, unable to create transaction.</source>
-        <translation>Error: Monedero desbloqueado sólo para hacer &quot;stake&quot;, no es posible crear una transacción.</translation>
+        <translation>Error: Monedero desbloqueado sólo para hacer &quot;IAR&quot;, no es posible crear una transacción.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>WARNING: Invalid checkpoint found! Displayed transactions may not be correct! You may need to upgrade, or notify developers.</source>
-        <translation>ADVERTENCIA: Punto de control no válido encontrado! Las transacciones que se muestran pueden no ser correctas! Puede que tenga que actualizar o notificar a los desarrolladores.</translation>
+        <translation>ADVERTENCIA: Punto de control no válido encontrado! Las transacciones que se muestran pueden no ser correctas! Puede que tengas que actualizar tu monedero, o notificar a los desarrolladores.</translation>
     </message>
     <message>
         <location line="-158"/>
@@ -3197,7 +3197,7 @@ por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo
     <message>
         <location line="+1"/>
         <source>Wallet needed to be rewritten: restart Pinkcoin to complete</source>
-        <translation>El monedero necesita ser reescrito: reinicie Pinkcoin para completar</translation>
+        <translation>El monedero necesita ser reescrito: reinicia Pinkcoin para completar la operación</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3324,9 +3324,9 @@ por ejemplo: alertnotify=echo %%s | mail -s &quot;Pinkcoin Alert&quot; admin@foo
         <source>You must set rpcpassword=&lt;password&gt; in the configuration file:
 %s
 If the file does not exist, create it with owner-readable-only file permissions.</source>
-        <translation>Tiene que establecer rpcpassword=&lt;contraseña&gt; en el fichero de configuración: ⏎
+        <translation>Tienes que establecer la rpcpassword=&lt;contraseña&gt; en el fichero de configuración: ⏎
 %s ⏎
-Si el archivo no existe, créelo con permiso de lectura solamente del propietario.</translation>
+Si el archivo no existe, créalo con permiso de lectura solamente para el propietario.</translation>
     </message>
 </context>
 </TS>
