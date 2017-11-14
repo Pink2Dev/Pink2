@@ -15,6 +15,7 @@ src/build.h
 *.qm
 Makefile
 pinkcoin-qt
+Pinkcoin-Qt
 #resources cpp
 qrc_*.cpp
 #qt creator
