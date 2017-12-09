@@ -49,6 +49,8 @@ public:
         ConfirmedRole,
         /** Formatted amount, without brackets when unconfirmed */
         FormattedAmountRole,
+        /** Note field as a converted string */
+        NoteRole,
         /** Transaction status (TransactionRecord::Status) */
         StatusRole
     };

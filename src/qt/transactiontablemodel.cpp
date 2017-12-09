@@ -605,6 +605,8 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
         return rec->status.countsForBalance;
     case FormattedAmountRole:
         return formatTxAmount(rec, false);
+    case NoteRole:
+        return formatNote(rec);
     case StatusRole:
         return rec->status.status;
     }

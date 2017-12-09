@@ -46,6 +46,11 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->addSpacing(23);
 #endif
 
+    // Export button exposes CSV export functionality
+    QPushButton *exportButton = new QPushButton(tr("&Export"), this);
+    exportButton->setToolTip(tr("Export the data in the current tab to a file"));
+    hlayout->addWidget(exportButton);
+
     dateWidget = new QComboBox(this);
 #ifdef Q_OS_MAC
     dateWidget->setFixedWidth(101);
@@ -140,6 +145,8 @@ TransactionView::TransactionView(QWidget *parent) :
     contextMenu->addAction(showDetailsAction);
 
     // Connect actions
+    connect(exportButton, SIGNAL(clicked()), this, SLOT(exportClicked()));
+
     connect(dateWidget, SIGNAL(activated(int)), this, SLOT(chooseDate(int)));
     connect(typeWidget, SIGNAL(activated(int)), this, SLOT(chooseType(int)));
     connect(addressWidget, SIGNAL(textChanged(QString)), this, SLOT(changedPrefix(QString)));
@@ -308,6 +315,7 @@ void TransactionView::exportClicked()
     writer.addColumn(tr("Type"), TransactionTableModel::Type, Qt::EditRole);
     writer.addColumn(tr("Label"), 0, TransactionTableModel::LabelRole);
     writer.addColumn(tr("Address"), 0, TransactionTableModel::AddressRole);
+    writer.addColumn(tr("Note"), 0, TransactionTableModel::NoteRole);
     writer.addColumn(tr("Amount"), 0, TransactionTableModel::FormattedAmountRole);
     writer.addColumn(tr("ID"), 0, TransactionTableModel::TxIDRole);
 
