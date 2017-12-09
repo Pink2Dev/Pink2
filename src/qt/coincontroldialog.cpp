@@ -837,13 +837,13 @@ void CoinControlDialog::updateView()
             nInputSum    += nInputSize;
 			
 			// List Mode Weight
-            itemOutput->setText(COLUMN_WEIGHT, QString::number(nTxWeight, 'f',0));
+            itemOutput->setText(COLUMN_WEIGHT, strPad(QString::number((uint64_t)nTxWeight),8," "));
 			
 			// Age
 			uint64_t nAge = GetTime() - out.tx->GetTxTime();
 			double age  = (double)nAge/60/60/24;
 			itemOutput->setText(COLUMN_AGE, QString::number(age, 'f', 2));
-			itemOutput->setText(COLUMN_AGE_int64_t, strPad(QString::number(age), 15, " "));
+			itemOutput->setText(COLUMN_AGE_int64_t, strPad(QString::number(nAge), 15, " "));
 			
 			// Potential Stake
 			double nPotentialStake = 20 / (1 + (nBestHeight / YEARLY_BLOCKCOUNT));
