@@ -48,7 +48,7 @@ TransactionView::TransactionView(QWidget *parent) :
 
     // Export button exposes CSV export functionality
     QPushButton *exportButton = new QPushButton(tr("&Export"), this);
-    exportButton->setToolTip(tr("Export the data in the current tab to a file"));
+    exportButton->setToolTip(tr("Export the data in the current tab to a CSV file"));
     hlayout->addWidget(exportButton);
 
     dateWidget = new QComboBox(this);
