@@ -20,6 +20,7 @@ ifdef STATIC
     LMODE = static
     ifeq (${STATIC}, all)
         LMODE2 = static
+    	DEFS += -static-libgcc
     endif
 endif
 
