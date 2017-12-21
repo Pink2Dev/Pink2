@@ -6,7 +6,7 @@ jobs:
     docker:
       - image: ubuntu:xenial
         environment:
-          FROM_BUILD: "Pink2Dev"
+          FROM_BUILD: "JRedinger"
           BDB_PREFIX: "/Pink2/src/db4"
     steps:
       - checkout
