@@ -4,10 +4,12 @@ jobs:
   build:
     working_directory: /Pink2
     docker:
-      - image: ubuntu:xenial
+      - image: debian:stretch
         environment:
           FROM_BUILD: "JRedinger"
           BDB_PREFIX: "/Pink2/src/db4"
+          MXE_PATH: "/opt/mxe"
+    
     steps:
       - checkout
       - run:
@@ -26,10 +28,6 @@ jobs:
                  git clone https://github.com/mxe/mxe.git 
                  cd /opt/mxe 
                  make MXE_TARGETS="x86_64-w64-mingw32.static" boost 
-                 make MXE_TARGETS="x86_64-w64-mingw32.static" qtbase 
-                 make MXE_TARGETS="x86_64-w64-mingw32.static" qttools 
-                 export MXE_PATH=/opt/mxe 
-                 export PATH=$MXE_PATH/usr/bin:$PATH
       - run:
           name: Build LibPNG
           command: |
@@ -85,36 +83,50 @@ jobs:
                  make -j4
                  make install
       - run:
+          name: Build OpenSSL
+          command: |
+                 cd src
+                 wget 'http://www.openssl.org/source/openssl-1.0.2n.tar.gz'
+                 echo '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe openssl-1.0.2n.tar.gz' | sha256sum - c
+                 tar xvfz openssl-1.0.2n.tar.gz
+                 cd openssl-1.0.2n
+                 CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
+                 LDFLAGS="-L$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" \
+                 ./Configure --cross-compile-prefix=x86_64-w64-mingw32.static- --prefix=$MXE_PATH/usr/x86_64-w64-mingw32.static no-zlib no-shared no-dso no-krb5 no-camellia no-capieng no-cast no-cms no-dtls1 no-gost no-gmp no-heartbeats no-idea no-jpake no-md2 no-mdc2 no-rc5 no-rdrand no-rfc3779 no-rsax no-sctp no-seed no-sha0 no-static_engine no-whirlpool no-rc2 no-rc4 no-ssl2 no-ssl3 mingw64 && \
+                 make depend
+                 make -j4
+                 make install
+      - run:
           name: Build Pink2d Daemon
           command: |          
                  cd src 
                  make -f makefile.linux-mingw DEPSDIR=$MXE_PATH/usr/x86_64-w64-mingw32.static TARGET_PLATFORM=x86_64
                  strip pink2d.exe
-      - run:
-          name: Build Pinkcoin-Qt
-          command: |
-                 MXE_INCLUDE_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/include
-                 MXE_LIB_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/lib
-                 x86_64-w64-mingw32.static-qmake-qt5 pinkcoin-qt.pro \
-                 USE_UPNP=1 \
-                 CONFIG+=c++11 \
-                 USE_QRCODE=1 \
-                 STATIC=all \
-                 RELEASE=1 \
-                 QRENCODE_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-                 QRENCODE_LIB_PATH=$MXE_LIB_PATH  \
-                 BOOST_LIB_SUFFIX=-mt \
-                 BOOST_THREAD_LIB_SUFFIX=_win32-mt \
-                 BOOST_INCLUDE_PATH=$MXE_INCLUDE_PATH/boost \
-                 BOOST_LIB_PATH=$MXE_LIB_PATH \
-                 OPENSSL_INCLUDE_PATH=$MXE_INCLUDE_PATH/openssl \
-                 OPENSSL_LIB_PATH=$MXE_LIB_PATH \
-                 BDB_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-                 BDB_LIB_PATH=$MXE_LIB_PATH \
-                 MINIUPNPC_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-                 MINIUPNPC_LIB_PATH=$MXE_LIB_PATH \
-                 QMAKE_LRELEASE=$MXE_PATH/usr/x86_64-w64-mingw32.static/qt5/bin/lrelease
-                 make -f Makefile.Release
+#      - run:
+#         name: Build Pinkcoin-Qt
+#          command: |
+#                 MXE_INCLUDE_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/include
+#                 MXE_LIB_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/lib
+#                 x86_64-w64-mingw32.static-qmake-qt5 pinkcoin-qt.pro \
+#                 USE_UPNP=1 \
+#                 CONFIG+=c++11 \
+#                 USE_QRCODE=1 \
+#                 STATIC=all \
+#                 RELEASE=1 \
+#                 QRENCODE_INCLUDE_PATH=$MXE_INCLUDE_PATH \
+#                 QRENCODE_LIB_PATH=$MXE_LIB_PATH  \
+#                 BOOST_LIB_SUFFIX=-mt \
+#                 BOOST_THREAD_LIB_SUFFIX=_win32-mt \
+#                 BOOST_INCLUDE_PATH=$MXE_INCLUDE_PATH/boost \
+#                 BOOST_LIB_PATH=$MXE_LIB_PATH \
+#                 OPENSSL_INCLUDE_PATH=$MXE_INCLUDE_PATH/openssl \
+#                 OPENSSL_LIB_PATH=$MXE_LIB_PATH \
+#                 BDB_INCLUDE_PATH=$MXE_INCLUDE_PATH \
+#                 BDB_LIB_PATH=$MXE_LIB_PATH \
+#                 MINIUPNPC_INCLUDE_PATH=$MXE_INCLUDE_PATH \
+#                 MINIUPNPC_LIB_PATH=$MXE_LIB_PATH \
+#                 QMAKE_LRELEASE=$MXE_PATH/usr/x86_64-w64-mingw32.static/qt5/bin/lrelease
+#                 make -f Makefile.Release
       - run:
           name: Set Artifact name as env
           command: |
@@ -125,7 +137,7 @@ jobs:
           command: |
                   mkdir /tmp/build/
                   cp src/pink2d.exe /tmp/build
-                  cp Pinkcoin-Qt.exe /tmp/build
+#                  cp Pinkcoin-Qt.exe /tmp/build
                   tar cvfz /tmp/build/$BUILD_NAME.tar.gz .
       - store_artifacts:
           path: /tmp/build/
