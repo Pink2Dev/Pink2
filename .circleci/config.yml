@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Install Build Depends
           command: |
-                  APT::Install-Recommends "0"; >> /etc/apt/apt.conf && \
+                  echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf && \
                   echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf && \
                   apt-get update && apt-get install \
                   --no-install-recommends \
