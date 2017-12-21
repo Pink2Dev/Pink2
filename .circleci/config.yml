@@ -137,7 +137,6 @@ jobs:
           command: |
                   mkdir /tmp/build/
                   cp src/pink2d.exe /tmp/build
-#                  cp Pinkcoin-Qt.exe /tmp/build
                   tar cvfz /tmp/build/$BUILD_NAME.tar.gz .
       - store_artifacts:
           path: /tmp/build/
