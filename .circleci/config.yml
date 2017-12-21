@@ -18,11 +18,38 @@ jobs:
                   apt-get update && apt-get install \
                   --no-install-recommends \
                   -y \
-                  wget ca-certificates p7zip-full autoconf automake autopoint \
-                 bash bzip2 cmake gettext git g++ libffi-dev \ 
-                 gperf intltool libtool libtool-bin libxml-parser-perl \
-                 make openssl patch perl pkg-config python \
-                 ruby flex bison scons sed unzip wget libgtk2.0-dev
+                  wget \
+                  ca-certificates \
+                  p7zip-full \
+                  autoconf \
+                  automake \
+                  autopoint \
+                  bash \
+                  bzip2 \
+                  cmake \
+                  gettext \
+                  git \
+                  g++ \
+                  libffi-dev \ 
+                  gperf \
+                  intltool \
+                  libtool \
+                  libtool-bin \
+                  libxml-parser-perl \
+                  make \
+                  openssl \
+                  patch \
+                  perl \
+                  pkg-config \
+                  python \
+                  ruby \
+                  flex \
+                  bison \
+                  scons \
+                  sed \
+                  unzip \
+                  wget \
+                  libgtk2.0-dev
       - run:
           name: Build Base MXE Environment
           command: |
