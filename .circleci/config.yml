@@ -94,7 +94,7 @@ jobs:
                  export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src
                  wget 'http://www.openssl.org/source/openssl-1.0.2n.tar.gz'
-                 echo '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe openssl-1.0.2n.tar.gz' | sha256sum - c
+                 echo '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe openssl-1.0.2n.tar.gz' | sha256sum -c
                  tar xvfz openssl-1.0.2n.tar.gz
                  cd openssl-1.0.2n
                  CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
