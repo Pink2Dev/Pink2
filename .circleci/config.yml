@@ -4,18 +4,18 @@ jobs:
   build:
     working_directory: /Pink2
     docker:
-      - image: debian:stretch
+      - image: ubuntu:xenial
         environment:
           FROM_BUILD: "JRedinger"
           BDB_PREFIX: "/Pink2/src/db4"
           MXE_PATH: "/opt/mxe"
-          PATH: "$MXE_PATH/usr/bin:$PATH"
-    
+          
     steps:
       - checkout
       - run:
           name: Install Build Depends
           command: |
+                  export PATH=$MXE_PATH/usr/bin:$PATH
                   echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf && \
                   echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf && \
                   apt-get update && apt-get install \
@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Build Base MXE Environment
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH
                  cd /opt 
                  git clone https://github.com/mxe/mxe.git 
                  cd $MXE_PATH
@@ -32,6 +33,7 @@ jobs:
       - run:
           name: Build LibPNG
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src
                  wget http://download.sourceforge.net/libpng/libpng-1.6.16.tar.gz
                  echo '02f96b6bad5a381d36d7ba7a5d9be3b06f7fe6c274da00707509c23592a073ad  libpng-1.6.16.tar.gz' | sha256sum -c
@@ -42,6 +44,7 @@ jobs:
       - run:
           name: Build QREncode
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src 
                  wget https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz
                  echo 'e794e26a96019013c0e3665cb06b18992668f352c5553d0a553f5d144f7f2a72 qrencode-3.4.4.tar.gz' | sha256sum -c
@@ -58,6 +61,7 @@ jobs:
       - run:
           name: Build MiniUPNPC
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src 
                  wget http://miniupnp.free.fr/files/download.php?file=miniupnpc-1.9.tar.gz -O miniupnpc-1.9.tar.gz 
                  echo '2923e453e880bb949e3d4da9f83dd3cb6f08946d35de0b864d0339cf70934464 miniupnpc-1.9.tar.gz' | sha256sum -c
@@ -74,6 +78,7 @@ jobs:
       - run:
           name: Build BDB4.8
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src 
                  wget 'http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz'
                  echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef db-4.8.30.NC.tar.gz' | sha256sum -c
@@ -86,6 +91,7 @@ jobs:
       - run:
           name: Build OpenSSL
           command: |
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src
                  wget 'http://www.openssl.org/source/openssl-1.0.2n.tar.gz'
                  echo '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe openssl-1.0.2n.tar.gz' | sha256sum - c
@@ -100,6 +106,7 @@ jobs:
       - run:
           name: Build Pink2d Daemon
           command: |          
+                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src 
                  make -f makefile.linux-mingw DEPSDIR=$MXE_PATH/usr/x86_64-w64-mingw32.static TARGET_PLATFORM=x86_64
                  strip pink2d.exe
