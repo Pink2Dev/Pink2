@@ -1864,6 +1864,8 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
     if (!txdb.TxnBegin())
         return error("SetBestChain() : TxnBegin failed");
 
+
+
     if (pindexGenesisBlock == NULL && hash == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet))
     {
         txdb.WriteHashBestChain(hash);
@@ -2120,7 +2122,7 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
 bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) const
 {
     // These are checks that are independent of context
-    // that can be verified before saving an orphan block.
+    // that can be verified before saving an orphan block.    
 
     // Size limits
     if (vtx.empty() || vtx.size() > MAX_BLOCK_SIZE || ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
@@ -2157,6 +2159,8 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
         printf("\nBlockTime: %lli, FutureDrift: %lli\n", GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime));
         return DoS(50, error("CheckBlock() : coinbase timestamp is too early"));
     }
+
+    // check new difficulty target
 
     if (IsProofOfStake())
     {
@@ -2236,8 +2240,13 @@ bool CBlock::AcceptBlock()
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 
+<<<<<<< HEAD
     //if(pindexPrev->nTime > nTime)
     //    return DoS(10, error("AcceptBlock() : Too Late to commit block."));
+=======
+    if(pindexPrev->nTime > nTime)
+        return DoS(10, error("AcceptBlock() : Too Late to commit block."));
+>>>>>>> 216c200... Fix Timewarp Bug
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake(), nTime))
