@@ -8,133 +8,88 @@ jobs:
         environment:
           FROM_BUILD: "JRedinger"
           BDB_PREFIX: "/Pink2/src/db4"
-          MXE_PATH: "/opt/mxe"
-          
+          QRENCODE_PREFIX: "/Pink2/src/qrencode"
+          OPENSSL_PREFIX: "/Pink2/src/openssl"
     steps:
       - checkout
       - run:
           name: Install Build Depends
           command: |
-                  export PATH=$MXE_PATH/usr/bin:$PATH
-                  echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf && \
-                  echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf && \
+                  echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf &&
+                  echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf &&
                   apt-get update && apt-get install \
                   --no-install-recommends \
                   -y \
-                  wget ca-certificates p7zip-full autoconf automake autopoint bash bzip2 cmake gettext git g++ libffi-dev gperf intltool libtool libtool-bin libxml-parser-perl make openssl patch perl pkg-config python ruby flex bison scons sed unzip libgtk2.0-dev
+                  qt5-default qt5-qmake qtbase5-dev-tools \
+                  qttools5-dev-tools build-essential libboost-dev \
+                  libboost-system-dev \
+                  libboost-filesystem-dev \
+                  libboost-program-options-dev \
+                  libboost-thread-dev libssl-dev \
+                  libdb++-dev \
+                  libminiupnpc-dev \
+                  wget \
+                  ca-certificates
       - run:
-          name: Build Base MXE Environment
+          name: Build bdb4.8
           command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH
-                 cd /opt 
-                 git clone https://github.com/mxe/mxe.git 
-                 cd $MXE_PATH
-                 make MXE_TARGETS="x86_64-w64-mingw32.static" boost 
-      - run:
-          name: Build LibPNG
-          command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src
-                 wget http://download.sourceforge.net/libpng/libpng-1.6.16.tar.gz
-                 echo '02f96b6bad5a381d36d7ba7a5d9be3b06f7fe6c274da00707509c23592a073ad  libpng-1.6.16.tar.gz' | sha256sum -c
-                 tar xzvf libpng-1.6.16.tar.gz
-                 cd libpng-1.6.16
-                 CC=x86_64-w64-mingw32.static-gcc AR=x86_64-w64-mingw32.static-ar CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" LDFLAGS="-L$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" ./configure --host=x86_64-w64-mingw32 --prefix=$MXE_PATH/usr/x86_64-w64-mingw32.static --disable-shared
-                 make && make install 
-      - run:
-          name: Build QREncode
-          command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
-                 cd src 
-                 wget https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz
-                 echo 'e794e26a96019013c0e3665cb06b18992668f352c5553d0a553f5d144f7f2a72 qrencode-3.4.4.tar.gz' | sha256sum -c
-                 tar xzvf qrencode-3.4.4.tar.gz
-                 cd qrencode-3.4.4
-                 CC=x86_64-w64-mingw32.static-gcc \
-                 AR=x86_64-w64-mingw32.static-ar \
-                 CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
-                 LDFLAGS="-L$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" \
-                 png_CFLAGS="-I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
-                 png_LIBS="-I$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" \
-                 ./configure --host=x86_64-w64-mingw32 --prefix=$MXE_PATH/usr/x86_64-w64-mingw32.static --disable-shared --enable-static --without-tools
-                 make -j4 install
-      - run:
-          name: Build MiniUPNPC
-          command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
-                 cd src 
-                 wget http://miniupnp.free.fr/files/download.php?file=miniupnpc-1.9.tar.gz -O miniupnpc-1.9.tar.gz 
-                 echo '2923e453e880bb949e3d4da9f83dd3cb6f08946d35de0b864d0339cf70934464 miniupnpc-1.9.tar.gz' | sha256sum -c
-                 tar xzvf miniupnpc-1.9.tar.gz
-                 cd miniupnpc-1.9
-                 CC=x86_64-w64-mingw32.static-gcc \
-                 AR=x86_64-w64-mingw32.static-ar \
-                 CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
-                 LDFLAGS="-L$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" \
-                 make libminiupnpc.a
-                 mkdir $MXE_PATH/usr/x86_64-w64-mingw32.static/include/miniupnpc
-                 cp *.h $MXE_PATH/usr/x86_64-w64-mingw32.static/include/miniupnpc
-                 cp libminiupnpc.a $MXE_PATH/usr/x86_64-w64-mingw32.static/lib
-      - run:
-          name: Build BDB4.8
-          command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
-                 cd src 
+                 mkdir -p $BDB_PREFIX
                  wget 'http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz'
                  echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef db-4.8.30.NC.tar.gz' | sha256sum -c
                  tar -xzvf db-4.8.30.NC.tar.gz
                  cd db-4.8.30.NC/build_unix/
-                 CC=$MXE_PATH/usr/bin/x86_64-w64-mingw32.static-gcc CXX=$MXE_PATH/usr/bin/x86_64-w64-mingw32.static-g++ ../dist/configure --host=x86_64-w64-mingw32 --enable-cxx \
-                 --enable-mingw --disable-replication --disable-shared --prefix=$MXE_PATH/usr/x86_64-w64-mingw32.static 
-                 make -j4
+                 ../dist/configure --enable-cxx \
+                 --disable-shared --with-pic --prefix=$BDB_PREFIX
                  make install
       - run:
-          name: Build OpenSSL
+          name: Build qrencode
           command: |
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
                  cd src
-                 wget 'http://www.openssl.org/source/openssl-1.0.2n.tar.gz'
-                 echo '370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe openssl-1.0.2n.tar.gz' | sha256sum -c
-                 tar xvfz openssl-1.0.2n.tar.gz
-                 cd openssl-1.0.2n
-                 CFLAGS="-DSTATICLIB -I$MXE_PATH/usr/x86_64-w64-mingw32.static/include" \
-                 LDFLAGS="-L$MXE_PATH/usr/x86_64-w64-mingw32.static/lib" \
-                 ./Configure --cross-compile-prefix=x86_64-w64-mingw32.static- --prefix=$MXE_PATH/usr/x86_64-w64-mingw32.static no-zlib no-shared no-dso no-krb5 no-camellia no-capieng no-cast no-cms no-dtls1 no-gost no-gmp no-heartbeats no-idea no-jpake no-md2 no-mdc2 no-rc5 no-rdrand no-rfc3779 no-rsax no-sctp no-seed no-sha0 no-static_engine no-whirlpool no-rc2 no-rc4 no-ssl2 no-ssl3 mingw64 && \
+                 mkdir -p $QRENCODE_PREFIX
+                 wget 'https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz'
+                 echo 'e794e26a96019013c0e3665cb06b18992668f352c5553d0a553f5d144f7f2a72 qrencode-3.4.4.tar.gz' | sha256sum -c
+                 tar -xzvf qrencode-3.4.4.tar.gz
+                 cd qrencode-3.4.4
+                 ./configure --disable-shared --enable-static --without-tools --prefix=$QRENCODE_PREFIX
+                 make install
+
+      - run:
+          name: Build openssl
+          command: |
+                 cd src
+                 mkdir -p $OPENSSL_PREFIX
+                 wget 'https://www.openssl.org/source/openssl-1.0.2l.tar.gz'
+                 echo 'ce07195b659e75f4e1db43552860070061f156a98bb37b672b101ba6e3ddf30c openssl-1.0.2l.tar.gz' | sha256sum -c
+                 tar -xzvf openssl-1.0.2l.tar.gz
+                 cd openssl-1.0.2l
+                 ./Configure  linux-x86_64 no-ssl2 no-ssl3 no-comp --prefix=$OPENSSL_PREFIX no-shared
                  make depend
-                 make -j4
                  make install
       - run:
-          name: Build Pink2d Daemon
-          command: |          
-                 export PATH=$MXE_PATH/usr/bin:$PATH          
-                 cd src 
-                 make -f makefile.linux-mingw DEPSDIR=$MXE_PATH/usr/x86_64-w64-mingw32.static TARGET_PLATFORM=x86_64
-                 strip pink2d.exe
-#      - run:
-#         name: Build Pinkcoin-Qt
-#          command: |
-#                 MXE_INCLUDE_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/include
-#                 MXE_LIB_PATH /opt/mxe/usr/x86_64-w64-mingw32.static/lib
-#                 x86_64-w64-mingw32.static-qmake-qt5 pinkcoin-qt.pro \
-#                 USE_UPNP=1 \
-#                 CONFIG+=c++11 \
-#                 USE_QRCODE=1 \
-#                 STATIC=all \
-#                 RELEASE=1 \
-#                 QRENCODE_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-#                 QRENCODE_LIB_PATH=$MXE_LIB_PATH  \
-#                 BOOST_LIB_SUFFIX=-mt \
-#                 BOOST_THREAD_LIB_SUFFIX=_win32-mt \
-#                 BOOST_INCLUDE_PATH=$MXE_INCLUDE_PATH/boost \
-#                 BOOST_LIB_PATH=$MXE_LIB_PATH \
-#                 OPENSSL_INCLUDE_PATH=$MXE_INCLUDE_PATH/openssl \
-#                 OPENSSL_LIB_PATH=$MXE_LIB_PATH \
-#                 BDB_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-#                 BDB_LIB_PATH=$MXE_LIB_PATH \
-#                 MINIUPNPC_INCLUDE_PATH=$MXE_INCLUDE_PATH \
-#                 MINIUPNPC_LIB_PATH=$MXE_LIB_PATH \
-#                 QMAKE_LRELEASE=$MXE_PATH/usr/x86_64-w64-mingw32.static/qt5/bin/lrelease
-#                 make -f Makefile.Release
+          name: Build pinkcoin-qt
+          command: |
+                  qmake \
+                  USE_UPNP=1 \
+                  USE_DBUS=1 \
+                  CONFIG+=c++11 \
+                  USE_QRCODE=1 \
+                  RELEASE=1 \
+                  BDB_LIB_PATH=$BDB_PREFIX/lib \
+                  BDB_INCLUDE_PATH=$BDB_PREFIX/include \
+                  OPENSSL_INCLUDE_PATH=$OPENSSL_PREFIX/include \
+                  OPENSSL_LIB_PATH=$OPENSSL_PREFIX/lib \
+                  QRENCODE_LIB_PATH=$QRENCODE_PREFIX/lib \
+                  QRENCODE_INCLUDE_PATH=$QRENCODE_PREFIX/include
+                  make -j 2
+                  strip Pinkcoin-Qt
+
+      - run:
+          name: Build headless bin pink2d
+          command: |
+                  cd src
+                  make -j 2 -f makefile.unix STATIC=all USE_UPNP=1 USE_QRCODE=1 BDB_INCLUDE_PATH=$BDB_PREFIX/include BDB_LIB_PATH=$BDB_PREFIX/lib OPENSSL_LIB_PATH=$OPENSSL_PREFIX/lib OPENSSL_INCLUDE_PATH=$OPENSSL_PREFIX/include
+                  strip pink2d
       - run:
           name: Set Artifact name as env
           command: |
@@ -144,8 +99,9 @@ jobs:
           name: Tar artifacts
           command: |
                   mkdir /tmp/build/
-                  cp src/pink2d.exe /tmp/build
+                  cp src/pink2d /tmp/build
+                  cp Pinkcoin-Qt /tmp/build
                   tar cvfz /tmp/build/$BUILD_NAME.tar.gz .
       - store_artifacts:
           path: /tmp/build/
-          destination: windows
+          destination: linux
