@@ -1161,8 +1161,12 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     }
 
-    if (nActualSpacing < 0)
-        nActualSpacing = nTS;
+    if (pindexBest->nHeight < 315065)
+    {
+        if (nActualSpacing < 0)
+            nActualSpacing = nTS;
+    }
+
 
     if (fFlashStake)
         nInterval = nFlashStakeTargetTimespan / (nTS);
@@ -1584,6 +1588,16 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     if (!CheckBlock(!fJustCheck, !fJustCheck, false))
         return false;
 
+    // Get prev block index
+    map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashPrevBlock);
+    if (mi == mapBlockIndex.end())
+        return DoS(10, error("AcceptBlock() : prev block not found"));
+    CBlockIndex* pindexPrev = (*mi).second;
+
+    // Check proof-of-work or proof-of-stake
+    if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake(), nTime))
+        return DoS(100, error("AcceptBlock() : incorrect %s", IsProofOfWork() ? "proof-of-work" : "proof-of-stake"));
+
     //// issue here: it doesn't know the version
     unsigned int nTxPos;
     if (fJustCheck)
@@ -1850,6 +1864,8 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
     if (!txdb.TxnBegin())
         return error("SetBestChain() : TxnBegin failed");
 
+
+
     if (pindexGenesisBlock == NULL && hash == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet))
     {
         txdb.WriteHashBestChain(hash);
@@ -2106,7 +2122,7 @@ bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const u
 bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) const
 {
     // These are checks that are independent of context
-    // that can be verified before saving an orphan block.
+    // that can be verified before saving an orphan block.    
 
     // Size limits
     if (vtx.empty() || vtx.size() > MAX_BLOCK_SIZE || ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION) > MAX_BLOCK_SIZE)
@@ -2116,8 +2132,15 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
     if (fCheckPOW && IsProofOfWork() && !CheckProofOfWork(GetPoWHash(), nBits))
         return DoS(50, error("CheckBlock() : proof of work failed"));
 
+
+
+    int64_t futureLimit = GetBlockTime();
+
+    if (pindexBest->nHeight > 315065)
+        futureLimit = futureLimit + (9 * 60);
+
     // Check timestamp
-    if (GetBlockTime() > FutureDrift(GetAdjustedTime()))
+    if (futureLimit > FutureDrift(GetAdjustedTime()))
     {
         printf("Block Time: %lli Future Drift: %lli", GetBlockTime(), FutureDrift(GetAdjustedTime()));
         return error("CheckBlock() : block timestamp too far in the future");
@@ -2131,11 +2154,13 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
             return DoS(100, error("CheckBlock() : more than one coinbase"));
 
     // Check coinbase timestamp
-    if (GetBlockTime() > FutureDrift((int64_t)vtx[0].nTime))
+    if (futureLimit > FutureDrift((int64_t)vtx[0].nTime))
     {
         printf("\nBlockTime: %lli, FutureDrift: %lli\n", GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime));
         return DoS(50, error("CheckBlock() : coinbase timestamp is too early"));
     }
+
+    // check new difficulty target
 
     if (IsProofOfStake())
     {
@@ -2214,6 +2239,9 @@ bool CBlock::AcceptBlock()
         return DoS(10, error("AcceptBlock() : prev block not found"));
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
+
+    if(pindexPrev->nTime > nTime)
+        return DoS(10, error("AcceptBlock() : Too Late to commit block."));
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake(), nTime))
