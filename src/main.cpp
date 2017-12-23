@@ -2134,8 +2134,11 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 
     int64_t futureLimit = GetBlockTime();
 
-    if (pindexBest->nHeight > 315065)
-        futureLimit = futureLimit + (9 * 60);
+    if (GetHash() != hashGenesisBlock)
+    {
+        if (pindexBest->nHeight > 315065)
+            futureLimit = futureLimit + (9 * 60);
+    }
 
     // Check timestamp
     if (futureLimit > FutureDrift(GetAdjustedTime()))
