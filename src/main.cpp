@@ -2134,8 +2134,11 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 
     int64_t futureLimit = GetBlockTime();
 
-    if (pindexBest->nHeight > 315065)
-        futureLimit = futureLimit + (9 * 60);
+    if (GetHash() != hashGenesisBlock)
+    {
+        if (pindexBest->nHeight > 315065)
+            futureLimit = futureLimit + (9 * 60);
+    }
 
     // Check timestamp
     if (futureLimit > FutureDrift(GetAdjustedTime()))
@@ -2236,18 +2239,9 @@ bool CBlock::AcceptBlock()
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     //if(pindexPrev->nTime > nTime)
     //    return DoS(10, error("AcceptBlock() : Too Late to commit block."));
-=======
-    if(pindexPrev->nTime > nTime)
-        return DoS(10, error("AcceptBlock() : Too Late to commit block."));
->>>>>>> 216c200... Fix Timewarp Bug
-=======
-    //if(pindexPrev->nTime > nTime)
-    //    return DoS(10, error("AcceptBlock() : Too Late to commit block."));
->>>>>>> 351d20b... small fix
+
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake(), nTime))
