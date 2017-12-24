@@ -433,18 +433,18 @@ bool CTxDB::LoadBlockIndex()
     nBestInvalidTrust = bnBestInvalidTrust.getuint256();
 
     // Verify blocks in the best chain
-    int nStartFrom = GetArg("-startfrom", -1);
+    int nStartFrom = GetArg("-startfrom", 0);
     int nCheckLevel = GetArg("-checklevel", 1);
     int nCheckDepth = GetArg( "-checkblocks", 500);
 
     int nReloadDepth = 0;
-    if (nStartFrom > -1)
+    if (nStartFrom > 0)
     {
         nReloadDepth = nBestHeight - nStartFrom;
         printf("LoadBlockIndex() : Continuing chain from block %d.", nStartFrom);
     }
 
-    if (nReloadDepth > nCheckDepth)
+    if (nReloadDepth > 0)
         nCheckDepth = nReloadDepth;
 
 
