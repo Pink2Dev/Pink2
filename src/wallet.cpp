@@ -2738,9 +2738,9 @@ int64_t CWallet::AggregateStakeOut(CTransaction &txNew, int64_t &nReward)
                 stakeOut.SetDestination(stakeOutAddress.Get());
 
                 txNew.vout.push_back(CTxOut(nRewardPC, stakeOut));
-                printf("\nStakeout Coins: %d to Address: %s", nRewardPC, stakeOutAddress.ToString().c_str());
+                //printf("\nStakeout Coins: %d to Address: %s", nRewardPC, stakeOutAddress.ToString().c_str());
             } else {
-                printf("\nAttempt to stakeout over 100%%");
+                //printf("\nAttempt to stakeout over 100%%");
                 percentTotal -= nPercent;
             }
         }
