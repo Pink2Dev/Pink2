@@ -283,6 +283,21 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
 
     nValueIn = nValueIn / COIN; // Don't let amounts less than 1 PINK stake on their own.
 
+
+
+    // FlashPOS 2.0 Begin
+    const unsigned int btFlash2 = fTestNet ? 1534208400 : 1538265600; // September 30th, 2018 @ 12:00am UTC MainNet, August 14th, 2018 @ 1:00am UTC TestNet
+    const unsigned int minFlash2 = 100000; // Minimum coin requirement to stake during FPOS
+
+
+    time_t rawtime;
+    time ( &rawtime );
+    if (IsFlashStake(rawtime) && nTimeTx > btFlash2 && nValueIn < minFlash2)
+        return false;
+
+    // FlashPOS 2.0 End
+
+
     // int64_t nDivideBase = nDayTime;
     bnCoinDayWeight_Calc = nValueIn * GetWeight((int64_t)txPrev.nTime, (int64_t)nTimeTx) / nDayTime;
 

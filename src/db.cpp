@@ -252,6 +252,7 @@ CDB::CDB(const char *pszFile, const char* pszMode) :
         strFile = pszFile;
         ++bitdb.mapFileUseCount[strFile];
         pdb = bitdb.mapDb[strFile];
+
         if (pdb == NULL)
         {
             pdb = new Db(&bitdb.dbenv, 0);
@@ -479,7 +480,7 @@ void CDBEnv::Flush(bool fShutdown)
             else
                 mi++;
         }
-        printf("DBFlush(%s)%s ended %15dms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " db not started", GetTimeMillis() - nStart);
+        printf("DBFlush(%s)%s ended %15" PRId64 "ms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " db not started", GetTimeMillis() - nStart);
         if (fShutdown)
         {
             char** listp;

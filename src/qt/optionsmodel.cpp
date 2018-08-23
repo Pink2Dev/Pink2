@@ -3,8 +3,11 @@
 #include <QSettings>
 
 #include "init.h"
+#include "optionsdialog.h"
 #include "walletdb.h"
 #include "guiutil.h"
+
+#include <QMessageBox>
 
 OptionsModel::OptionsModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -44,8 +47,10 @@ void OptionsModel::Init()
     fMinimizeOnClose = settings.value("fMinimizeOnClose", false).toBool();
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
     fNotificationLevel = settings.value("fNotificationLevel", "Notify on All").toString();
+    fTargetFPOS = settings.value("fTargetFPOS", false).toBool();
     nTransactionFee = settings.value("nTransactionFee").toLongLong();
     nReserveBalance = settings.value("nReserveBalance").toLongLong();
+
     language = settings.value("language", "").toString();
 
     // These are shared with core Bitcoin; we want
@@ -60,6 +65,37 @@ void OptionsModel::Init()
         SoftSetBoolArg("-detachdb", settings.value("detachDB").toBool());
     if (!language.isEmpty())
         SoftSetArg("-lang", language.toStdString());
+
+    // Combine/Split command line/config file options set UI options.
+    // 1000/2000 are defaults that would be changed if these values were set elsewhere.
+    // Override command line options if targetFPOS toggle is set (sets 100k/200k)
+
+    int64_t valSplitThreshold = settings.value("nSplitThreshold").toLongLong();
+    int64_t valCombineThreshold = settings.value("nCombineThreshold").toLongLong();
+
+    if (valCombineThreshold == 0 || valSplitThreshold == 0)
+    {
+        valSplitThreshold = 2000;
+        valCombineThreshold = 1000;
+    }
+
+
+    if (nSplitThreshold == 2000 || valSplitThreshold == 200000)
+    {
+        nSplitThreshold = valSplitThreshold;
+    } else {
+        settings.setValue("nSplitThreshold", (qint64) nSplitThreshold);  // it's already been set, so lets update our settings.
+    }
+
+    if (nCombineThreshold == 1000 || valCombineThreshold == 100000)
+    {
+        nCombineThreshold = valCombineThreshold;
+    } else {
+        settings.setValue("nCombineThreshold", (qint64) nCombineThreshold); // it's already been set, so lets update our settings.
+
+    }
+
+
 }
 
 int OptionsModel::rowCount(const QModelIndex & parent) const
@@ -114,6 +150,12 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return QVariant(fCoinControlFeatures);
         case NotificationLevel:
             return settings.value("fNotificationLevel", "Notify on All");
+        case TargetFPOS:
+            return QVariant(fTargetFPOS);
+        case CombineThreshold:
+            return QVariant((qint64) nCombineThreshold);
+        case SplitThreshold:
+            return QVariant((qint64) nSplitThreshold);
         default:
             return QVariant();
         }
@@ -216,6 +258,35 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             emit notificationLevelChanged(fNotificationLevel);
             }
             break;
+        case TargetFPOS: {
+            fTargetFPOS = value.toBool();
+            settings.setValue("fTargetFPOS", fTargetFPOS);
+            emit targetFPOSChanged(fTargetFPOS);
+            }
+            break;
+        case SplitThreshold:
+            if (value.toLongLong() < dlg->getUiCombineThreshold() || value.toLongLong() < 200)
+            {
+                successful=false;
+                QMessageBox::information(dlg, "Invalid Split Threshold", "Split Threshold must be greater than Combine Threshold and at least 200.");
+                break;
+            }
+
+            nSplitThreshold = value.toLongLong();
+            settings.setValue("nSplitThreshold", (qint64) nSplitThreshold);
+            emit splitThresholdChanged(nSplitThreshold);
+            break;
+        case CombineThreshold:
+            if (value.toLongLong() > dlg->getUiSplitThreshold() || value.toLongLong() < 100)
+            {
+                successful=false;
+                QMessageBox::information(dlg, "Invalid Combine Threshold", "Combine Threshold must be less than Split Threshold and at least 100.");
+                break;
+            }
+            nCombineThreshold = value.toLongLong();
+            settings.setValue("nCombineThreshold", (qint64) nCombineThreshold);
+            emit combineThresholdChanged(nCombineThreshold);
+            break;
         default:
             break;
         }
@@ -224,6 +295,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
 
     return successful;
 }
+
 
 qint64 OptionsModel::getTransactionFee()
 {
@@ -238,6 +310,21 @@ qint64 OptionsModel::getReserveBalance()
 bool OptionsModel::getCoinControlFeatures()
 {
     return fCoinControlFeatures;
+}
+
+bool OptionsModel::getTargetFPOS()
+{
+    return fTargetFPOS;
+}
+
+qint64 OptionsModel::getCombineThreshold()
+{
+    return nCombineThreshold;
+}
+
+qint64 OptionsModel::getSplitThreshold()
+{
+    return nSplitThreshold;
 }
 
 bool OptionsModel::getMinimizeToTray()

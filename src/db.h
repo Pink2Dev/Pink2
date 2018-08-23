@@ -32,7 +32,6 @@ void ThreadFlushStakeDB(void* parg);
 bool BackupWallet(const CWallet& wallet, const std::string& strDest);
 bool BackupStakeDB(const CWallet& stakeDB, const std::string& strDest);
 
-
 class CDBEnv
 {
 private:

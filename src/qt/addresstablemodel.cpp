@@ -726,7 +726,7 @@ bool AddressTableModel::checkStakePercent(std::string address, std::string &perc
 
     if (nPercent > (percentAvailable + updatingPercent))
     {
-        printf("\nStake Percentage would increase total Stakeout over 100%\n"
+        printf("\nStake Percentage would increase total Stakeout over 100%%\n"
                             "Please Reduce Stakeout Percentage or Delete another Stakeout to make room.\n"
                             "Current Available Stakeout Percentage: %s", std::to_string(percentAvailable).c_str());
         return false;

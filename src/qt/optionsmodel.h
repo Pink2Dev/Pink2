@@ -1,6 +1,7 @@
 #ifndef OPTIONSMODEL_H
 #define OPTIONSMODEL_H
 
+#include "optionsdialog.h"
 #include <QAbstractListModel>
 
 /** Interface from Qt to configuration data structure for Bitcoin client.
@@ -32,6 +33,9 @@ public:
         Language,          // QString
         CoinControlFeatures, // bool
         NotificationLevel, // QString
+        TargetFPOS,        // bool
+        SplitThreshold,    // qint64
+        CombineThreshold,  // qint64
         OptionIDRowCount,
     };
 
@@ -49,13 +53,19 @@ public:
     int getDisplayUnit();
     bool getCoinControlFeatures();
     QString getNotificationLevel() { return fNotificationLevel; }
+    bool getTargetFPOS();
+    qint64 getCombineThreshold();
+    qint64 getSplitThreshold();
     QString getLanguage() { return language; }
+
+    OptionsDialog *dlg;
 
 private:
     int nDisplayUnit;
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
     bool fCoinControlFeatures;
+    bool fTargetFPOS;
     QString fNotificationLevel;
     QString language;
 
@@ -65,6 +75,9 @@ signals:
     void reserveBalanceChanged(qint64);
     void coinControlFeaturesChanged(bool);
     void notificationLevelChanged(QString nLevel);
+    void targetFPOSChanged(bool);
+    void combineThresholdChanged(qint64);
+    void splitThresholdChanged(qint64);
 };
 
 #endif // OPTIONSMODEL_H

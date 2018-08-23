@@ -31,7 +31,7 @@ protected:
 
 void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItemV4 optionV4 = option;
+    QStyleOptionViewItem optionV4 = option;  // no idea why it was written this way. V4 is no different and depreciated.
     initStyleOption(&optionV4, index);
 
     QStyle *style = optionV4.widget? optionV4.widget->style() : QApplication::style();
@@ -62,7 +62,7 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
 QSize MessageViewDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    QStyleOptionViewItemV4 options = option;
+    QStyleOptionViewItem options = option;  // same as above.
     initStyleOption(&options, index);
 
     QTextDocument doc;
@@ -285,7 +285,7 @@ void MessagePage::selectionChanged()
         QModelIndexList addressToColumn   = table->selectionModel()->selectedRows(MessageModel::ToAddress);
         QModelIndexList typeColumn        = table->selectionModel()->selectedRows(MessageModel::Type);
 
-        int type;
+        int type = 0;
 
         foreach (QModelIndex index, typeColumn)
             type = (table->model()->data(index).toString() == MessageModel::Sent ? MessageTableEntry::Sent : MessageTableEntry::Received);

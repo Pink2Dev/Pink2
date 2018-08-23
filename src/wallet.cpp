@@ -18,7 +18,7 @@
 using namespace std;
 
 //unsigned int nStakeSplitAge = 1 * 1 * 60 * 60;
-int64_t nStakeCombineThreshold = 1000 * COIN;
+// int64_t nStakeCombineThreshold = 1000 * COIN; Depreciated.
 
 // CBitcoinAddress addrD4L("2LSrmzJMBSEcBMG7WMNxcdzVMH6tXXQH9M");
 
@@ -130,7 +130,7 @@ bool CWallet::LoadCScript(const CScript& redeemScript)
     if (redeemScript.size() > MAX_SCRIPT_ELEMENT_SIZE)
     {
         std::string strAddr = CBitcoinAddress(redeemScript.GetID()).ToString();
-        printf("%s: Warning: This wallet contains a redeemScript of size %u which exceeds maximum size %i thus can never be redeemed. Do not use address %s.\n",
+        printf("%s: Warning: This wallet contains a redeemScript of size %" PRIszu " which exceeds maximum size %u thus can never be redeemed. Do not use address %s.\n",
             __func__, redeemScript.size(), MAX_SCRIPT_ELEMENT_SIZE, strAddr.c_str());
         return true;
     }
@@ -985,7 +985,7 @@ void CWallet::ReacceptWalletTransactions()
                 // Update fSpent if a tx got spent somewhere else by a copy of wallet.dat
                 if (txindex.vSpent.size() != wtx.vout.size())
                 {
-                    printf("ERROR: ReacceptWalletTransactions() : txindex.vSpent.size() %u != wtx.vout.size() %u\n", txindex.vSpent.size(), wtx.vout.size());
+                    printf("ERROR: ReacceptWalletTransactions() : txindex.vSpent.size() %" PRIszu " != wtx.vout.size() %" PRIszu "\n", txindex.vSpent.size(), wtx.vout.size());
                     continue;
                 }
                 for (unsigned int i = 0; i < txindex.vSpent.size(); i++)
@@ -2143,9 +2143,9 @@ bool CWallet::SendStealthMoneyToDestination(CStealthAddress& sxAddress, int64_t 
     
     if (fDebug)
     {
-        printf("Stealth send to generated pubkey %u: %s\n", pkSendTo.size(), HexStr(pkSendTo).c_str());
+        printf("Stealth send to generated pubkey %" PRIszu ": %s\n", pkSendTo.size(), HexStr(pkSendTo).c_str());
         printf("hash %s\n", addrTo.ToString().c_str());
-        printf("ephem_pubkey %u: %s\n", ephem_pubkey.size(), HexStr(ephem_pubkey).c_str());
+        printf("ephem_pubkey %" PRIszu ": %s\n", ephem_pubkey.size(), HexStr(ephem_pubkey).c_str());
     };
     
     std::vector<unsigned char> vchNarr;
@@ -2615,8 +2615,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 				CTxDB txdb("r");
 				if (txNew.GetCoinAge(txdb, nCoinAge))
 				{
-                    uint64_t nTotalSize = pcoin.first->vout[pcoin.second].nValue + GetProofOfStakeReward(nCoinAge, 0, pindexBest->nHeight + 1, txNew.nTime);
-					if (nTotalSize / 2 > nStakeSplitThreshold * COIN)
+                    int64_t nTotalSize = pcoin.first->vout[pcoin.second].nValue + GetProofOfStakeReward(nCoinAge, 0, pindexBest->nHeight + 1, txNew.nTime);
+                    if (nTotalSize > nSplitThreshold * COIN)
 						txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
 				}
 
@@ -2648,13 +2648,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             if (txNew.vin.size() >= 100)
                 break;
             // Stop adding more inputs if value is already pretty significant
-            if (nCredit >= nStakeCombineThreshold)
+            if (nCredit >= (nCombineThreshold * COIN))
                 break;
             // Stop adding inputs if reached reserve limit
             if (nCredit + pcoin.first->vout[pcoin.second].nValue > nBalance - nReserveBalance)
                 break;
             // Do not add additional significant input
-            if (pcoin.first->vout[pcoin.second].nValue >= nStakeCombineThreshold)
+            if (pcoin.first->vout[pcoin.second].nValue >= (nCombineThreshold * COIN))
                 continue;
             // Do not add input that is still too young
             unsigned int nStakeMinAgeCurrent = nStakeMinAge;
@@ -2689,7 +2689,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     nCredit += nReward - stakeOutReward;
     // Set output amount
-    if (txNew.vout.size() == 3 + stakeOutCount)
+    if (txNew.vout.size() == (uint64_t)(3 + stakeOutCount))
     {
         txNew.vout[1].nValue = ((nCredit) / 2 / CENT) * CENT;
         txNew.vout[2].nValue = (nCredit) - txNew.vout[1].nValue;
@@ -2738,10 +2738,8 @@ int64_t CWallet::AggregateStakeOut(CTransaction &txNew, int64_t &nReward)
                 stakeOut.SetDestination(stakeOutAddress.Get());
 
                 txNew.vout.push_back(CTxOut(nRewardPC, stakeOut));
-                printf("\nStakeout Coins: %d to Address: %s", nRewardPC, stakeOutAddress.ToString().c_str());
             } else {
-                printf("\nAttempt to stakeout over 100%%");
-                percentTotal -= nPercent;
+                percentTotal -= nPercent; // Attempted to stakeout over 100%
             }
         }
     }
@@ -2929,7 +2927,6 @@ SDBErrors CWallet::LoadStakeDB(bool& fFirstRunRet)
     return SDB_LOAD_OK;
 }
 
-
 bool CWallet::SetAddressBookName(const CTxDestination& address, const string& strName)
 {
     bool fOwned;
@@ -3017,12 +3014,12 @@ void CWallet::PrintWallet(const CBlock& block)
         if (block.IsProofOfWork() && mapWallet.count(block.vtx[0].GetHash()))
         {
             CWalletTx& wtx = mapWallet[block.vtx[0].GetHash()];
-            printf("    mine:  %d  %d  %d""", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
+            printf("    mine:  %d  %d  %" PRId64 """", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
         }
         if (block.IsProofOfStake() && mapWallet.count(block.vtx[1].GetHash()))
         {
             CWalletTx& wtx = mapWallet[block.vtx[1].GetHash()];
-            printf("    stake: %d  %d  %d""", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
+            printf("    stake: %d  %d  %" PRId64 """", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
          }
 
     }
@@ -3090,7 +3087,7 @@ bool CWallet::NewKeyPool()
             walletdb.WritePool(nIndex, CKeyPool(GenerateNewKey()));
             setKeyPool.insert(nIndex);
         }
-        printf("CWallet::NewKeyPool wrote %d"" new keys\n", nKeys);
+        printf("CWallet::NewKeyPool wrote %" PRId64 """ new keys\n", nKeys);
     }
     return true;
 }
@@ -3120,7 +3117,7 @@ bool CWallet::TopUpKeyPool(unsigned int nSize)
             if (!walletdb.WritePool(nEnd, CKeyPool(GenerateNewKey())))
                 throw runtime_error("TopUpKeyPool() : writing generated key failed");
             setKeyPool.insert(nEnd);
-            printf("keypool added key %d"", size=%u\n", nEnd, setKeyPool.size());
+            printf("keypool added key %" PRId64 """, size=%" PRIszu "\n", nEnd, setKeyPool.size());
         }
     }
     return true;
@@ -3150,7 +3147,7 @@ void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool)
             throw runtime_error("ReserveKeyFromKeyPool() : unknown key in key pool");
         assert(keypool.vchPubKey.IsValid());
         if (fDebug && GetBoolArg("-printkeypool"))
-            printf("keypool reserve %d""\n", nIndex);
+            printf("keypool reserve %" PRId64 """\n", nIndex);
     }
 }
 
@@ -3178,7 +3175,7 @@ void CWallet::KeepKey(int64_t nIndex)
         walletdb.ErasePool(nIndex);
     }
     if(fDebug)
-        printf("keypool keep %d""\n", nIndex);
+        printf("keypool keep %" PRId64 """\n", nIndex);
 }
 
 void CWallet::ReturnKey(int64_t nIndex)
@@ -3189,7 +3186,7 @@ void CWallet::ReturnKey(int64_t nIndex)
         setKeyPool.insert(nIndex);
     }
     if(fDebug)
-        printf("keypool return %d""\n", nIndex);
+        printf("keypool return %" PRId64 """\n", nIndex);
 }
 
 bool CWallet::GetKeyFromPool(CPubKey& result, bool fAllowReuse)

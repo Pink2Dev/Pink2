@@ -74,7 +74,7 @@ namespace GUIUtil
     // Determine whether a widget is hidden behind other windows
     bool isObscured(QWidget *w);
 
-    // Open pinkconf.txt
+    // Open pinkconf.txt / pinkcoin.conf
     void openConfFile();
 
     // Open debug.log
