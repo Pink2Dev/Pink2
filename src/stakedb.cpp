@@ -12,9 +12,6 @@
 using namespace std;
 using namespace boost;
 
-
-static uint64_t nAccountingentryNumber = 0;
-
 //
 // CStakeDB
 //
@@ -206,7 +203,7 @@ void ThreadFlushStakeDB(void* parg)
                         bitdb.CheckpointLSN(strFile);
 
                         bitdb.mapFileUseCount.erase(mi++);
-                        printf("Flushed stake.dat %dms\n", GetTimeMillis() - nStart);
+                        printf("Flushed stake.dat %" PRId64 "ms\n", GetTimeMillis() - nStart);
                     }
                 }
             }
@@ -267,7 +264,7 @@ bool CStakeDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
     // Set -rescan so any missing transactions will be
     // found.
     int64_t now = GetTime();
-    std::string newFilename = strprintf("stake.%d.bak", now);
+    std::string newFilename = strprintf("stake.%" PRId64 ".bak", now);
 
     int result = dbenv.dbenv.dbrename(NULL, filename.c_str(), NULL,
                                       newFilename.c_str(), DB_AUTO_COMMIT);
@@ -286,7 +283,7 @@ bool CStakeDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
         printf("Salvage(aggressive) found no records in %s.\n", newFilename.c_str());
         return false;
     }
-    printf("Salvage(aggressive) found %u records\n", salvagedData.size());
+    printf("Salvage(aggressive) found %" PRIszu " records\n", salvagedData.size());
 
     bool fSuccess = allOK;
     Db* pdbCopy = new Db(&dbenv.dbenv, 0);
@@ -312,8 +309,6 @@ bool CStakeDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
             CDataStream ssValue(row.second, SER_DISK, CLIENT_VERSION);
             string strType, strErr;
             bool fReadOK = ReadKeyValue(&dummyStakeDB, ssKey, ssValue, strType, strErr);
-//            if (!IsKeyType(strType))
-//                continue;
             if (!fReadOK)
             {
                 printf("WARNING: CStakeDB::Recover skipping %s: %s\n", strType.c_str(), strErr.c_str());

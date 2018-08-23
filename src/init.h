@@ -6,7 +6,6 @@
 #define BITCOIN_INIT_H
 
 #include "wallet.h"
-
 namespace boost {
     class thread_group;
 } // namespace boost

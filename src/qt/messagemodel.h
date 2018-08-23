@@ -1,13 +1,14 @@
 #ifndef MESSAGEMODEL_H
 #define MESSAGEMODEL_H
 
+#include <QSortFilterProxyModel> // Must include before other headers that include util.h to avoid compiler warnings.
+
 #include "uint256.h"
 
 #include <vector>
 #include "allocators.h" /* for SecureString */
 #include "smessage.h"
 #include <map>
-#include <QSortFilterProxyModel>
 #include <QAbstractTableModel>
 #include <QStringList>
 #include <QDateTime>

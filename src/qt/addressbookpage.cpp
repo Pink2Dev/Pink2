@@ -272,6 +272,8 @@ void AddressBookPage::onEditAction()
         case StakingTab:
         useMode = EditAddressDialog::EditStakingAddress;
         break;
+        default:
+        useMode = EditAddressDialog::EditReceivingAddress;  // Should *never* happen. Just putting here to clear up a compiler warning.
     }
 
     EditAddressDialog dlg(useMode, this);
@@ -322,20 +324,24 @@ void AddressBookPage::on_newAddressButton_clicked()
     switch (tab)
     {
         case SendingTab:
-        useMode = EditAddressDialog::NewSendingAddress;
-        break;
+            useMode = EditAddressDialog::NewSendingAddress;
+            break;
         case ReceivingTab:
-        useMode = EditAddressDialog::NewReceivingAddress;
-        break;
+            useMode = EditAddressDialog::NewReceivingAddress;
+            break;
         case StakingTab:
-        int okToSave = QMessageBox::warning(this, "Warning", "Please Note: Most services such as Exchanges do not currently support receiving\n"
-                                                  "side-stakes. If you set your stakes to go to an exchange or other service, they\n"
-                                                  "will not credit to your account. Please do not set your stakes to go to a service\n"
-                                                  "unless you're sure they support the feature.", QMessageBox::Ok, QMessageBox::Cancel);
-        if (okToSave != QMessageBox::Ok)
-            okToContinue = false;
-        useMode = EditAddressDialog::NewStakingAddress;
-        break;
+        {
+            int okToSave = QMessageBox::warning(this, "Warning", "Please Note: Most services such as Exchanges do not currently support receiving\n"
+                                                             "side-stakes. If you set your stakes to go to an exchange or other service, they\n"
+                                                             "will not credit to your account. Please do not set your stakes to go to a service\n"
+                                                             "unless you're sure they support the feature.", QMessageBox::Ok, QMessageBox::Cancel);
+            if (okToSave != QMessageBox::Ok)
+                okToContinue = false;
+            useMode = EditAddressDialog::NewStakingAddress;
+            break;
+        }
+        default:
+            useMode = EditAddressDialog::NewReceivingAddress; // Should never happen, just putting here to clear up a compiler warning.
     }
 
     if (okToContinue)

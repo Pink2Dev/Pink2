@@ -23,7 +23,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">
@@ -123,52 +123,6 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="labelNotifications">
-           <property name="text">
-            <string>Notifications</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboNotificationLevel">
-           <item>
-            <property name="text">
-             <string>Notify on All</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Notify on Send/Receipt of Coins Only</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Disable Notifications</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
          <property name="toolTip">
           <string>Automatically start Pinkcoin after logging in to the system.</string>
@@ -187,6 +141,19 @@
           <string>&amp;Detach databases at shutdown</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -363,7 +330,40 @@
       <attribute name="title">
        <string>&amp;Display</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_Display">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="labelNotifications">
+           <property name="text">
+            <string>Notifications:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboNotificationLevel">
+           <item>
+            <property name="text">
+             <string>Notify on All</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Notify on Send/Receipt of Coins Only</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Disable Notifications</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_1_Display">
          <item>
@@ -413,17 +413,169 @@
         </layout>
        </item>
        <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabStakes">
+      <attribute name="title">
+       <string>&amp;Stakes</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="labelSplitThreshold">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Split coin chunks larger than this size when staking.</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The wallet holds coins in chunks in the size that you receive them.&lt;br/&gt;&lt;br/&gt;For example, if Suzy sends me 20 PINK, Andy sends me 300 PINK, and BOB sends me 1000 PINK, I will have 1320 PINK in my wallet - 1 chunk of 1000, 1 chunk of 300, and 1 chunk of 20. &lt;br/&gt;&lt;br/&gt;Too many chunks in your wallet can make your wallet run slowly. Too few will cause you to stake less. &lt;br/&gt;&lt;br/&gt;Coin chunks larger than this amount will be split into two equal amounts when they stake. &lt;br/&gt;&lt;br/&gt;Maintaining a wallet with fewer than 1000 chunks is recommended.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Split Threshold:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="splitThreshold">
+           <property name="acceptDrops">
+            <bool>false</bool>
+           </property>
+           <property name="inputMethodHints">
+            <set>Qt::ImhDigitsOnly</set>
+           </property>
+           <property name="text">
+            <string>2000</string>
+           </property>
+           <property name="maxLength">
+            <number>10</number>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Combine coin chunks up to this amount when staking.</string>
+           </property>
+           <property name="whatsThis">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The wallet holds coins in chunks in the size that you receive them.&lt;br/&gt;&lt;br/&gt;For example, if Suzy sends me 20 PINK, Andy sends me 300 PINK, and BOB sends me 1000 PINK, I will have 1320 PINK in my wallet - 1 chunk of 1000, 1 chunk of 300, and 1 chunk of 20. &lt;br/&gt;&lt;br/&gt;Too many chunks in your wallet can make your wallet run slowly. Too few will cause you to stake less. &lt;br/&gt;&lt;br/&gt;This setting allows you maintain a minimum coin chunk size within your wallet. Amounts smaller than this will be combined together up to this amount. &lt;/p&gt;&lt;p&gt;Maintaining a wallet with fewer than 1000 chunks is recommended.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Combine Threshold:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="combineThreshold">
+           <property name="acceptDrops">
+            <bool>false</bool>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="inputMethodHints">
+            <set>Qt::ImhDigitsOnly</set>
+           </property>
+           <property name="text">
+            <string>1000</string>
+           </property>
+           <property name="maxLength">
+            <number>10</number>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QCheckBox" name="coinControlFeatures">
          <property name="toolTip">
           <string>Whether to show coin control features or not.</string>
          </property>
+         <property name="statusTip">
+          <string>Coin Chunk management interface available from the Send tab.</string>
+         </property>
          <property name="text">
-          <string>Display coin &amp;control features (experts only!)</string>
+          <string>Enable Coin Control</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_Display">
+        <widget class="QCheckBox" name="targetFPOS">
+         <property name="text">
+          <string>Auto-Target FPOS (requires at least 100,000 PINK balance.)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -438,19 +590,6 @@
       </layout>
      </widget>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_Buttons">

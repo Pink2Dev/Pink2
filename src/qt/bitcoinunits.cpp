@@ -103,7 +103,7 @@ QString BitcoinUnits::format(int unit, qint64 n, bool fPlus, int maxPrecision)
 
     // Right-trim excess zeros after the decimal point
     int nTrim = 0;
-    for (int i = remainder_str.size()-1; i>=2 && (remainder_str.at(i) == '0') || i>=maxPrecision; --i)
+    for (int i = remainder_str.size()-1; (i>=2 && (remainder_str.at(i) == '0')) || i>=maxPrecision; --i)
         ++nTrim;
     remainder_str.chop(nTrim);
 

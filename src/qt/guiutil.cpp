@@ -179,6 +179,8 @@ QString getEntryData(QAbstractItemView *view, int column, int role)
         // Copy first item
         return selection.at(0).data(role).toString();
     }
+
+    return "";
 }
 
 QString getSaveFileName(QWidget *parent, const QString &caption,
@@ -273,12 +275,17 @@ void openConfFile()
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(QString::fromStdString(pathConf.string())));
     } else {
-        QFile file;
-        file.setFileName(QString::fromStdString(pathConf.string()));
-        file.open(QIODevice::ReadWrite | QIODevice::Text);
-        file.close();
+        boost::filesystem::path pathConf2 = GetDataDir() / "pinkcoin.conf";
+        if (boost::filesystem::exists(pathConf2))
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QString::fromStdString(pathConf.string())));
+        else {
+            QFile file;
+            file.setFileName(QString::fromStdString(pathConf.string()));
+            file.open(QIODevice::ReadWrite | QIODevice::Text);
+            file.close();
 
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QString::fromStdString(pathConf.string())));
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QString::fromStdString(pathConf.string())));
+        }
     }
 
 }

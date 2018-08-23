@@ -53,7 +53,6 @@ jobs:
                  cd qrencode-3.4.4
                  ./configure --disable-shared --enable-static --without-tools --prefix=$QRENCODE_PREFIX
                  make install
-
       - run:
           name: Build openssl
           command: |
@@ -83,7 +82,6 @@ jobs:
                   QRENCODE_INCLUDE_PATH=$QRENCODE_PREFIX/include
                   make -j 2
                   strip Pinkcoin-Qt
-
       - run:
           name: Build headless bin pink2d
           command: |
@@ -104,4 +102,4 @@ jobs:
                   tar cvfz /tmp/build/$BUILD_NAME.tar.gz .
       - store_artifacts:
           path: /tmp/build/
-          destination: linux
+destination: linux

@@ -818,7 +818,6 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                      </item>
                     </layout>
                     <zorder>listTransactions</zorder>
-                    <zorder></zorder>
                    </widget>
                   </item>
                  </layout>

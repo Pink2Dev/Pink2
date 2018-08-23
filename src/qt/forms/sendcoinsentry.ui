@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>729</width>
-    <height>142</height>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
     <number>12</number>
    </property>
    <item row="6" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_1">
      <property name="text">
       <string>A&amp;mount:</string>
      </property>
@@ -70,7 +70,7 @@
     </layout>
    </item>
    <item row="5" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_3">
      <property name="text">
       <string>N&amp;ote:</string>
      </property>

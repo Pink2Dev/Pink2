@@ -861,7 +861,7 @@ void BitcoinGUI::optionsClicked()
     if(!clientModel || !clientModel->getOptionsModel())
         return;
     OptionsDialog dlg;
-    dlg.setModel(clientModel->getOptionsModel());
+    dlg.setModel(clientModel->getOptionsModel(), &dlg);
     dlg.exec();
 }
 

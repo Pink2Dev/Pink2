@@ -5,14 +5,14 @@
 #TARGET_PLATFORM:=i686
 #TARGET_PLATFORM:=x86_64
 
-DEPSDIR:=/mnt/mxe/usr/$(TARGET_PLATFORM)-w64-mingw32.static
+DEPSDIR:=/usr/$(TARGET_PLATFORM)-w64-mingw32
 INCDIR:=$(DEPSDIR)/include
 LIBDIR:=$(DEPSDIR)/lib
-AR:=$(TARGET_PLATFORM)-w64-mingw32.static-ar
-CC:=$(TARGET_PLATFORM)-w64-mingw32.static-gcc
-CXX:=$(TARGET_PLATFORM)-w64-mingw32.static-g++
-RANLIB=$(TARGET_PLATFORM)-w64-mingw32.static-ranlib
-STRIP=$(TARGET_PLATFORM)-w64-mingw32.static-strip
+AR:=$(TARGET_PLATFORM)-w64-mingw32-ar
+CC:=$(TARGET_PLATFORM)-w64-mingw32-gcc
+CXX:=$(TARGET_PLATFORM)-w64-mingw32-g++
+RANLIB=$(TARGET_PLATFORM)-w64-mingw32-ranlib
+STRIP=$(TARGET_PLATFORM)-w64-mingw32-strip
 
 
 INCLUDEPATHS= \
@@ -26,11 +26,11 @@ LIBPATHS= \
  -L"$(LIBDIR)"
 
 LIBS= \
- -l boost_system-mt \
- -l boost_filesystem-mt \
- -l boost_program_options-mt \
- -l boost_thread_win32-mt \
- -l boost_chrono-mt \
+ -l boost_system-mt-s \
+ -l boost_filesystem-mt-s \
+ -l boost_program_options-mt-s \
+ -l boost_thread_win32-mt-s \
+ -l boost_chrono-mt-s \
  -l db_cxx \
  -l ssl \
  -l crypto \
@@ -38,7 +38,7 @@ LIBS= \
 
 DEFS=-D_MT -DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -DBOOST_SPIRIT_THREADSAFE
 DEBUGFLAGS=-g
-CFLAGS=-O3 -msse2 -w -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
+CFLAGS=-O2 -std=c++11 -msse2 -w -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
 LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -static-libgcc -static-libstdc++
 
 ifndef USE_UPNP
@@ -91,7 +91,9 @@ OBJS= \
     obj/scrypt-x86_64.o \
 	obj/stakedb.o \
     obj/smessage.o \
-    obj/stealth.o 
+    obj/stealth.o \
+    obj/vote.o \
+    obj/votedb.o 
 
 all: pink2d.exe
 

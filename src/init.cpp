@@ -110,7 +110,7 @@ void Shutdown(void* parg)
     else
     {
         while (!fExit)
-            MilliSleep(500);
+            MilliSleep(100);
         MilliSleep(100);
         ExitThread(0);
     }
@@ -321,6 +321,7 @@ std::string HelpMessage()
         "  -keypool=<n>           " + _("Set key pool size to <n> (default: 100)") + "\n" +
         "  -rescan                " + _("Rescan the block chain for missing wallet transactions") + "\n" +
         "  -salvagewallet         " + _("Attempt to recover private keys from a corrupt wallet.dat") + "\n" +
+        "  -startfrom=<n>         " + _("Resync blockchain from a specific block number") +
         "  -checkblocks=<n>       " + _("How many blocks to check at startup (default: 500, 0 = all)") + "\n" +
         "  -checklevel=<n>        " + _("How thorough the block verification is (0-6, default: 1)") + "\n" +
         "  -loadblock=<file>      " + _("Imports blocks from external blk000?.dat file") + "\n" +
@@ -540,7 +541,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     // strStakeDBFileName must be a plain filename without a directory
     if (strStakeDBFileName != boost::filesystem::basename(strStakeDBFileName) + boost::filesystem::extension(strStakeDBFileName))
-        return InitError(strprintf(_("Wallet %s resides outside data directory %s."), strStakeDBFileName.c_str(), strDataDir.c_str()));
+        return InitError(strprintf(_("DB %s resides outside data directory %s."), strStakeDBFileName.c_str(), strDataDir.c_str()));
 
     // Make sure only a single Bitcoin process is using the data directory.
     boost::filesystem::path pathLockFile = GetDataDir() / ".lock";
@@ -738,6 +739,25 @@ bool AppInit2(boost::thread_group& threadGroup)
         }
     }
 
+    bool targetFPOS = false;
+    if (nSplitThreshold == 200000 && nCombineThreshold == 100000)
+        targetFPOS = true;
+
+
+    int64_t valSplitThreshold;
+    int64_t valCombineThreshold;
+
+    valSplitThreshold = GetArg("-splitthreshold", nSplitThreshold);
+    valCombineThreshold = GetArg("-combinethreshold", nCombineThreshold);
+
+    if (valSplitThreshold >= valCombineThreshold && !targetFPOS)
+    {
+            nSplitThreshold = valSplitThreshold;
+            nCombineThreshold = valCombineThreshold;
+    } else {
+            InitError(_("Split threshold must be more than the combine threshold; Combined threshold must be half the split threshold or less."));
+    }
+
     if (mapArgs.count("-checkpointkey")) // ppcoin: checkpoint master priv key
     {
         if (!Checkpoints::SetCheckpointPrivKey(GetArg("-checkpointkey", "")))
@@ -780,7 +800,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         printf("Shutdown requested. Exiting.\n");
         return false;
     }
-    printf(" block index %15dms\n", GetTimeMillis() - nStart);
+    printf(" block index %15" PRId64 "ms\n", GetTimeMillis() - nStart);
 
     if (GetBoolArg("-printblockindex") || GetBoolArg("-printblocktree"))
     {
@@ -866,7 +886,6 @@ bool AppInit2(boost::thread_group& threadGroup)
             strErrors << _("Error loading stake.dat") << "\n";
     }
 
-
     if (GetBoolArg("-upgradewallet", fFirstRun))
     {
         int nMaxVersion = GetArg("-upgradewallet", 0);
@@ -897,7 +916,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     printf("%s", strErrors.str().c_str());
-    printf(" wallet      %15dms\n", GetTimeMillis() - nStart);
+    printf(" wallet      %15" PRId64 "ms\n", GetTimeMillis() - nStart);
 
     RegisterWallet(pwalletMain);
     RegisterWallet(pstakeDB);
@@ -918,7 +937,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         printf("Rescanning last %i blocks (from block %i)...\n", pindexBest->nHeight - pindexRescan->nHeight, pindexRescan->nHeight);
         nStart = GetTimeMillis();
         pwalletMain->ScanForWalletTransactions(pindexRescan, true);
-        printf(" rescan      %15dms\n", GetTimeMillis() - nStart);
+        printf(" rescan      %15" PRId64 "ms\n", GetTimeMillis() - nStart);
     }
 
     // ********************************************************* Step 9: import blocks
@@ -960,7 +979,7 @@ bool AppInit2(boost::thread_group& threadGroup)
             printf("Invalid or missing peers.dat; recreating\n");
     }
 
-    printf("Loaded %i addresses from peers.dat  %dms\n",
+    printf("Loaded %i addresses from peers.dat  %" PRId64 "ms\n",
            addrman.size(), GetTimeMillis() - nStart);
     
     
@@ -976,11 +995,11 @@ bool AppInit2(boost::thread_group& threadGroup)
     RandAddSeedPerfmon();
 
     //// debug print
-    printf("mapBlockIndex.size() = %u\n",   mapBlockIndex.size());
+    printf("mapBlockIndex.size() = %" PRIszu "\n",   mapBlockIndex.size());
     printf("nBestHeight = %d\n",            nBestHeight);
-    printf("setKeyPool.size() = %u\n",      pwalletMain->setKeyPool.size());
-    printf("mapWallet.size() = %u\n",       pwalletMain->mapWallet.size());
-    printf("mapAddressBook.size() = %u\n",  pwalletMain->mapAddressBook.size());
+    printf("setKeyPool.size() = %" PRIszu "\n",      pwalletMain->setKeyPool.size());
+    printf("mapWallet.size() = %" PRIszu "\n",       pwalletMain->mapWallet.size());
+    printf("mapAddressBook.size() = %" PRIszu "\n",  pwalletMain->mapAddressBook.size());
 
     if (!NewThread(StartNode, NULL))
         InitError(_("Error: could not start node"));
