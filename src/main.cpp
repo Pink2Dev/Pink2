@@ -307,7 +307,12 @@ bool CTransaction::ReadFromDisk(COutPoint prevout)
 
 bool CTransaction::IsStandard() const
 {
-    if (nVersion > CTransaction::CURRENT_VERSION)
+
+    // Accept CURRENT_VERSION +1 Transactions.
+    if (nVersion > CTransaction::CURRENT_VERSION && nTime < 1538265600)
+        return false;
+
+    if (nVersion > CTransaction::CURRENT_VERSION + 1)
         return false;
 
     BOOST_FOREACH(const CTxIn& txin, vin)
@@ -2226,7 +2231,11 @@ bool CBlock::AcceptBlock()
 
     if (!fTestNet)
     {
-        if (nVersion > CURRENT_VERSION)
+        // After 2.2 update, we will allow CURRENT_VERSION +1 blocks
+        // As these will be strictly softforks.
+        if (nVersion > CURRENT_VERSION && nTime < 1538265600)
+            return DoS(100, error("AcceptBlock() : reject unknown block version %d", nVersion));
+        else if (nVersion > CURRENT_VERSION + 1)
             return DoS(100, error("AcceptBlock() : reject unknown block version %d", nVersion));
     }
 
