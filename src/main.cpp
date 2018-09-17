@@ -1767,8 +1767,8 @@ bool static Reorganize(CTxDB& txdb, CBlockIndex* pindexNew)
         vConnect.push_back(pindex);
     reverse(vConnect.begin(), vConnect.end());
 
-    printf("REORGANIZE: Disconnect %" PRIszu " blocks; %s..%s\n", vDisconnect.size(), pfork->GetBlockHash().ToString().substr(0,20).c_str(), pindexBest->GetBlockHash().ToString().substr(0,20).c_str());
-    printf("REORGANIZE: Connect %" PRIszu " blocks; %s..%s\n", vConnect.size(), pfork->GetBlockHash().ToString().substr(0,20).c_str(), pindexNew->GetBlockHash().ToString().substr(0,20).c_str());
+    printf("REORGANIZE: Disconnect %" PRIszu " blocks; %s..%s\n", vDisconnect.size(), pfork->GetBlockHash().ToString().c_str(), pindexBest->GetBlockHash().ToString().c_str());
+    printf("REORGANIZE: Connect %" PRIszu " blocks; %s..%s\n", vConnect.size(), pfork->GetBlockHash().ToString().c_str(), pindexNew->GetBlockHash().ToString().c_str());
 
     // Disconnect shorter branch
     list<CTransaction> vResurrect;
@@ -2251,10 +2251,6 @@ bool CBlock::AcceptBlock()
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 
-    //if(pindexPrev->nTime > nTime)
-    //    return DoS(10, error("AcceptBlock() : Too Late to commit block."));
-
-
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake(), nTime))
         return DoS(100, error("AcceptBlock() : incorrect %s", IsProofOfWork() ? "proof-of-work" : "proof-of-stake"));
@@ -2408,7 +2404,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // If don't already have its previous block, shunt it off to holding area until we get it
     if (!mapBlockIndex.count(pblock->hashPrevBlock))
     {
-        printf("ProcessBlock: ORPHAN BLOCK, prev=%s\n", pblock->hashPrevBlock.ToString().substr(0,20).c_str());
+        printf("ProcessBlock: ORPHAN BLOCK, orphan=%s prev=%s\n", pblock->GetHash().ToString().c_str(), pblock->hashPrevBlock.ToString().c_str());
         // ppcoin: check proof-of-stake
         if (pblock->IsProofOfStake())
         {
@@ -2434,6 +2430,42 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         }
         return true;
     }
+
+
+    // Get prev block index (we do this twice, once here and once in acceptblock. Rewrite better later)
+    map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(pblock->hashPrevBlock);
+    if (mi == mapBlockIndex.end())
+        return pblock->DoS(10, error("ProcessBlock() : prev block not found"));
+    CBlockIndex* pindexPrev = (*mi).second;
+    int nHeight = pindexPrev->nHeight+1;
+
+    // If a block is trying to replace our best tip, we will only consider it accetible if ALL of the blocks that it is
+    // trying to replace have less than desirable spacing or our best blocks are less than 2 minutes seconds old.
+    int64_t nNow = GetAdjustedTime();
+    int heightDiff = pindexBest->nHeight - nHeight;
+    if(pindexBest->nTime > 1537340400 && heightDiff > -1) {  //  Tuesday, September 19, 2018 7:00:00 AM UTC, can get rid of the time after the fork as it only applies to live blockchain updates.
+        printf("We're checking this one out. \n");
+        CBlockIndex *pindexBestCheck;
+        for (pindexBestCheck = pindexBest ; pindexBestCheck->nHeight + 1 > nHeight; pindexBestCheck = pindexBestCheck->pprev)
+        {
+            CBlockIndex* pindexCPrev = pindexBestCheck->pprev;
+            CBlockIndex* pindexCPrevPrev = pindexBestCheck->pprev->pprev;
+            if (pindexBestCheck->nTime < nNow - 120 && (pindexBestCheck->nTime > pindexCPrev->nTime + 30 || pindexBestCheck->nTime > pindexCPrevPrev->nTime + 60)){
+                printf("Checked block %s, nTime=%" PRIu64", prev->nTime=%" PRIu64", prev->prev->nTime=%" PRIu64"\n", pindexBestCheck->GetBlockHash().GetHex().c_str(), (uint64_t)pindexBestCheck->nTime, (uint64_t)pindexCPrev->nTime, (uint64_t)pindexCPrevPrev->nTime);
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (bestcheck) \n"));
+            }
+            printf("Checked block %s, nTime=%" PRIu64", prev->nTime=%" PRIu64", prev->prev->nTime=%" PRIu64"\n", pindexBestCheck->GetBlockHash().GetHex().c_str(), (uint64_t)pindexBestCheck->nTime, (uint64_t)pindexCPrev->nTime, (uint64_t)pindexCPrevPrev->nTime);
+        }
+
+        if (pindexBest->nTime < nNow - 120)
+        {
+            if (IsFlashStake(pindexBest->nTime) && pindexBestCheck->nTime < pindexBest->nTime - ((pindexBest->nHeight - pindexBestCheck->nHeight) * 30))
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
+            else if (pindexBestCheck->nTime < pindexBest->nTime - ((pindexBest->nHeight - pindexBestCheck->nHeight) * 60))
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
+        }
+    }
+
 
     // Store to disk
     if (!pblock->AcceptBlock())

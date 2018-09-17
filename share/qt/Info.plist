@@ -7,24 +7,24 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>$VERSION, Copyright © 2016-$YEAR The Pinkcoin developers</string>
+        <string>2.2.0.2 CryptoROX, Copyright © 2016-2018 The Pinkcoin developers</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$VERSION</string>
+        <string>2.2.0.2</string>
 	<key>CFBundleVersion</key>
-	<string>$VERSION</string>
+        <string>2.2.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
 	<string>Pinkcoin-Qt</string>
 	<key>CFBundleIdentifier</key>
-        <string>ca.pinkcoin.Pinkcoin-Qt</string>
+        <string>pink.with.Pinkcoin-Qt</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-                        <string>ca.pinkcoin.PinkcoinPayment</string>
+                        <string>pink.with.PinkcoinPayment</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pinkcoin</string>
