@@ -2355,8 +2355,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 
     // Check for duplicate
     uint256 hash = pblock->GetHash();
-    if (!!Checkpoints::WantedByPendingSyncCheckpoint(hash)) { // Temporarily leaving improper spacing for github diff readability.
-
     if (mapBlockIndex.count(hash))
         return error("ProcessBlock() : already have block %d %s", mapBlockIndex[hash]->nHeight, hash.ToString().substr(0,20).c_str());
     if (mapOrphanBlocks.count(hash))
@@ -2365,7 +2363,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // ppcoin: check proof-of-stake
     // Limited duplicity on stake: prevents block flood attack
     // Duplicate stake allowed only when there is orphan child block
-    if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) /* && !Checkpoints::WantedByPendingSyncCheckpoint(hash)*/)
+    if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake()) && !mapOrphanBlocksByPrev.count(hash) && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
         return error("ProcessBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, hash.ToString().c_str());
 
     // Preliminary checks
@@ -2373,7 +2371,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         return error("ProcessBlock() : CheckBlock FAILED");
 
     CBlockIndex* pcheckpoint = Checkpoints::GetLastSyncCheckpoint();
-    if (pcheckpoint && pblock->hashPrevBlock != hashBestChain /* && !Checkpoints::WantedByPendingSyncCheckpoint(hash) */)
+    if (pcheckpoint && pblock->hashPrevBlock != hashBestChain && !Checkpoints::WantedByPendingSyncCheckpoint(hash))
     {
         // Extra checks to prevent "fill up memory by spamming with bogus blocks"
         int64_t deltaTime = pblock->GetBlockTime() - pcheckpoint->nTime;
@@ -2397,13 +2395,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
                 pfrom->Misbehaving(100);
             return error("ProcessBlock() : block with too little %s", pblock->IsProofOfStake()? "proof-of-stake" : "proof-of-work");
         }
-    }
-
-    } else {
-
-        // Preliminary checks
-        if (!pblock->CheckBlock())
-            return error("ProcessBlock() : CheckBlock FAILED");
     }
 
     // ppcoin: ask for pending sync-checkpoint if any
@@ -2461,7 +2452,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
             CBlockIndex* pindexCPrevPrev = pindexBestCheck->pprev->pprev;
             if (pindexBestCheck->nTime < nNow - 120 && (pindexBestCheck->nTime > pindexCPrev->nTime + 30 || pindexBestCheck->nTime > pindexCPrevPrev->nTime + 60)){
                 printf("Checked block %s, nTime=%" PRIu64", prev->nTime=%" PRIu64", prev->prev->nTime=%" PRIu64"\n", pindexBestCheck->GetBlockHash().GetHex().c_str(), (uint64_t)pindexBestCheck->nTime, (uint64_t)pindexCPrev->nTime, (uint64_t)pindexCPrevPrev->nTime);
-                return pblock->DoS(50, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (bestcheck) \n"));
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (bestcheck) \n"));
             }
             printf("Checked block %s, nTime=%" PRIu64", prev->nTime=%" PRIu64", prev->prev->nTime=%" PRIu64"\n", pindexBestCheck->GetBlockHash().GetHex().c_str(), (uint64_t)pindexBestCheck->nTime, (uint64_t)pindexCPrev->nTime, (uint64_t)pindexCPrevPrev->nTime);
         }
@@ -2469,9 +2460,9 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         if (pindexBest->nTime < nNow - 120)
         {
             if (IsFlashStake(pindexBest->nTime) && pindexBestCheck->nTime < pindexBest->nTime - ((pindexBest->nHeight - pindexBestCheck->nHeight) * 30))
-                return pblock->DoS(50, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
             else if (pindexBestCheck->nTime < pindexBest->nTime - ((pindexBest->nHeight - pindexBestCheck->nHeight) * 60))
-                return pblock->DoS(50, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
+                return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
         }
     }
 
