@@ -2443,7 +2443,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // trying to replace have less than desirable spacing or our best blocks are less than 2 minutes seconds old.
     int64_t nNow = GetAdjustedTime();
     int heightDiff = pindexBest->nHeight - nHeight;
-    if(pindexBest->nTime > 1537340400 && heightDiff > -1) {  //  Tuesday, September 19, 2018 7:00:00 AM UTC, can get rid of the time after the fork as it only applies to live blockchain updates.
+    if(pindexBest->nTime > 1537340400 && heightDiff > -1 && !Checkpoints::WantedByPendingSyncCheckpoint(hash)) {  //  Tuesday, September 19, 2018 7:00:00 AM UTC, can get rid of the time after the fork as it only applies to live blockchain updates.
         printf("We're checking this one out. \n");
         CBlockIndex *pindexBestCheck;
         for (pindexBestCheck = pindexBest ; pindexBestCheck->nHeight + 1 > nHeight; pindexBestCheck = pindexBestCheck->pprev)
@@ -2465,7 +2465,6 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
                 return pblock->DoS(100, error("AcceptBlock() : Too Late to commit block. We already have acceptable blocks for this height. (overall)\n"));
         }
     }
-
 
     // Store to disk
     if (!pblock->AcceptBlock())
