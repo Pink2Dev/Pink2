@@ -1,0 +1,81 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+  BDB_PREFIX: '$(PWD)/src/db4'
+  QRENCODE_PREFIX: '$(PWD)/src/qrencode'
+  OPENSSL_PREFIX: '$(PWD)/src/openssl'
+
+steps:
+- bash: |
+    sudo apt-get update && sudo apt-get install \
+    --no-install-recommends \
+    -y \
+    qt5-default qt5-qmake qtbase5-dev-tools \
+    qttools5-dev-tools build-essential libboost-dev \
+    libboost-system-dev \
+    libboost-filesystem-dev \
+    libboost-program-options-dev \
+    libboost-thread-dev libssl-dev \
+    libdb++-dev \
+    libminiupnpc-dev \
+    wget \
+    ca-certificates
+
+  displayName: 'Install Build Depends'
+
+
+steps:
+- bash: |
+    echo $PWD
+    cd src
+    mkdir -p $BDB_PREFIX
+    wget 'http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz'
+    echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef db-4.8.30.NC.tar.gz' | sha256sum -c
+    tar -xzvf db-4.8.30.NC.tar.gz
+    cd db-4.8.30.NC/build_unix/../dist/configure --enable-cxx \
+    --disable-shared --with-pic --prefix=$BDB_PREFIX
+    make install
+
+  displayName: 'Build bdb4.8'
+
+
+steps:
+- bash: |
+    echo $PWD
+    cd src
+    mkdir -p $QRENCODE_PREFIX
+    wget 'https://fukuchi.org/works/qrencode/qrencode-3.4.4.tar.gz'
+    echo 'e794e26a96019013c0e3665cb06b18992668f352c5553d0a553f5d144f7f2a72 qrencode-3.4.4.tar.gz' | sha256sum -c
+    tar -xzvf qrencode-3.4.4.tar.gz
+    cd qrencode-3.4.4
+    ./configure --disable-shared --enable-static --without-tools --prefix=$QRENCODE_PREFIX
+    make install
+
+  displayName: 'Build qrencode'
+
+
+steps:
+- bash: |
+    echo $PWD
+    cd src
+    mkdir -p $OPENSSL_PREFIX
+    wget 'https://www.openssl.org/source/openssl-1.0.2l.tar.gz'
+    echo 'ce07195b659e75f4e1db43552860070061f156a98bb37b672b101ba6e3ddf30c openssl-1.0.2l.tar.gz' | sha256sum -c
+    tar -xzvf openssl-1.0.2l.tar.gz
+    cd openssl-1.0.2l
+    ./Configure  linux-x86_64 no-ssl2 no-ssl3 no-comp --prefix=$OPENSSL_PREFIX no-shared
+    make depend
+    make install
+
+  displayName: 'Build openssl'
+
+
+steps:
+- bash: |
+    echo $PWD
+    cd src
+    make -j 2 -f makefile.unix STATIC=all USE_UPNP=1 USE_QRCODE=1 BDB_INCLUDE_PATH=$BDB_PREFIX/include BDB_LIB_PATH=$BDB_PREFIX/lib OPENSSL_LIB_PATH=$OPENSSL_PREFIX/lib OPENSSL_INCLUDE_PATH=$OPENSSL_PREFIX/include
+    strip pink2d
+
+  displayName: 'Build pink2d'
