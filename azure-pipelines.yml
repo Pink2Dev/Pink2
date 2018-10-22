@@ -265,57 +265,57 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Republish BOOST'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/boost.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/boost.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish MiniUPNPC'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/miniupnpc.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/miniupnpc.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish BDB4.8'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/db4.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/db4.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish ZLib'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/zlib.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/zlib.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish LibPNG'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/libpng.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/libpng.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish QREncode'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qrencode.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qrencode.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish OpenSSL'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/openssl.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/openssl.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
   - task: PublishBuildArtifacts@1
     displayName: 'Republish Qt'
     inputs:
-      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qt.tar.gz'
-      artifactName: $(linux.toolkit.name)
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qt.tar.gz'
+      artifactName: $(windows.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
 # --------------------------------------------------------------------------------------------------
