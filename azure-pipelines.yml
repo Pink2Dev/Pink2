@@ -29,8 +29,8 @@ jobs:
 - job: init_macos
   pool:
     vmImage: 'macOS-10.13'
-  steps:
   condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  steps:
   - bash: |
       echo 'Set build id to download artifacts...'
       # Set to check previous build artifacts.
