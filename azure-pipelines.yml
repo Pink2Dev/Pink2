@@ -30,6 +30,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.13'
   steps:
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   - bash: |
       echo 'Set build id to download artifacts...'
       # Set to check previous build artifacts.
@@ -83,7 +84,7 @@ jobs:
   dependsOn:
     - init_macos
     - build_macos_toolkit_1
-  condition: ne(variables['Agent.JobStatus'], 'Failed')
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   variables:
     path: $(macos.path)
     toolkitExists: $[ dependencies.init_macos.outputs['check.toolkitExists'] ]
@@ -124,6 +125,7 @@ jobs:
 - job: init_linux
   pool:
     vmImage: 'Ubuntu 16.04'
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   steps:
   - bash: |
       echo 'Set build id to download artifacts...'
@@ -194,7 +196,7 @@ jobs:
     - build_linux_toolkit_1
     - build_linux_toolkit_2
     - build_linux_toolkit_3
-  condition: ne(variables['Agent.JobStatus'], 'Failed')
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   variables:
     toolkitExists: $[ dependencies.init_linux.outputs['check.toolkitExists'] ]
   steps:
@@ -232,6 +234,7 @@ jobs:
 - job: init_windows
   pool:
     vmImage: 'Ubuntu 16.04'
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   steps:
   - bash: |
       echo 'Set build id to download artifacts...'
@@ -343,7 +346,7 @@ jobs:
     - build_windows_toolkit_4
     - build_windows_toolkit_5
     - build_windows_toolkit_6
-  condition: ne(variables['Agent.JobStatus'], 'Failed')
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   variables:
     toolkitExists: $[ dependencies.init_windows.outputs['check.toolkitExists'] ]
   steps:
