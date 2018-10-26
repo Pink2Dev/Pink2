@@ -2333,6 +2333,12 @@ bool CBlock::AcceptBlock()
 
 void GetModTrust(CBigNum &bnStakeTrust, CBigNum &bnTarget, CBlockIndex *pindexBase, const unsigned int nBlockTime, bool isPos, bool isNew)
 {
+
+    // If this block is more than 10 minutes older than our current best block and is building on a block deeper
+    // in our chain than our previous best block then we're going to treat it like it's difficulty was 10x easier.
+    if (isNew && pindexBest && pindexBase->nHeight < pindexBest->pprev->nHeight && nBlockTime < pindexBest->nTime - 600)
+        bnTarget = bnTarget * 10;
+
     if (isPos)
     {
         /* nBaseStakeTrust uses the most difficult block in the last 1024 block window (which ends at least 1024 blocks in the past)
@@ -2368,13 +2374,6 @@ void GetModTrust(CBigNum &bnStakeTrust, CBigNum &bnTarget, CBlockIndex *pindexBa
             bnStakeTrust = nBaseStakeTrust;
         }
     }
-
-    // If this block is more than 10 minutes older than our current best block and is building on a block deeper
-    // in our chain than our previous best block then we're going to treat it like it's difficulty was 10x easier.
-    if (isNew && pindexBest && pindexBase->nHeight < pindexBest->pprev->nHeight && nBlockTime < pindexBest->nTime - 600)
-        bnTarget = bnTarget * 10;
-
-
 
 }
 
