@@ -40,7 +40,6 @@ inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MO
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 
-
 static const uint256 hashGenesisBlock("0x00000f79b700e6444665c4d090c9b8833664c4e2597c7087a6ba6391b956cc89");
 static const uint256 hashGenesisBlockTestNet("0x000076a007b949e5f8cdee6c18817d26bc224bfde575ce3f2ecb0dd000f7ec19");
 
@@ -125,6 +124,7 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 const CBlockIndex* GetLastBlockIndex2(const CBlockIndex* pindex, bool fFlashStake);
 void StakeMiner(CWallet *pwallet);
 void ResendWalletTransactions(bool fForce = false);
+void GetModTrust(CBigNum &bnModTrust, CBigNum &bnTarget, CBlockIndex &pindexBase, const unsigned int nBlockTime, bool isPos, bool isNew);
 
 
 
@@ -1228,7 +1228,7 @@ public:
         return (int64_t)nTime;
     }
 
-    uint256 GetBlockTrust() const;
+    uint256 GetBlockTrust(bool isNew = false) const;
 
     bool IsInMainChain() const
     {
