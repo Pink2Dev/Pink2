@@ -750,12 +750,15 @@ bool AppInit2(boost::thread_group& threadGroup)
     valSplitThreshold = GetArg("-splitthreshold", nSplitThreshold);
     valCombineThreshold = GetArg("-combinethreshold", nCombineThreshold);
 
-    if (valSplitThreshold >= valCombineThreshold && !targetFPOS)
+    if (!targetFPOS)
     {
+        if (valSplitThreshold >= valCombineThreshold)
+        {
             nSplitThreshold = valSplitThreshold;
             nCombineThreshold = valCombineThreshold;
-    } else {
+        } else {
             InitError(_("Split threshold must be more than the combine threshold; Combined threshold must be half the split threshold or less."));
+        }
     }
 
     if (mapArgs.count("-checkpointkey")) // ppcoin: checkpoint master priv key
