@@ -1,0 +1,388 @@
+name: 'Pinkcoin - Build For All Platforms'
+
+variables:
+  macos.toolkit.name: 'MacOS_toolkit'
+  macos.build.name: 'Pinkcoin-MacOS'
+  macos.path: '/opt/local/libexec/qt5/bin:/opt/local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:/usr/local/sbin:/Users/vsts/bin:/Users/vsts/.yarn/bin:/usr/local/go/bin:/Users/vsts/Library/Android/sdk/tools:/Users/vsts/Library/Android/sdk/platform-tools:/Users/vsts/Library/Android/sdk/ndk-bundle:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/vsts/.azcopy'
+
+  linux.toolkit.name: 'Linux_toolkit'
+  linux.build.name: 'Pinkcoin-Linux'
+  linux.bdb.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/db4'
+  linux.qrencode.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qrencode'
+  linux.openssl.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/openssl'
+
+  windows.toolkit.name: 'Windows_toolkit'
+  windows.build.name: 'Pinkcoin-windows'
+  windows.depsdir: '/usr/x86_64-w64-mingw32'
+  windows.qt.prefix: '$(windows.depsdir)'
+  windows.boost.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/boost'
+  windows.zlib.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/zlib'
+  windows.libpng.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/libpng'
+  windows.miniupnpc.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/miniupnpc'
+  windows.bdb.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/db4'
+  windows.qrencode.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qrencode'
+  windows.openssl.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/openssl'
+
+jobs:
+#===================================================================================================
+
+- job: init_macos
+  pool:
+    vmImage: 'macOS-10.13'
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  steps:
+  - bash: |
+      echo 'Set build id to download artifacts...'
+      # Set to check previous build artifacts.
+      export id=`expr $(Build.BuildId) - 1`
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Current build id $(Build.BuildId)'
+      echo 'Toolkit build id set to '$id
+    displayName: 'Set toolkit build id for check'
+
+  # Tries to donwload toolkit.
+  - template: .azure/macos/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(macos.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)
+      ls -la .
+      if [ -d $MACOS_TOOLKIT_NAME ]; then
+        echo '##vso[task.setvariable variable=toolkitExists]true'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]true'
+      else
+        echo '##vso[task.setvariable variable=toolkitExists]false'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]false'
+      fi
+    displayName: 'Check toolkit existance'
+    name: check
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish toolkit'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(macos.toolkit.name)/toolkit.tar.gz'
+      artifactName: $(macos.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+# --------------------------------------------------------------------------------------------------
+
+- template: .azure/macos/build-toolkit.yml
+  parameters:
+    path: $(macos.path)
+    job1: build_macos_toolkit_1
+    condition: eq(dependencies.init_macos.outputs['check.toolkitExists'], 'false')
+
+# --------------------------------------------------------------------------------------------------
+
+- job: build_pinkcoin_binaries_for_macos
+  pool:
+    vmImage: 'macOS-10.13'
+  dependsOn:
+    - init_macos
+    - build_macos_toolkit_1
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  variables:
+    path: $(macos.path)
+    toolkitExists: $[ dependencies.init_macos.outputs['check.toolkitExists'] ]
+  steps:
+  - template: .azure/macos/install-setup.yml
+
+  - bash: |
+      echo 'Set build id to download toolkit artifacts...'
+      # Set to check previous build artifacts.
+      if [ $(toolkitExists) == 'true' ]; then
+        export id=`expr $(Build.BuildId) - 1`
+      else
+        export id=$(Build.BuildId)
+      fi
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Toolkit build id to download '$id
+    displayName: 'Set toolkit build id for download'
+
+  - template: .azure/macos/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(macos.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)/$(macos.toolkit.name)
+      sudo tar xvf toolkit.tar.gz -C /
+    displayName: 'Unpack toolkit files.'
+
+  # Tasks building Pinkcoin binaries for MacOS platform.
+  - template: .azure/macos/build-pinkcoin.yml
+    parameters:
+      build.name: $(macos.build.name)
+
+#===================================================================================================
+
+- job: init_linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  steps:
+  - bash: |
+      echo 'Set build id to download artifacts...'
+      # Set to check previous build artifacts.
+      export id=`expr $(Build.BuildId) - 1`
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Current build id $(Build.BuildId)'
+      echo 'Toolkit build id set to '$id
+    displayName: 'Set toolkit build id for check'
+
+  - template: .azure/linux/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(linux.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)
+      ls -la .
+      if [ -d $LINUX_TOOLKIT_NAME ]; then
+        echo '##vso[task.setvariable variable=toolkitExists]true'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]true'
+      else
+        echo '##vso[task.setvariable variable=toolkitExists]false'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]false'
+      fi
+    displayName: 'Check toolkit existance'
+    name: check
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish BDB4.8'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/db4.tar.gz'
+      artifactName: $(linux.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish QREncode'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qrencode.tar.gz'
+      artifactName: $(linux.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish OpenSSL'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/openssl.tar.gz'
+      artifactName: $(linux.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+# --------------------------------------------------------------------------------------------------
+
+- template: .azure/linux/build-toolkit.yml
+  parameters:
+    job1: build_linux_toolkit_1
+    job2: build_linux_toolkit_2
+    job3: build_linux_toolkit_3
+    condition: eq(dependencies.init_linux.outputs['check.toolkitExists'], 'false')
+
+# --------------------------------------------------------------------------------------------------
+
+- job: build_pinkcoin_binaries_for_linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  dependsOn:
+    - init_linux
+    - build_linux_toolkit_1
+    - build_linux_toolkit_2
+    - build_linux_toolkit_3
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  variables:
+    toolkitExists: $[ dependencies.init_linux.outputs['check.toolkitExists'] ]
+  steps:
+  - bash: |
+      echo 'Set build id to download toolkit artifacts...'
+      # Set to check previous build artifacts.
+      if [ $(toolkitExists) == 'true' ]; then
+        export id=`expr $(Build.BuildId) - 1`
+      else
+        export id=$(Build.BuildId)
+      fi
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Toolkit build id to download '$id
+    displayName: 'Set toolkit build id for download'
+
+  - template: .azure/linux/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(linux.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)/$(linux.toolkit.name)
+      ls *.tar.gz | xargs -i tar xvf {}
+    displayName: 'Unpack toolkit files.'
+
+  - template: .azure/linux/install-setup.yml
+
+  # Tasks building Pinkcoin binaries for Linux platform.
+  - template: .azure/linux/build-pinkcoin.yml
+
+#===================================================================================================
+
+- job: init_windows
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  steps:
+  - bash: |
+      echo 'Set build id to download artifacts...'
+      # Set to check previous build artifacts.
+      export id=`expr $(Build.BuildId) - 1`
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Current build id $(Build.BuildId)'
+      echo 'Toolkit build id set to '$id
+    displayName: 'Set toolkit build id for check'
+
+  - template: .azure/windows/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(windows.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)
+      ls -la .
+      if [ -d $WINDOWS_TOOLKIT_NAME ]; then
+        echo '##vso[task.setvariable variable=toolkitExists]true'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]true'
+      else
+        echo '##vso[task.setvariable variable=toolkitExists]false'
+        echo '##vso[task.setvariable variable=toolkitExists;isOutput=true]false'
+      fi
+    displayName: 'Check toolkit existance'
+    name: check
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish BOOST'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/boost.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish MiniUPNPC'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/miniupnpc.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish BDB4.8'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/db4.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish ZLib'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/zlib.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish LibPNG'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/libpng.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish QREncode'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qrencode.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish OpenSSL'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/openssl.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish Qt'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qt.tar.gz'
+      artifactName: $(windows.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
+# --------------------------------------------------------------------------------------------------
+
+- template: .azure/windows/build-toolkit.yml
+  parameters:
+    job1: build_windows_toolkit_1
+    job2: build_windows_toolkit_2
+    job3: build_windows_toolkit_3
+    job4: build_windows_toolkit_4
+    job5: build_windows_toolkit_5
+    job6: build_windows_toolkit_6
+    condition: eq(dependencies.init_windows.outputs['check.toolkitExists'], 'false')
+
+# --------------------------------------------------------------------------------------------------
+
+- job: build_pinkcoin_binaries_for_windows
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  dependsOn:
+    - init_windows
+    - build_windows_toolkit_1
+    - build_windows_toolkit_2
+    - build_windows_toolkit_3
+    - build_windows_toolkit_4
+    - build_windows_toolkit_5
+    - build_windows_toolkit_6
+  condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
+  variables:
+    toolkitExists: $[ dependencies.init_windows.outputs['check.toolkitExists'] ]
+  steps:
+  - template: .azure/windows/install-setup.yml
+
+  - bash: |
+      echo 'Set build id to download toolkit artifacts...'
+      # Set to check previous build artifacts.
+      if [ $(toolkitExists) == 'true' ]; then
+        export id=`expr $(Build.BuildId) - 1`
+      else
+        export id=$(Build.BuildId)
+      fi
+      command='##vso[task.setvariable variable=toolkitBuildId]'
+      command+=$id
+      echo $command
+      echo 'Toolkit build id to download '$id
+    displayName: 'Set toolkit build id for download'
+
+  - template: .azure/windows/install-toolkit.yml
+    parameters:
+      buildId: $(toolkitBuildId)
+      artifactName: $(windows.toolkit.name)
+
+  - bash: |
+      cd $(Build.BinariesDirectory)/$(windows.toolkit.name)
+      sudo tar xvf qt.tar.gz -C /
+      ls *.tar.gz | xargs -i tar xvf {}
+      sudo cp -r boost/* $WINDOWS_DEPSDIR
+      sudo cp -r db4/* $WINDOWS_DEPSDIR
+      sudo cp -r libpng/* $WINDOWS_DEPSDIR
+      sudo cp -r miniupnpc/* $WINDOWS_DEPSDIR
+      sudo cp -r openssl/* $WINDOWS_DEPSDIR
+      sudo cp -r qrencode/* $WINDOWS_DEPSDIR
+      sudo cp -r zlib/* $WINDOWS_DEPSDIR
+    displayName: 'Unpack toolkit files.'
+
+  # Tasks building Pinkcoin binaries for Windows platform.
+  - template: .azure/windows/build-pinkcoin.yml
