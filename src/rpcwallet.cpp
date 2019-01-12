@@ -1773,7 +1773,7 @@ Value splitthreshold(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "combinethreshold [amount]\n"
+            "splitthreshold [amount]\n"
             "<amount> is a real and a whole number.\n"
             "Set maximum coin chunk amount before splitting stakes.\n"
             "If no parameters provided current setting is printed.\n");
