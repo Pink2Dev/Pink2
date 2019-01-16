@@ -256,7 +256,7 @@ std::string HelpMessage()
         "  -conf=<file>           " + _("Specify configuration file (default: pinkconf.txt)") + "\n" +
         "  -pid=<file>            " + _("Specify pid file (default: pinkcoind.pid)") + "\n" +
         "  -datadir=<dir>         " + _("Specify data directory") + "\n" +
-        "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n" +
+        "  -wallet=<file>         " + _("Specify wallet file within data directory (default: wallet.dat") + "\n" +
         "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 25)") + "\n" +
         "  -dblogsize=<n>         " + _("Set database disk log size in megabytes (default: 100)") + "\n" +
         "  -timeout=<n>           " + _("Specify connection timeout in milliseconds (default: 5000)") + "\n" +
