@@ -417,6 +417,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     fUseFastIndex = GetBoolArg("-fastindex", true);
     nMinerSleep = GetArg("-minersleep", 800);
 
+    // Parses and adds configurable checkpoints.
+    Checkpoints::GetCheckpointsFromConfig();
+
     CheckpointsMode = Checkpoints::STRICT;
     std::string strCpMode = GetArg("-cppolicy", "strict");
 

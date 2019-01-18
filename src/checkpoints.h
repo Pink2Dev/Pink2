@@ -59,6 +59,8 @@ namespace Checkpoints
     bool SetCheckpointPrivKey(std::string strPrivKey);
     bool SendSyncCheckpoint(uint256 hashCheckpoint);
     bool IsMatureSyncCheckpoint();
+
+    void GetCheckpointsFromConfig();
 }
 
 // ppcoin: synchronized checkpoint
