@@ -23,12 +23,20 @@ variables:
   windows.qrencode.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/qrencode'
   windows.openssl.prefix: '$(Build.BinariesDirectory)/$(windows.toolkit.name)/openssl'
 
+#===================================================================================================
+
+resources:
+  containers:
+  - container: u14
+    image: ubuntu:trusty
+
 jobs:
 #===================================================================================================
 
 - job: init_macos
   pool:
     vmImage: 'macOS-10.13'
+    cancelTimeoutInMinutes: 1
   condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   steps:
   - bash: |
@@ -81,6 +89,7 @@ jobs:
 - job: build_pinkcoin_binaries_for_macos
   pool:
     vmImage: 'macOS-10.13'
+    cancelTimeoutInMinutes: 1
   dependsOn:
     - init_macos
     - build_macos_toolkit_1
@@ -125,6 +134,7 @@ jobs:
 - job: init_linux
   pool:
     vmImage: 'Ubuntu 16.04'
+    cancelTimeoutInMinutes: 1
   condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   steps:
   - bash: |
@@ -191,6 +201,7 @@ jobs:
 - job: build_pinkcoin_binaries_for_linux
   pool:
     vmImage: 'Ubuntu 16.04'
+    cancelTimeoutInMinutes: 1
   dependsOn:
     - init_linux
     - build_linux_toolkit_1
@@ -234,6 +245,7 @@ jobs:
 - job: init_windows
   pool:
     vmImage: 'Ubuntu 16.04'
+    cancelTimeoutInMinutes: 1
   condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   steps:
   - bash: |
@@ -338,6 +350,8 @@ jobs:
 - job: build_pinkcoin_binaries_for_windows
   pool:
     vmImage: 'Ubuntu 16.04'
+    cancelTimeoutInMinutes: 1
+  container: 'u14'
   dependsOn:
     - init_windows
     - build_windows_toolkit_1
@@ -350,7 +364,13 @@ jobs:
   variables:
     toolkitExists: $[ dependencies.init_windows.outputs['check.toolkitExists'] ]
   steps:
-  - template: .azure/windows/install-setup.yml
+
+  - bash: |
+      sudo apt-get update
+      sudo apt-get install --no-install-recommends -y \
+      wget g++ ca-certificates pkg-config zip \
+      bash gettext git libtool make g++-mingw-w64-x86-64
+    displayName: 'Install Required System Libs'
 
   - bash: |
       echo 'Set build id to download toolkit artifacts...'

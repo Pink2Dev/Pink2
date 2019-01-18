@@ -1,4 +1,4 @@
-import glob, os, sys, re
+import glob, fnmatch, os, sys, re
 
 if len(sys.argv) < 3:
     print('Not enough parameters!')
@@ -7,9 +7,16 @@ if len(sys.argv) < 3:
 os.chdir(sys.argv[1])
 
 libs = []
+# Compatible also with Python versions less then 3.5
 for subpath in sys.argv[2:]:
-    libs += glob.glob(subpath + '/**/libQt*.a', recursive=True) + \
-            glob.glob(subpath + '/**/libq*.a', recursive=True)
+    for root, dirnames, filenames in os.walk(subpath):
+        for filename in fnmatch.filter(filenames, 'libQt*.a'):
+            libs.append(os.path.join(root, filename))
+        for filename in fnmatch.filter(filenames, 'libq*.a'):
+            libs.append(os.path.join(root, filename))
+    # Works only in Python 3.5+
+#   libs += glob.glob(subpath + '/**/libQt*.a', recursive=True) + \
+#           glob.glob(subpath + '/**/libq*.a', recursive=True)
 
 for subpath in sys.argv[2:]:
     for filename in glob.glob(subpath + '/*.prl'):
