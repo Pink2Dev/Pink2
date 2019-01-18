@@ -67,7 +67,7 @@ namespace Checkpoints
                 getline(ss, tempStr, ',');
                 uint256 hashCheckpoint(tempStr);
 
-                mapCheckpoints.insert(pair<int, uint256>(nBlockNum, uint256(hashCheckpoint)));
+                mapCheckpoints.insert(pair<int, uint256>(nBlockNum, hashCheckpoint));
             }
         }
     }
