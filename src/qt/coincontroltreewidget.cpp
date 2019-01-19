@@ -14,7 +14,9 @@ void CoinControlTreeWidget::keyPressEvent(QKeyEvent *event)
         event->ignore();
         int COLUMN_CHECKBOX = 0;
         if(this->currentItem())
+        {
             this->currentItem()->setCheckState(COLUMN_CHECKBOX, ((this->currentItem()->checkState(COLUMN_CHECKBOX) == Qt::Checked) ? Qt::Unchecked : Qt::Checked));
+        }
     }
     else if (event->key() == Qt::Key_Escape) // press esc -> close dialog
     {
