@@ -11,6 +11,7 @@
 #include "main.h"
 #include "uint256.h"
 
+using namespace std;
 
 static const int nCheckpointSpan = 10;
 
@@ -48,6 +49,28 @@ namespace Checkpoints
         boost::assign::map_list_of
         ( 0, hashGenesisBlockTestNet )
     ;
+
+    void GetCheckpointsFromConfig()
+    {
+        if (mapArgs.count("-checkpoint") && mapMultiArgs["-checkpoint"].size() > 0)
+        {
+            for (const string strCheckpoint : mapMultiArgs["-checkpoint"])
+            {
+                stringstream ss(strCheckpoint);
+                string tempStr;
+
+                if (!ss.good()) continue;
+                getline(ss, tempStr, ',');
+                int nBlockNum = atoi(tempStr.c_str());
+
+                if (!ss.good()) continue;
+                getline(ss, tempStr, ',');
+                uint256 hashCheckpoint(tempStr);
+
+                mapCheckpoints.insert(pair<int, uint256>(nBlockNum, hashCheckpoint));
+            }
+        }
+    }
 
     bool CheckHardened(int nHeight, const uint256& hash)
     {
