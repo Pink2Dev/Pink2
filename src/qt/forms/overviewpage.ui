@@ -769,7 +769,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                        <item>
                         <widget class="QLabel" name="labelTransactionsStatus">
                          <property name="toolTip">
-                          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the BitBay network after a connection is established, but this process has not completed yet.</string>
+                          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Pinkcoin network after a connection is established, but this process has not completed yet.</string>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">QLabel { color: red; }</string>
