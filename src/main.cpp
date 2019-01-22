@@ -1095,13 +1095,20 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 const CBlockIndex* GetLastBlockIndex2(const CBlockIndex* pindex, bool fFlashStake)
 {
     //bool bFlashStake = true;
-    while (pindex && pindex->pprev && IsFlashStake(pindex->nTime) != fFlashStake)
-    {
-        pindex = pindex->pprev;
+    if (pindex->nHeight > 771000) {
+
+        while (pindex && pindex->pprev && !pindex->IsFPOS(fFlashStake))
+            pindex = pindex->pprev;
+
+    } else {
+
+        while (pindex && pindex->pprev && IsFlashStake(pindex->nTime) != fFlashStake)
+            pindex = pindex->pprev;
+        while (pindex && pindex->pprev && (!pindex->IsProofOfStake()))
+            pindex = pindex->pprev;
     }
-    while (pindex && pindex->pprev && (!pindex->IsProofOfStake()))
-        pindex = pindex->pprev;
     return pindex;
+
 }
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake, unsigned int nBlockTime)
