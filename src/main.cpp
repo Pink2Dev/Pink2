@@ -1095,7 +1095,7 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 const CBlockIndex* GetLastBlockIndex2(const CBlockIndex* pindex, bool fFlashStake)
 {
     //bool bFlashStake = true;
-    if (pindex->nHeight > 771000) {
+    if (pindex->nHeight >= 771000) {
 
         while (pindex && pindex->pprev && !pindex->IsFPOS(fFlashStake))
             pindex = pindex->pprev;
