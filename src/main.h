@@ -1279,10 +1279,10 @@ public:
         return (nFlags & BLOCK_PROOF_OF_STAKE);
     }
 
-    bool IsFlashPOS() const
+    bool IsFPOS(bool nFlash) const
     {
-        if (IsProofOfStake())
-           return (IsFlashStake(nTime));
+       if (IsProofOfStake())
+            return nFlash == IsFlashStake(nTime);
 
         return false;
     }
