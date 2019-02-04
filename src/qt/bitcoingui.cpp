@@ -1618,7 +1618,8 @@ void BitcoinGUI::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = true;
-        mLastMousePosition = event->pos();
+        // Difference between window position and global position of mouse cursor
+        mDiffWindowPosition = this->pos() - event->globalPos();
     }
 }
 
@@ -1626,7 +1627,7 @@ void BitcoinGUI::mouseMoveEvent(QMouseEvent* event)
 {
     if( event->buttons().testFlag(Qt::LeftButton) && mMoving)
     {
-        this->move(this->pos() + (event->pos() - mLastMousePosition));
+        this->move(mDiffWindowPosition + event->globalPos());
     }
 }
 

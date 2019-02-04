@@ -167,7 +167,7 @@ private:
     /** Create system tray (notification) icon */
     void createTrayIcon();
 
-    QPoint mLastMousePosition;
+    QPoint mDiffWindowPosition;
     bool mMoving;
 
 public slots:
