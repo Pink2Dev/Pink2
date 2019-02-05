@@ -90,23 +90,18 @@ ActiveLabel::ActiveLabel(const QString & text, QWidget * parent):
 
 }
 
-
-/*
-void ActiveLabel::mouseReleaseEvent(QMouseEvent * event)
-{
-    emit clicked();
-}
-*/
-
 bool ActiveLabel::event(QEvent *e)
 {
-//    QHoverEvent me = static_cast<QHoverEvent>(e);
-    if(e->type() == QEvent::HoverMove)
+    if(e->type() == QEvent::MouseButtonPress)
     {
-        //double xpos = me->pos().x();
-        //double ypos = me->pos().y();
+        // Hack: Swallows mouse press event to prevent
+        // from passing it to BitcoinGUI::mousePressEvent
+        // (conflicts with main window grabbing)
+        return true;
+    }
+    else if(e->type() == QEvent::HoverMove)
+    {
         emit hovered();
-        // qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
         return true;
     }
     else if(e->type() == QEvent::HoverLeave)
@@ -122,7 +117,6 @@ bool ActiveLabel::event(QEvent *e)
 
     return QLabel::event(e);
 }
-
 
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
@@ -1616,6 +1610,7 @@ void BitcoinGUI::mousePressEvent(QMouseEvent* event)
         mMoving = true;
         // Difference between window position and global position of mouse cursor
         mDiffWindowPosition = this->pos() - event->globalPos();
+        setCursor(Qt::ClosedHandCursor);
     }
 }
 
@@ -1632,5 +1627,6 @@ void BitcoinGUI::mouseReleaseEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = false;
+        unsetCursor();
     }
 }

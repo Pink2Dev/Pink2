@@ -45,8 +45,6 @@ signals:
 
 protected:
     bool event(QEvent *e);
-//    void mouseReleaseEvent (QMouseEvent * event) ;
-
 };
 
 /**
