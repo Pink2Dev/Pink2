@@ -611,8 +611,7 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
 
-    appMenuBar->setMaximumWidth(220);
-
+    appMenuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     QWidget *w = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(w);
@@ -670,10 +669,7 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 
-    //appMenuBar->setMaximumWidth(180);
 
-
-	
 	/* zeewolf: Hot swappable wallet themes */
     if (themesList.count()>0)
     {
