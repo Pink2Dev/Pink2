@@ -612,6 +612,7 @@ void BitcoinGUI::createMenuBar()
 
     QLabel* pinkCorner = new QLabel(w);
     pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
+    pinkCorner->setAttribute(Qt::WA_TransparentForMouseEvents);
     layout->addWidget(pinkCorner);
 
     layout->addWidget(appMenuBar);
