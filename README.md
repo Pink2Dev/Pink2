@@ -7,11 +7,11 @@ Pinkcoin 2 development tree
 What is Pinkcoin?
 -----------------
 
-Pinkcoin is a cryptocurrency using hybrid Proof of Work and Proof of Stake consensus protocols designed to support Charities and Non-Profit organizations, and encourage community participation. Proof of Stake consensus is split int two unique parts:
+Pinkcoin is a cryptocurrency using hybrid Proof of Work and Proof of Stake consensus protocols designed to support Charities and Non-Profit organizations, and encourage community participation. Proof of Stake consensus is split into two unique parts:
 - Proof of Stake 3.0 
 - [Flash Proof of Stake 2.0](https://pinkcoin.gitbook.io/pinkcoin/faq/fpos-2.0)
 
-Additonal unique feauteres:
+Additional unique features:
 - [Side staking mechanism](https://pinkcoin.gitbook.io/pinkcoin/guides/side-staking)
 
 Coin specification
@@ -35,7 +35,7 @@ Coin specification
 
 ### Minting rewards ###
 
-Halving of blocks rewards will occure every 846800 blocks so for example:
+Halving of blocks rewards will occur every 846800 blocks so for example:
 
 | Block number | PoW reward | PoS reward | FPoS reward |
 |---:|---:|---:|---:|
