@@ -1,10 +1,51 @@
 
-Pinkcoin development tree
+Pinkcoin 2 development tree
+===========================
 
-Pinkcoin is a PoS-based cryptocurrency.
+[![CircleCI](https://circleci.com/gh/Pink2Dev/Pink2.svg?style=svg)](https://circleci.com/gh/Pink2Dev/Pink2)
+
+What is Pinkcoin?
+-----------------
+
+Pinkcoin is a cryptocurrency using hybrid Proof of Work and Proof of Stake consensus protocols designed to support Charities and Non-Profit organizations, and encourage community participation. Proof of Stake consensus is split int two unique parts:
+- Proof of Stake 3.0 
+- [Flash Proof of Stake 2.0](https://pinkcoin.gitbook.io/pinkcoin/faq/fpos-2.0)
+
+Additonal unique feauteres:
+- [Side staking mechanism](https://pinkcoin.gitbook.io/pinkcoin/guides/side-staking)
+
+Coin specification
+-------------
+
+### Misc data ###
+
+| | |
+| :---   |      ---: |
+| PoW algorithm | Scrypt |
+| Difficulty | Retargeting every block |
+| Maximum coin supply | 500,000,000 PINK |
+
+### Block creation ###
+
+|        | PoW | PoS | FPoS |
+| :---   |---: |---: |---:  |
+| Block time  | 120s | 600s | 60s |
+| When acitvated | 24h / day | 20h / day | 4h / day |
+
+
+### Minting rewards ###
+
+Halving of blocks rewards will occure every 846800 blocks so for example:
+
+| Block number | PoW reward | PoS reward | FPoS reward |
+|---:|---:|---:|---:|
+| <   846,800 | 50 PINK | 100 PINK | 150 PINK |
+| < 1,693,600 | 25 PINK | 50 PINK | 75 PINK |
+
+and so on.
 
 Development process
-===========================
+-------------------
 
 Developers work in their own trees, then submit pull requests when
 they think their feature or bug fix is ready.
