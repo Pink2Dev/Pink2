@@ -29,8 +29,8 @@ Coin specification
 
 |        | PoW | PoS | FPoS |
 | :---   |---: |---: |---:  |
-| Block time  | 120s | 600s | 60s |
-| When acitvated | 24h / day | 20h / day | 4h / day |
+| Block time  | 120s | 360s | 60s |
+| When produced | 24h / day | 20h / day | 4h / day |
 
 
 ### Minting rewards ###
