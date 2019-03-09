@@ -1238,6 +1238,11 @@ unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofO
         const CBlockIndex* pPrevPrevSameAlgo = GetLastBlockIndex2(pPrevSameAlgo->pprev, fFlashStake);
 
         nActualSpacing = pPrevSameAlgo->GetBlockTime() - pPrevPrevSameAlgo->GetBlockTime();
+        // Makes sure that time spacing between consecutive
+        // PoS/FPoS periods is removed from nActualSpacing final value.
+        // Additionally slows down target adjustment in case of very large
+        // block spacing (higher than 1h) for all PoS blocks.
+        nActualSpacing %= 3600;
         bnNew.SetCompact(pPrevSameAlgo->nBits);
     }
     else // PoW block
@@ -1251,12 +1256,6 @@ unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofO
         nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
         bnNew.SetCompact(pindexPrev->nBits);
     }
-
-    // Makes sure that time spacing between consecutive
-    // PoS/FPoS periods is removed from nActualSpacing final value.
-    // Additionally slows down target adjustment in case of very large block spacing
-    // (higher than 1h) for all algorithms (PoW, PoS, FPoS).
-    nActualSpacing %= 3600;
 
 
     // ppcoin: target change every block
