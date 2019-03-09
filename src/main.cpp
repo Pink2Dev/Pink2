@@ -1108,10 +1108,20 @@ const CBlockIndex* GetLastBlockIndex2(const CBlockIndex* pindex, bool fFlashStak
             pindex = pindex->pprev;
     }
     return pindex;
-
 }
 
+
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake, unsigned int nBlockTime)
+{
+    if (pindexLast->nHeight < 817990) {
+        return GetNextTargetRequiredV1(pindexLast, fProofOfStake, nBlockTime);
+    }
+    // Fork fixing nActualSpacing calculations for PoS/FPoS blocks
+    // (makes PoS and FPoS next target calculations completelly independent).
+    return GetNextTargetRequiredV2(pindexLast, fProofOfStake, nBlockTime);
+}
+
+unsigned int GetNextTargetRequiredV1(const CBlockIndex* pindexLast, bool fProofOfStake, unsigned int nBlockTime)
 {
     CBigNum bnStakeTarget = bnProofOfStakeLimit;
 
@@ -1120,16 +1130,15 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     CBigNum bnTargetLimit = fProofOfStake ? bnStakeTarget : bnProofOfWorkLimit;
 
-    if (pindexLast == NULL)
+    if (pindexLast == nullptr)
         return bnTargetLimit.GetCompact(); // genesis block
 
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
+    if (pindexPrev->pprev == nullptr)
         return bnTargetLimit.GetCompact(); // first block
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
+    if (pindexPrevPrev->pprev == nullptr)
         return bnTargetLimit.GetCompact(); // second block
-
 
 
     bool fFlashStake = false;
@@ -1140,21 +1149,19 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     if (fProofOfStake)
     {
-        nTS = nTargetSpacing_Staking;
-
         if (IsFlashStake(nBlockTime))
         {
+            fFlashStake = true;
+            nTS = nTargetSpacing_FlashStaking;
             if (!IsFlashStake(pindexPrev->nTime))
                 fFlashFlip = true;
-            nTS = nTargetSpacing_FlashStaking;
-            fFlashStake = true;
-        } else {
+        }
+        else {
+            nTS = nTargetSpacing_Staking;
             if (IsFlashStake(pindexPrev->nTime))
                 fFlashFlip = true;
         }
     }
-
-
 
 
     // ppcoin: target change every block
@@ -1165,23 +1172,19 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     if (fFlashFlip)
     {
-        if (fFlashStake)
-        {
-            const CBlockIndex* pPrev = GetLastBlockIndex2(pindexPrev, true);
-            if (pPrev == NULL)
-                return bnTargetLimit.GetCompact();
-            nActualSpacing = pPrev->GetBlockTime() - GetLastBlockIndex(pPrev, true)->GetBlockTime();
-            bnNew.SetCompact(pPrev->nBits);
-        }
-        else {
-            const CBlockIndex* pPrev = GetLastBlockIndex2(pindexPrev, false);
-            nActualSpacing = pPrev->GetBlockTime() - GetLastBlockIndex(pPrev, true)->GetBlockTime();
-            bnNew.SetCompact(pPrev->nBits);
-        }
-    } else {
+        // Replaces old version of nActualSpacing calculation for flip
+        // blocks as it was discovered to always resolve to 0.
+        const CBlockIndex* pPrev = GetLastBlockIndex2(pindexPrev, fFlashStake);
+        if (pPrev == nullptr)
+            return bnTargetLimit.GetCompact();
+        nActualSpacing = 0;
+        bnNew.SetCompact(pPrev->nBits);
+    }
+    else {
         bnNew.SetCompact(pindexPrev->nBits);
         nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     }
+
 
     if (pindexPrev->nHeight < 315065)
     {
@@ -1199,6 +1202,75 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     bnNew *= ((nInterval - 1) * (nTS) + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * (nTS));
+
+    if (bnNew <= 0 || bnNew > bnTargetLimit)
+        bnNew = bnTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
+unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofOfStake, unsigned int nBlockTime)
+{
+    CBigNum bnTargetLimit;
+    int64_t nActualSpacing;
+    int nTS;
+    CBigNum bnNew;
+
+    bool fFlashStake = false;
+
+    // Gets first previous block (PoW/PoS).
+    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
+
+    if (fProofOfStake) // PoS or FPoS block
+    {
+        if (IsFlashStake(nBlockTime)) {
+            fFlashStake = true;
+            bnTargetLimit = bnProofOfFlashStakeLimit;
+            nTS = nTargetSpacing_FlashStaking;
+        }
+        else {
+            bnTargetLimit = bnProofOfStakeLimit;
+            nTS = nTargetSpacing_Staking;
+        }
+
+        // Gets two previous same algorithm (PoS or FPoS) blocks.
+        const CBlockIndex* pPrevSameAlgo = GetLastBlockIndex2(pindexPrev, fFlashStake);
+        const CBlockIndex* pPrevPrevSameAlgo = GetLastBlockIndex2(pPrevSameAlgo->pprev, fFlashStake);
+
+        nActualSpacing = pPrevSameAlgo->GetBlockTime() - pPrevPrevSameAlgo->GetBlockTime();
+        // Makes sure that time spacing between consecutive
+        // PoS/FPoS periods is removed from nActualSpacing final value.
+        // Additionally slows down target adjustment in case of very large
+        // block spacing (higher than 1h) for all PoS blocks.
+        nActualSpacing %= 3600;
+        bnNew.SetCompact(pPrevSameAlgo->nBits);
+    }
+    else // PoW block
+    {
+        bnTargetLimit = bnProofOfWorkLimit;
+        nTS = nTargetSpacing;
+
+        // Gets second PoW block.
+        const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, false);
+
+        nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
+        bnNew.SetCompact(pindexPrev->nBits);
+    }
+
+
+    // ppcoin: target change every block
+    // ppcoin: retarget with exponential moving toward target spacing
+    int64_t nInterval;
+
+    if (fFlashStake)
+        nInterval = nFlashStakeTargetTimespan / nTS;
+    else if (fProofOfStake)
+        nInterval = nStakeTargetTimespan / nTS;
+    else
+        nInterval = nTargetTimespan / nTS;
+
+    bnNew *= ((nInterval - 1) * nTS + nActualSpacing + nActualSpacing);
+    bnNew /= ((nInterval + 1) * nTS);
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
