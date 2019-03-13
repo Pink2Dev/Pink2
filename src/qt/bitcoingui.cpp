@@ -147,104 +147,102 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
 
 
-    qApp->setStyleSheet(\
-                      "QMainWindow \
-                      { \
-                        \
-                        padding-left: 0px;\
-                        padding-right: 0px;\
-                        padding-bottom: 0px;\
-                        padding-top: 0px;\
-                        border: 0px;\
-                        \
-                      } \
-                      \
-                      #frame { } \
-                      QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border:0px;} \
-                      QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border: 0px;} \
-                      \
-                      #spacer2 { background:rgb(26, 0, 13);border:none; } \
-                      #spacer { background:rgb(152, 50, 101);border:none; } \
-                      #toolbar2 \
-                      { \
-                           border:none; \
-                           width:0px; \
-                           height:0px; \
-                           padding-top:0px; \
-                           padding-bottom:0px; \
-                           background-color:rgb(0,0,0); \
-                      } \
-                      \
-                      #toolbar \
-                      { \
-                           border:0px; \
-                           height:100%; \
-                           padding-top:0px; \
-                           padding-left: 0px; \
-                           padding-right: 0px;\
-                           background: rgb(255, 255, 255); \
-                           text-align: left; \
-                           color: black; \
-                           min-width:200px; \
-                           max-width:200px; \
-                      } \
-                      \
-                    QToolBar QToolButton \
-                     { \
-                       \
-                           font-family:Ubuntu; \
-                           font-size:16px; \
-                           border: 0px; \
-                           padding-left:0px; \
-                           padding-top:0px; \
-                           padding-bottom:0px; \
-                           padding-right:0px;\
-                           width:200px; \
-                           color: black; \
-                           text-align: left; \
-                           background-color: rgb(255, 255, 255); \
-                      } \
-                     #OverviewButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #OverviewButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #SendButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #SendButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #ReceiveButton:hover {background-color:rgb(255, 141, 183); border: none;} \
-                       #ReceiveButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #HistoryButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #HistoryButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #AddressBookButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #AddressBookButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #SideStakeButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #SideStakeButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #MessageButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #MessageButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                     #labelMiningIcon \
-                      { \
-                           padding-left:5px; \
-                           font-family:Century Gothic; \
-                           width:100%; \
-                           font-size:10px; \
-                           text-align:center; \
-                           color:white; \
-                      } \
-                      \
-                      QMenu { background: rgb(0,0,0); color:white; padding-bottom:10px; } \
-                      QMenu::item { color:white; background-color: transparent; } \
-                      QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
-                      QMenuBar { background: rgb(0,0,0); color:white; } \
-                      QMenuBar::item \
-                      { \
-                            font-size:12px; \
-                            padding-bottom:8px; \
-                            padding-top:8px; \
-                            padding-left:15px; \
-                            padding-right:15px; \
-                            color:white; \
-                            background-color: transparent; \
-                      } \
-                      \
-                      QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
-                      ");
+    qApp->setStyleSheet(R"(
+        QMainWindow
+        {
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-top: 0px;
+            border: 0px;
+        }
+
+        #frame { }
+        QToolBar QLabel { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
+        QToolBar QLabel:item { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
+
+        #spacer2 { background: rgb(26, 0, 13); border: none; }
+        #spacer { background: rgb(152, 50, 101); border: none; }
+        #toolbar2
+        {
+            border: none;
+            width: 0px;
+            height: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            background-color: rgb(0,0,0);
+        }
+        #toolbar
+        {
+            border: 0px;
+            height: 100%;
+            padding-top: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
+            background: rgb(255, 255, 255);
+            text-align: left;
+            color: black;
+            min-width: 200px;
+            max-width: 200px;
+        }
+        QToolBar QToolButton
+        {
+            font-family: Ubuntu;
+            font-size: 16px;
+            border: 0px;
+            padding-left: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-right: 0px;
+            width: 200px;
+            color: black;
+            text-align: left;
+            background-color: rgb(255, 255, 255);
+        }
+        #OverviewButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #OverviewButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #SendButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #SendButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #ReceiveButton:hover {background-color:rgb(255, 141, 183); border: none;}
+        #ReceiveButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #HistoryButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #HistoryButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #AddressBookButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #AddressBookButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #SideStakeButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #SideStakeButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #MessageButton:hover {background-color: rgb(255, 141, 183); border: none;}
+        #MessageButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #labelMiningIcon
+        {
+            padding-left: 5px;
+            font-family: Century Gothic;
+            width: 100%;
+            font-size: 10px;
+            text-align: center;
+            color: white;
+        }
+        QMenu { background: rgb(0,0,0); color: white; padding-bottom: 10px; }
+        QMenu::item { color: white; background-color: transparent; }
+        QMenu::item:selected {
+            background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
+        }
+        QMenuBar { background: rgb(0,0,0); color: white; }
+        QMenuBar::item
+        {
+            font-size: 12px;
+            padding-bottom: 8px;
+            padding-top: 8px;
+            padding-left: 15px;
+            padding-right: 15px;
+            color: white;
+            background-color: transparent;
+        }
+
+        QMenuBar::item:selected {
+            background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
+        }
+    )");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -302,7 +300,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setObjectName("StackedWidget");
-    centralWidget->setStyleSheet("#StackedWidget{background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(255, 121, 170, 255), stop:1 rgba(255, 245, 250, 255));}");
+    // Left side gradient shadow on panels.
+    centralWidget->setStyleSheet(R"(
+        #StackedWidget {
+            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 250, 255));
+        }
+    )");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(stakeCoinsPage);

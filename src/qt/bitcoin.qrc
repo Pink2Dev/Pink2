@@ -64,6 +64,7 @@
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
         <file alias="wallet">res/images/wallet.png</file>
+        <file alias="pinkcoin_full">res/images/pinkcoin_full.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>
