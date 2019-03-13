@@ -7,6 +7,7 @@ class OptionsModel;
 class AddressTableModel;
 class TransactionTableModel;
 class CWallet;
+class CBlockIndex;
 
 QT_BEGIN_NAMESPACE
 class QDateTime;
@@ -48,9 +49,6 @@ public:
 
 private:
     OptionsModel *optionsModel;
-
-    int cachedNumBlocks;
-    int cachedNumBlocksOfPeers;
 
     int numBlocksAtStartup;
 

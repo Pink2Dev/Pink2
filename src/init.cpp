@@ -16,6 +16,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <openssl/crypto.h>
@@ -344,6 +345,17 @@ std::string HelpMessage()
         "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n";
 
     return strUsage;
+}
+
+static void BlockNotifyCallback(bool initialSync, const CBlockIndex *pBlockIndex)
+{
+    if (initialSync || !pBlockIndex)
+        return;
+
+    std::string strCmd = GetArg("-blocknotify", "");
+
+    boost::replace_all(strCmd, "%s", pBlockIndex->GetBlockHash().GetHex());
+    boost::thread t(runCommand, strCmd); // thread runs free
 }
 
 /** Sanity checks
@@ -948,6 +960,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
     // ********************************************************* Step 9: import blocks
+
+    if (mapArgs.count("-blocknotify"))
+        uiInterface.NotifyBlockTip.connect(BlockNotifyCallback);
 
     if (mapArgs.count("-loadblock"))
     {

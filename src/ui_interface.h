@@ -13,6 +13,7 @@
 
 #include <stdint.h>
 
+class CBlockIndex;
 class CBasicKeyStore;
 class CWallet;
 class uint256;
@@ -88,6 +89,9 @@ public:
      * @note called with lock cs_mapAlerts held.
      */
     boost::signals2::signal<void (const uint256 &hash, ChangeType status)> NotifyAlertChanged;
+
+    /** New block has been accepted */
+    boost::signals2::signal<void (bool, const CBlockIndex *)> NotifyBlockTip;
 };
 
 extern CClientUIInterface uiInterface;
