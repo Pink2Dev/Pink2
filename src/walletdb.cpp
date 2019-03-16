@@ -224,7 +224,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
         {
             uint256 hash;
             ssKey >> hash;
-            CWalletTx& wtx = pwallet->mapWallet[hash];
+            CWalletTx wtx;
             ssValue >> wtx;
             if (wtx.CheckTransaction() && (wtx.GetHash() == hash))
                 wtx.BindWallet(pwallet);
@@ -256,6 +256,8 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
 
             if (wtx.nOrderPos == -1)
                 wss.fAnyUnordered = true;
+
+            pwallet->AddToWallet(wtx, true, NULL);
 
             //// debug print
             //printf("LoadWallet  %s\n", wtx.GetHash().ToString().c_str());

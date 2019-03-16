@@ -83,7 +83,7 @@ public:
 class CWalletDB : public CDB
 {
 public:
-    CWalletDB(std::string strFilename, const char* pszMode="r+") : CDB(strFilename.c_str(), pszMode)
+    CWalletDB(const std::string& strFilename, const char* pszMode = "r+", bool fFlushOnClose = true) : CDB(strFilename.c_str(), pszMode, fFlushOnClose)
     {
     }
 private:
@@ -256,7 +256,7 @@ public:
     int64_t GetAccountCreditDebit(const std::string& strAccount);
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingentry>& acentries);
 
-    DBErrors ReorderTransactions(CWallet*);
+    DBErrors ReorderTransactions(CWallet* pwallet);
     DBErrors LoadWallet(CWallet* pwallet);
     static bool Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys);
     static bool Recover(CDBEnv& dbenv, std::string filename);

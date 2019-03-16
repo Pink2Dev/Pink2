@@ -61,7 +61,12 @@ void WalletTxToJSON(const CWalletTx& wtx, Object& entry)
         entry.push_back(Pair("blockindex", wtx.nIndex));
         entry.push_back(Pair("blocktime", (int64_t)(mapBlockIndex[wtx.hashBlock]->nTime)));
     }
-    entry.push_back(Pair("txid", wtx.GetHash().GetHex()));
+    uint256 hash = wtx.GetHash();
+    entry.push_back(Pair("txid", hash.GetHex()));
+    Array conflicts;
+    BOOST_FOREACH(const uint256& conflict, wtx.GetConflicts())
+        conflicts.push_back(conflict.GetHex());
+    entry.push_back(Pair("walletconflicts", conflicts));
     entry.push_back(Pair("time", (int64_t)wtx.GetTxTime()));
     entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
     
@@ -549,13 +554,13 @@ int64_t GetAccountBalance(CWalletDB& walletdb, const string& strAccount, int nMi
     for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
     {
         const CWalletTx& wtx = (*it).second;
-        if (!wtx.IsFinal() || wtx.GetDepthInMainChain() < 0)
+        if (!wtx.IsFinal() || wtx.GetBlocksToMaturity() > 0 || wtx.GetDepthInMainChain() < 0)
             continue;
 
         int64_t nReceived, nSent, nFee;
         wtx.GetAccountAmounts(strAccount, nReceived, nSent, nFee);
 
-        if (nReceived != 0 && wtx.GetDepthInMainChain() >= nMinDepth && wtx.GetBlocksToMaturity() == 0)
+        if (nReceived != 0 && wtx.GetDepthInMainChain() >= nMinDepth)
             nBalance += nReceived;
         nBalance -= nSent + nFee;
     }
@@ -596,7 +601,7 @@ Value getbalance(const Array& params, bool fHelp)
         for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it)
         {
             const CWalletTx& wtx = (*it).second;
-            if (!wtx.IsTrusted())
+            if (!wtx.IsTrusted() || wtx.GetBlocksToMaturity() > 0 || wtx.GetDepthInMainChain() < 0)
                 continue;
 
             int64_t allFee;
@@ -604,7 +609,7 @@ Value getbalance(const Array& params, bool fHelp)
             list<pair<CTxDestination, int64_t> > listReceived;
             list<pair<CTxDestination, int64_t> > listSent;
             wtx.GetAmounts(listReceived, listSent, allFee, strSentAccount);
-            if (wtx.GetDepthInMainChain() >= nMinDepth && wtx.GetBlocksToMaturity() == 0)
+            if (wtx.GetDepthInMainChain() >= nMinDepth)
             {
                 BOOST_FOREACH(const PAIRTYPE(CTxDestination,int64_t)& r, listReceived)
                     nBalance += r.second;

@@ -231,10 +231,11 @@ void CDBEnv::CheckpointLSN(std::string strFile)
 }
 
 
-CDB::CDB(const char *pszFile, const char* pszMode) :
+CDB::CDB(const char *pszFile, const char* pszMode, bool fFlushOnCloseIn) :
     pdb(NULL), activeTxn(NULL)
 {
     int ret;
+    fFlushOnClose = fFlushOnCloseIn;
     if (pszFile == NULL)
         return;
 
@@ -303,14 +304,10 @@ static bool IsChainFile(std::string strFile)
     return false;
 }
 
-void CDB::Close()
+void CDB::Flush()
 {
-    if (!pdb)
-        return;
     if (activeTxn)
-        activeTxn->abort();
-    activeTxn = NULL;
-    pdb = NULL;
+        return;
 
     // Flush database activity from memory pool to disk log
     unsigned int nMinutes = 0;
@@ -321,7 +318,20 @@ void CDB::Close()
     if (IsChainFile(strFile) && IsInitialBlockDownload())
         nMinutes = 5;
 
-    bitdb.dbenv.txn_checkpoint(nMinutes ? GetArg("-dblogsize", 100)*1024 : 0, nMinutes, 0);
+    bitdb.dbenv.txn_checkpoint(nMinutes ? GetArg("-dblogsize", 100) * 1024 : 0, nMinutes, 0);
+}
+
+void CDB::Close()
+{
+    if (!pdb)
+        return;
+    if (activeTxn)
+        activeTxn->abort();
+    activeTxn = NULL;
+    pdb = NULL;
+
+    if (fFlushOnClose)
+        Flush();
 
     {
         LOCK(bitdb.cs_db);
