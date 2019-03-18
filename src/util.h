@@ -210,7 +210,8 @@ int64_t GetAdjustedTime();
 int64_t GetTimeOffset();
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
-void AddTimeData(const CNetAddr& ip, int64_t nTime);
+void compareTimeWithPeers(const std::vector<int64_t>& vSorted);
+void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime = false);
 void runCommand(std::string strCommand);
 
 
