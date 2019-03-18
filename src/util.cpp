@@ -1184,7 +1184,7 @@ int64_t GetAdjustedTime()
     return GetTime() + GetTimeOffset();
 }
 
-void compareTimeWithPeers(const std::vector<int64_t>& vSorted)
+void CompareTimeWithPeers(const std::vector<int64_t>& vSorted)
 {
     static bool fDone;
     if (!fDone)
@@ -1249,7 +1249,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
         // local time with peers and displays warning if offset it to big.
         if (!fSyncTime)
         {
-            compareTimeWithPeers(vSorted);
+            CompareTimeWithPeers(vSorted);
             return;
         }
         // Only let other nodes change our time by so much
@@ -1260,7 +1260,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
         else
         {
             nTimeOffset = 0;
-            compareTimeWithPeers(vSorted);
+            CompareTimeWithPeers(vSorted);
         }
         if (fDebug) {
             BOOST_FOREACH(int64_t n, vSorted)
