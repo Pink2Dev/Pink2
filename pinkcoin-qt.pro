@@ -139,7 +139,7 @@ contains(RELEASE, 1) {
     # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 
-# Temporarily Fix issue with too big main.o file
+# Temporarily fix issue with too big main.o file
 Debug:win32:QMAKE_CXXFLAGS *= -Wa,-mbig-obj -O1
 
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags

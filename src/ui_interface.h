@@ -90,6 +90,9 @@ public:
      */
     boost::signals2::signal<void (const uint256 &hash, ChangeType status)> NotifyAlertChanged;
 
+    /** A wallet has been loaded. */
+    boost::signals2::signal<void (CWallet* wallet)> LoadWallet;
+
     /** New block has been accepted */
     boost::signals2::signal<void (bool, const CBlockIndex *)> NotifyBlockTip;
 };

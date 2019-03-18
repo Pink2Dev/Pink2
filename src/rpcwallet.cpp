@@ -2120,6 +2120,7 @@ Value sendtostealthaddress(const Array& params, bool fHelp)
     return result;
 }
 
+// TODO: FIX IT!
 Value clearwallettransactions(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)
@@ -2127,49 +2128,49 @@ Value clearwallettransactions(const Array& params, bool fHelp)
             "clearwallettransactions \n"
             "delete all transactions from wallet - reload with scanforalltxns\n"
             "Warning: Backup your wallet first!");
-    
-    
-    
+
+
     Object result;
-    
+
     uint32_t nTransactions = 0;
-    
+
     char cbuf[256];
-    
+
     {
+        printf("CLEARING ALL TXS..............................\n");
         LOCK2(cs_main, pwalletMain->cs_wallet);
-        
+
         CWalletDB walletdb(pwalletMain->strWalletFile);
         walletdb.TxnBegin();
         Dbc* pcursor = walletdb.GetTxnCursor();
         if (!pcursor)
             throw runtime_error("Cannot get wallet DB cursor");
-        
+
         Dbt datKey;
         Dbt datValue;
-        
+
         datKey.set_flags(DB_DBT_USERMEM);
         datValue.set_flags(DB_DBT_USERMEM);
-        
+
         std::vector<unsigned char> vchKey;
         std::vector<unsigned char> vchType;
         std::vector<unsigned char> vchKeyData;
         std::vector<unsigned char> vchValueData;
-        
+
         vchKeyData.resize(100);
         vchValueData.resize(100);
-        
+
         datKey.set_ulen(vchKeyData.size());
         datKey.set_data(&vchKeyData[0]);
-        
+
         datValue.set_ulen(vchValueData.size());
         datValue.set_data(&vchValueData[0]);
-        
+
         unsigned int fFlags = DB_NEXT; // same as using DB_FIRST for new cursor
         while (true)
         {
             int ret = pcursor->get(&datKey, &datValue, fFlags);
-            
+
             if (ret == ENOMEM
                 || ret == DB_BUFFER_SMALL)
             {
@@ -2179,7 +2180,7 @@ Value clearwallettransactions(const Array& params, bool fHelp)
                     datKey.set_ulen(vchKeyData.size());
                     datKey.set_data(&vchKeyData[0]);
                 };
-                
+
                 if (datValue.get_size() > datValue.get_ulen())
                 {
                     vchValueData.resize(datValue.get_size());
@@ -2189,7 +2190,7 @@ Value clearwallettransactions(const Array& params, bool fHelp)
                 // -- try once more, when DB_BUFFER_SMALL cursor is not expected to move
                 ret = pcursor->get(&datKey, &datValue, fFlags);
             };
-            
+
             if (ret == DB_NOTFOUND)
                 break;
             else
@@ -2199,48 +2200,49 @@ Value clearwallettransactions(const Array& params, bool fHelp)
                 snprintf(cbuf, sizeof(cbuf), "wallet DB error %d, %s", ret, db_strerror(ret));
                 throw runtime_error(cbuf);
             };
-            
+
             CDataStream ssValue(SER_DISK, CLIENT_VERSION);
             ssValue.SetType(SER_DISK);
             ssValue.clear();
             ssValue.write((char*)datKey.get_data(), datKey.get_size());
-            
+
             ssValue >> vchType;
-            
-            
+
+
             std::string strType(vchType.begin(), vchType.end());
-            
-            //printf("strType %s\n", strType.c_str());
-            
+
             if (strType == "tx")
             {
                 uint256 hash;
                 ssValue >> hash;
-                
+
                 if ((ret = pcursor->del(0)) != 0)
                 {
                     printf("Delete transaction failed %d, %s\n", ret, db_strerror(ret));
                     continue;
                 };
-                
+
                 pwalletMain->mapWallet.erase(hash);
+                // TODO: This causing crash...
+                printf("CLEARING ALL TXS........ STEP %u HASH: %s \n", nTransactions, hash.GetHex().c_str());
                 pwalletMain->NotifyTransactionChanged(pwalletMain, hash, CT_DELETED);
-                
+
                 nTransactions++;
             };
         };
+        printf("CLEARING ALL TXS................END LOOP\n");
         pcursor->close();
         walletdb.TxnCommit();
-        
-        
+        printf("CLEARING ALL TXS...............FINITO\n");
+
         //pwalletMain->mapWallet.clear();
     }
-    
+
     snprintf(cbuf, sizeof(cbuf), "Removed %u transactions.", nTransactions);
     result.push_back(Pair("complete", std::string(cbuf)));
     result.push_back(Pair("", "Reload with scanforstealthtxns or re-download blockchain."));
-    
-    
+
+
     return result;
 }
 
@@ -2278,6 +2280,7 @@ Value scanforalltxns(const Array& params, bool fHelp)
         pwalletMain->MarkDirty();
         
         pwalletMain->ScanForWalletTransactions(pindex, true);
+        printf("ALL TX SCANNED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
         pwalletMain->ReacceptWalletTransactions();
     }
     

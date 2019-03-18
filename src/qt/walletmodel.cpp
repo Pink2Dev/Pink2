@@ -19,6 +19,8 @@ WalletModel::WalletModel(CWallet *wallet, OptionsModel *optionsModel, QObject *p
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0)
 {
+    fForceCheckBalanceChanged = false;
+
     addressTableModel = new AddressTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(wallet, this);
 
@@ -102,8 +104,10 @@ void WalletModel::pollBalanceChanged()
     if(!lockWallet)
         return;
 
-    if(nBestHeight != cachedNumBlocks)
+    if(fForceCheckBalanceChanged || nBestHeight != cachedNumBlocks)
     {
+        fForceCheckBalanceChanged = false;
+
         // Balance and number of transactions might have changed
         cachedNumBlocks = nBestHeight;
 
@@ -133,13 +137,10 @@ void WalletModel::checkBalanceChanged()
     }
 }
 
-void WalletModel::updateTransaction(const QString &hash, int status)
+void WalletModel::updateTransaction()
 {
-    if(transactionTableModel)
-        transactionTableModel->updateTransaction(hash, status);
-
     // Balance and number of transactions might have changed
-    checkBalanceChanged();
+    fForceCheckBalanceChanged = true;
 }
 
 void WalletModel::updateAddressBook(const QString &address, const QString &label, bool isMine, int status)
@@ -421,6 +422,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(const QList<SendCoinsRecipie
             };
         }
     }
+    checkBalanceChanged(); // update balance immediately, otherwise there could be a short noticeable delay until pollBalanceChanged hits
 
     return SendCoinsReturn(OK, 0, hex);
 }
@@ -538,16 +540,22 @@ static void NotifyAddressBookStakeChanged(WalletModel *walletmodel, CWallet *wal
                                   Q_ARG(QString, QString::fromStdString(label)),
                                   Q_ARG(QString, QString::fromStdString(percent)),
                                   Q_ARG(int, status));
-
 }
 
 static void NotifyTransactionChanged(WalletModel *walletmodel, CWallet *wallet, const uint256 &hash, ChangeType status)
 {
-    if (fDebug)
-        OutputDebugStringF("NotifyTransactionChanged %s status=%i\n", hash.GetHex().c_str(), status);
-    QMetaObject::invokeMethod(walletmodel, "updateTransaction", Qt::QueuedConnection,
-                              Q_ARG(QString, QString::fromStdString(hash.GetHex())),
-                              Q_ARG(int, status));
+    Q_UNUSED(wallet);
+    Q_UNUSED(hash);
+    Q_UNUSED(status);
+    QMetaObject::invokeMethod(walletmodel, "updateTransaction", Qt::QueuedConnection);
+}
+
+static void ShowProgress(WalletModel *walletmodel, const std::string &title, int nProgress)
+{
+    // emits signal "showProgress"
+    QMetaObject::invokeMethod(walletmodel, "showProgress", Qt::QueuedConnection,
+                              Q_ARG(QString, QString::fromStdString(title)),
+                              Q_ARG(int, nProgress));
 }
 
 void WalletModel::subscribeToCoreSignals()
@@ -557,6 +565,7 @@ void WalletModel::subscribeToCoreSignals()
     wallet->NotifyAddressBookChanged.connect(boost::bind(NotifyAddressBookChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyAddressBookStakeChanged.connect(boost::bind(NotifyAddressBookStakeChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyTransactionChanged.connect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
+    wallet->ShowProgress.connect(boost::bind(ShowProgress, this, _1, _2));
 }
 
 void WalletModel::unsubscribeFromCoreSignals()
@@ -566,6 +575,7 @@ void WalletModel::unsubscribeFromCoreSignals()
     wallet->NotifyAddressBookChanged.disconnect(boost::bind(NotifyAddressBookChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyAddressBookStakeChanged.disconnect(boost::bind(NotifyAddressBookStakeChanged, this, _1, _2, _3, _4, _5));
     wallet->NotifyTransactionChanged.disconnect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
+    wallet->ShowProgress.disconnect(boost::bind(ShowProgress, this, _1, _2));
 }
 
 // WalletModel::UnlockContext implementation

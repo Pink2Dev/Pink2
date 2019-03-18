@@ -559,7 +559,6 @@ void CWallet::WalletUpdateSpent(const CTransaction &tx, bool fBlock)
                 }
             }
         }
-
     }
 }
 
@@ -579,7 +578,7 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet, CWalletD
     if (fFromLoadWallet)
     {
         mapWallet[hash] = wtxIn;
-        mapWallet[hash].BindWallet(this);
+        // mapWallet[hash].BindWallet(this);
         AddToConflicts(hash);
     }
     else
@@ -1035,13 +1034,25 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
     CBlockIndex* pindex = pindexStart;
     {
         LOCK2(cs_main, cs_wallet);
+
+        // No need to read and scan block, if block was created before
+        // our wallet birthday (as adjusted for block time variability)
+        while (pindex && nTimeFirstKey && (pindex->nTime < PastDrift(nTimeFirstKey)))
+            pindex = pindex->pnext;
+
+        ShowProgress(_("Rescanning..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
+        double dProgressStart = pindex->nHeight;
+        double dProgressTip = pindexBest->nHeight;
+
         while (pindex)
         {
-            // no need to read and scan block, if block was created before
-            // our wallet birthday (as adjusted for block time variability)
-            if (nTimeFirstKey && (pindex->nTime < (nTimeFirstKey - 7200))) {
-                pindex = pindex->pnext;
-                continue;
+            if (pindex->nHeight % 100 == 0 && dProgressTip - dProgressStart > 0) {
+                ShowProgress(
+                    _("Rescanning..."),
+                    std::max(
+                        1, std::min(99, (int)((pindex->nHeight - dProgressStart) / (dProgressTip - dProgressStart) * 100))
+                    )
+                );
             }
 
             CBlock block;
@@ -1053,22 +1064,43 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
             }
             pindex = pindex->pnext;
         }
+        ShowProgress(_("Rescanning..."), 100); // Hides progress dialog in GUI
     }
     return ret;
 }
 
 void CWallet::ReacceptWalletTransactions()
 {
+    printf("REACCEPTING..............................1\n");
     CTxDB txdb("r");
+    printf("REACCEPTING..............................2\n");
     CWalletDB walletdb(strWalletFile);
+    printf("REACCEPTING..............................3\n");
     bool fRepeat = true;
+    printf("REACCEPTING..............................4\n");
     while (fRepeat)
     {
+        printf("REACCEPTING..............................5\n");
         LOCK2(cs_main, cs_wallet);
+        printf("REACCEPTING..............................6\n");
         fRepeat = false;
         vector<CDiskTxPos> vMissingTx;
+        ShowProgress(_("Reaccepting..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
+        int step = 0;
+        double dProgressEnd = mapWallet.size();
         BOOST_FOREACH(PAIRTYPE(const uint256, CWalletTx)& item, mapWallet)
         {
+            printf("Reaccepting %u / %f\n", step, dProgressEnd);
+            if (step % 100 == 0) {
+                ShowProgress(
+                    _("Reaccepting..."),
+                    std::max(
+                        1, std::min(99, (int)(step / dProgressEnd * 100))
+                    )
+                );
+            }
+            ++step;
+
             CWalletTx& wtx = item.second;
             if ((wtx.IsCoinBase() && wtx.IsSpent(0)) || (wtx.IsCoinStake() && wtx.IsSpent(1)))
                 continue;
@@ -1108,13 +1140,17 @@ void CWallet::ReacceptWalletTransactions()
                     wtx.AcceptWalletTransaction(txdb);
             }
         }
+        printf("REACCEPTING...............ONE FINITO\n");
+        ShowProgress(_("Reaccepting..."), 100); // Hides progress dialog in GUI
         if (!vMissingTx.empty())
         {
             // TODO: optimize this to scan just part of the block chain?
             if (ScanForWalletTransactions(pindexGenesisBlock))
                 fRepeat = true;  // Found missing transactions: re-do re-accept.
         }
+        printf("REACCEPTING...............TWO FINITO\n");
     }
+    printf("REACCEPTING...............DEFINITIVE FINITO\n");
 }
 
 void CWalletTx::RelayWalletTransaction(CTxDB& txdb)
@@ -1195,7 +1231,7 @@ void CWallet::ResendWalletTransactions(bool fForce)
 set<uint256> CWalletTx::GetConflicts() const
 {
     set<uint256> result;
-    if (pwallet != NULL)
+    if (pwallet != nullptr)
     {
         uint256 myHash = GetHash();
         result = pwallet->GetConflicts(myHash);
@@ -3010,6 +3046,8 @@ DBErrors CWallet::LoadWallet(bool& fFirstRunRet)
     if (nLoadWalletRet != DB_LOAD_OK)
         return nLoadWalletRet;
     fFirstRunRet = !vchDefaultKey.IsValid();
+
+    uiInterface.LoadWallet(this);
 
     NewThread(ThreadFlushWalletDB, &strWalletFile);
     return DB_LOAD_OK;

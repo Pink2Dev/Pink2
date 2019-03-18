@@ -27,6 +27,7 @@ class QTableView;
 class QAbstractItemModel;
 class QModelIndex;
 class QProgressBar;
+class QProgressDialog;
 class QStackedWidget;
 class QUrl;
 QT_END_NAMESPACE
@@ -114,6 +115,7 @@ private:
     QToolBar *mainToolbar;
     QToolBar *secondaryToolbar;
     QProgressBar *progressBar;
+    QProgressDialog *progressDialog;
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
@@ -197,6 +199,9 @@ public slots:
     void mainToolbarOrientation(Qt::Orientation orientation);
     //void secondaryToolbarOrientation(Qt::Orientation orientation);
 
+    /** Show progress dialog e.g. for rescan */
+    void showProgress(const QString &title, int nProgress);
+
 private slots:
     /** Switch to overview (home) page */
     void gotoOverviewPage();
@@ -268,6 +273,10 @@ private slots:
     void loadTheme(QString theme);
     void listThemes(QStringList& themes);
     void keyPressEvent(QKeyEvent * e);
+
+signals:
+    /**  Fired when a message should be reported to the user */
+    void message(const QString &title, const QString &message, unsigned int style);
 };
 
 #endif

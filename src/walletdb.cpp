@@ -257,7 +257,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             if (wtx.nOrderPos == -1)
                 wss.fAnyUnordered = true;
 
-            pwallet->AddToWallet(wtx, true, NULL);
+            pwallet->AddToWallet(wtx, true, nullptr);
 
             //// debug print
             //printf("LoadWallet  %s\n", wtx.GetHash().ToString().c_str());

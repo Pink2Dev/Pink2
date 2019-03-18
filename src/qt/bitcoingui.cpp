@@ -52,6 +52,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QProgressDialog>
 #include <QLocale>
 #include <QMessageBox>
 #include <QMimeData>
@@ -393,6 +394,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
+
+    // Receive and report messages
+    connect(this, SIGNAL(message(QString,QString,unsigned int)), this, SLOT(message(QString,QString,unsigned int)));
+    connect(sendCoinsPage, SIGNAL(message(QString,QString,unsigned int)), this, SLOT(message(QString,QString,unsigned int)));
 
     // Double-clicking on a transaction on the transaction history page shows details
     connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));
@@ -766,14 +771,14 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel, WalletModel *stakeMode
         // Report errors from wallet thread
         connect(walletModel, SIGNAL(error(QString,QString,bool)), this, SLOT(error(QString,QString,bool)));
 
-        // Put transaction list in tabs
-        transactionView->setModel(walletModel);
+    // Put transaction list in tabs
+    transactionView->setModel(walletModel);
 
-        overviewPage->setModel(walletModel);
-        addressBookPage->setModel(walletModel->getAddressTableModel());
-        receiveCoinsPage->setModel(walletModel->getAddressTableModel());
-        sendCoinsPage->setModel(walletModel);
-        signVerifyMessageDialog->setModel(walletModel);
+    overviewPage->setModel(walletModel);
+    addressBookPage->setModel(walletModel->getAddressTableModel());
+    receiveCoinsPage->setModel(walletModel->getAddressTableModel());
+    sendCoinsPage->setModel(walletModel);
+    signVerifyMessageDialog->setModel(walletModel);
 
         setEncryptionStatus(walletModel->getEncryptionStatus());
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -788,6 +793,9 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel, WalletModel *stakeMode
     }
     if(stakeModel)
         stakeCoinsPage->setModel(stakeModel->getAddressTableModel());
+
+    // Show progress dialog
+    connect(walletModel, SIGNAL(showProgress(QString,int)), this, SLOT(showProgress(QString,int)));
 }
 
 void BitcoinGUI::setMessageModel(MessageModel *messageModel)
@@ -1074,7 +1082,11 @@ void BitcoinGUI::incomingTransaction(const QModelIndex & parent, int start, int 
 {
     if(!walletModel || !clientModel)
         return;
+
     TransactionTableModel *ttm = walletModel->getTransactionTableModel();
+    if (!ttm || ttm->processingQueuedTransactions())
+        return;
+
     qint64 amount = ttm->index(start, TransactionTableModel::Amount, parent)
                     .data(Qt::EditRole).toULongLong();
 
@@ -1332,8 +1344,12 @@ void BitcoinGUI::backupWallet()
     QString filename = QFileDialog::getSaveFileName(this, tr("Backup Wallet"), saveDir, tr("Wallet Data (*.dat)"));
     if(!filename.isEmpty()) {
         if(!walletModel->backupWallet(filename)) {
-            QMessageBox::warning(this, tr("Backup Failed"), tr("There was an error trying to save the wallet data to the new location."));
+            emit message(tr("Backup Failed"), tr("There was an error trying to save the wallet data to the new location."),
+                CClientUIInterface::MSG_ERROR);
         }
+        else
+            emit message(tr("Backup Successful"), tr("The wallet data was successfully saved to the new location."),
+                CClientUIInterface::MSG_INFORMATION);
     }
 }
 
@@ -1469,6 +1485,29 @@ void BitcoinGUI::updateStakingIcon()
         else
             labelStakingIcon->setToolTip(tr("Not staking"));
     }
+}
+
+void BitcoinGUI::showProgress(const QString &title, int nProgress)
+{
+    if (nProgress == 0)
+    {
+        progressDialog = new QProgressDialog(title, "", 0, 100);
+        progressDialog->setWindowModality(Qt::ApplicationModal);
+        progressDialog->setMinimumDuration(0);
+        progressDialog->setCancelButton(0);
+        progressDialog->setAutoClose(false);
+        progressDialog->setValue(0);
+    }
+    else if (nProgress == 100)
+    {
+        if (progressDialog)
+        {
+            progressDialog->close();
+            progressDialog->deleteLater();
+        }
+    }
+    else if (progressDialog)
+        progressDialog->setValue(nProgress);
 }
 
 /* zeewolf: Hot swappable wallet themes */

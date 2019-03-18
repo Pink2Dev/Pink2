@@ -138,6 +138,7 @@ public:
 
 private:
     CWallet *wallet;
+    bool fForceCheckBalanceChanged;
 
     // Wallet has an options model for wallet-specific options
     // (transaction fee, for example)
@@ -167,7 +168,7 @@ public slots:
     /* Wallet status might have changed */
     void updateStatus();
     /* New transaction, or transaction changed status */
-    void updateTransaction(const QString &hash, int status);
+    void updateTransaction();
     /* New, updated or removed address book entry */
     void updateAddressBook(const QString &address, const QString &label, bool isMine, int status);
     void updateAddressBookStake(const QString &address, const QString &label, const QString &percent, int status);
@@ -188,6 +189,9 @@ signals:
 
     // Asynchronous error notification
     void error(const QString &title, const QString &message, bool modal);
+
+    // Show progress dialog e.g. for rescan
+    void showProgress(const QString &title, int nProgress);
 };
 
 
