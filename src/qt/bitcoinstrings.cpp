@@ -191,7 +191,6 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Invalid amount"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Insufficient funds"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Warning: Please check that your computer's date and time are correct! "
-"Also high CPU usage on your device may cause delays in message processing and unintended time offset! "
 "If your clock is wrong Pinkcoin will not work properly."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Warning: This version is obsolete, upgrade required!"),
 QT_TRANSLATE_NOOP("bitcoin-core", "WARNING: syncronized checkpoint violation detected, but skipped!"),

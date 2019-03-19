@@ -1200,12 +1200,15 @@ void CompareTimeWithPeers(const std::vector<int64_t>& vSorted)
             fDone = true;
             string strMessage = _(
                 "Warning: Please check that your computer's date and time are correct! "
-                "Also high CPU usage on your device may cause delays in message processing and unintended time offset! "
                 "If your clock is wrong Pinkcoin will not work properly."
             );
             strMiscWarning = strMessage;
             printf("*** %s\n", strMessage.c_str());
-            uiInterface.ThreadSafeMessageBox(strMessage+" ", string("Pinkcoin"), CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION);
+            uiInterface.ThreadSafeMessageBox(
+                strMessage+" ",
+                string("Pinkcoin"),
+                CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION
+            );
         }
     }
 }
@@ -1240,20 +1243,20 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
     // So we should hold off on fixing this and clean it up as part of
     // a timing cleanup that strengthens it in a number of other ways.
     //
-    if (vTimeOffsets.size() >= 5 && vTimeOffsets.size() % 2 == 1)
+    // No time offset adjustment. Just Compare node
+    // local time with peers and displays warning if offset it to big.
+    if (!fSyncTime)
+    {
+        if (vTimeOffsets.size() >= 5)
+            CompareTimeWithPeers(vTimeOffsets.sorted());
+    }
+    else if (vTimeOffsets.size() >= 5 && vTimeOffsets.size() % 2 == 1)
     {
         int64_t nMedian = vTimeOffsets.median();
         std::vector<int64_t> vSorted = vTimeOffsets.sorted();
 
-        // No time offset adjustment. Just Compare node
-        // local time with peers and displays warning if offset it to big.
-        if (!fSyncTime)
-        {
-            CompareTimeWithPeers(vSorted);
-            return;
-        }
         // Only let other nodes change our time by so much
-        else if (abs64(nMedian) < 30)
+        if (abs64(nMedian) < 30)
         {
             nTimeOffset = nMedian;
         }
