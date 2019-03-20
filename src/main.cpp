@@ -3209,8 +3209,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         pfrom->fClient = !(pfrom->nServices & NODE_NETWORK);
 
-        if (GetBoolArg("-synctime", true))
-            AddTimeData(pfrom->addr, nTime);
+        AddTimeData(pfrom->addr, nTime, GetBoolArg("-synctime", false));
 
         // Change version
         pfrom->PushMessage("verack");

@@ -1184,7 +1184,36 @@ int64_t GetAdjustedTime()
     return GetTime() + GetTimeOffset();
 }
 
-void AddTimeData(const CNetAddr& ip, int64_t nTime)
+void CompareTimeWithPeers(const std::vector<int64_t>& vSorted)
+{
+    static bool fDone;
+    if (!fDone)
+    {
+        // If nobody has a time different than ours but within 30 seconds of ours, give a warning
+        bool fMatch = false;
+        BOOST_FOREACH(int64_t nOffset, vSorted)
+            if (nOffset != 0 && abs64(nOffset) < 30)
+                fMatch = true;
+
+        if (!fMatch)
+        {
+            fDone = true;
+            string strMessage = _(
+                "Warning: Please check that your computer's date and time are correct! "
+                "If your clock is wrong Pinkcoin will not work properly."
+            );
+            strMiscWarning = strMessage;
+            printf("*** %s\n", strMessage.c_str());
+            uiInterface.ThreadSafeMessageBox(
+                strMessage+" ",
+                string("Pinkcoin"),
+                CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION
+            );
+        }
+    }
+}
+
+void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
 {
     int64_t nOffsetSample = nTime - GetTime();
 
@@ -1214,37 +1243,27 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime)
     // So we should hold off on fixing this and clean it up as part of
     // a timing cleanup that strengthens it in a number of other ways.
     //
-    if (vTimeOffsets.size() >= 5 && vTimeOffsets.size() % 2 == 1)
+    // No time offset adjustment. Just Compare node
+    // local time with peers and displays warning if offset it to big.
+    if (!fSyncTime)
+    {
+        if (vTimeOffsets.size() >= 5)
+            CompareTimeWithPeers(vTimeOffsets.sorted());
+    }
+    else if (vTimeOffsets.size() >= 5 && vTimeOffsets.size() % 2 == 1)
     {
         int64_t nMedian = vTimeOffsets.median();
         std::vector<int64_t> vSorted = vTimeOffsets.sorted();
+
         // Only let other nodes change our time by so much
-        if (abs64(nMedian) < 70 * 60)
+        if (abs64(nMedian) < 30)
         {
             nTimeOffset = nMedian;
         }
         else
         {
             nTimeOffset = 0;
-
-            static bool fDone;
-            if (!fDone)
-            {
-                // If nobody has a time different than ours but within 5 minutes of ours, give a warning
-                bool fMatch = false;
-                BOOST_FOREACH(int64_t nOffset, vSorted)
-                    if (nOffset != 0 && abs64(nOffset) < 5 * 60)
-                        fMatch = true;
-
-                if (!fMatch)
-                {
-                    fDone = true;
-                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong Pinkcoin will not work properly.");
-                    strMiscWarning = strMessage;
-                    printf("*** %s\n", strMessage.c_str());
-                    uiInterface.ThreadSafeMessageBox(strMessage+" ", string("Pinkcoin"), CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION);
-                }
-            }
+            CompareTimeWithPeers(vSorted);
         }
         if (fDebug) {
             BOOST_FOREACH(int64_t n, vSorted)
