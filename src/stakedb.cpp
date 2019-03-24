@@ -164,7 +164,7 @@ void ThreadFlushStakeDB(void* parg)
 
     unsigned int nLastSeen = nStakeDBUpdated;
     unsigned int nLastFlushed = nStakeDBUpdated;
-    int64_t nLastStakeUpdate = GetTime();
+    int64_t nLastStakeUpdate = GetAdjustedTime();
     while (!fShutdown)
     {
         MilliSleep(500);
@@ -172,10 +172,10 @@ void ThreadFlushStakeDB(void* parg)
         if (nLastSeen != nStakeDBUpdated)
         {
             nLastSeen = nStakeDBUpdated;
-            nLastStakeUpdate = GetTime();
+            nLastStakeUpdate = GetAdjustedTime();
         }
 
-        if (nLastFlushed != nStakeDBUpdated && GetTime() - nLastStakeUpdate >= 1)
+        if (nLastFlushed != nStakeDBUpdated && GetAdjustedTime() - nLastStakeUpdate >= 1)
         {
             TRY_LOCK(bitdb.cs_db,lockDb);
             if (lockDb)
@@ -263,7 +263,7 @@ bool CStakeDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
     // Rewrite salvaged data to wallet.dat
     // Set -rescan so any missing transactions will be
     // found.
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     std::string newFilename = strprintf("stake.%" PRId64 ".bak", now);
 
     int result = dbenv.dbenv.dbrename(NULL, filename.c_str(), NULL,

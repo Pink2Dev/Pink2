@@ -288,8 +288,8 @@ public:
         nLastRecv = 0;
         nSendBytes = 0;
         nRecvBytes = 0;
-        nLastSendEmpty = GetTime();
-        nTimeConnected = GetTime();
+        nLastSendEmpty = GetAdjustedTime();
+        nTimeConnected = GetAdjustedTime();
         addr = addrIn;
         addrName = addrNameIn == "" ? addr.ToStringIPPort() : addrNameIn;
         nVersion = 0;
@@ -422,7 +422,7 @@ public:
             printf("askfor %s   %" PRId64 " (%s)\n", inv.ToString().c_str(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000).c_str());
 
         // Make sure not to reuse time indexes to keep things in the same order
-        int64_t nNow = (GetTime() - 1) * 1000000;
+        int64_t nNow = (GetAdjustedTime() - 1) * 1000000;
         static int64_t nLastTime;
         ++nLastTime;
         nNow = std::max(nNow, nLastTime);

@@ -145,9 +145,9 @@ void RandAddSeedPerfmon()
 
     // This can take up to 2 seconds, so only do it every 10 minutes
     static int64_t nLastPerfmon;
-    if (GetTime() < nLastPerfmon + 10 * 60)
+    if (GetAdjustedTime() < nLastPerfmon + 10 * 60)
         return;
-    nLastPerfmon = GetTime();
+    nLastPerfmon = GetAdjustedTime();
 
 #ifdef WIN32
     // Don't need this on Linux, OpenSSL automatically uses /dev/urandom
@@ -244,7 +244,7 @@ inline int OutputDebugStringF(const char* pszFormat, ...)
 
             // Debug print useful for profiling
             if (fLogTimestamps && fStartedNewLine)
-                fprintf(fileout, "%s ", DateTimeStrFormat("%x %H:%M:%S", GetTime()).c_str());
+                fprintf(fileout, "%s ", DateTimeStrFormat("%x %H:%M:%S", GetAdjustedTime()).c_str());
             if (pszFormat[strlen(pszFormat) - 1] == '\n')
                 fStartedNewLine = true;
             else
@@ -1174,6 +1174,12 @@ void SetMockTime(int64_t nMockTimeIn)
 
 static int64_t nTimeOffset = 0;
 
+
+void SetTimeOffset(const int64_t &nOffset)
+{
+    nTimeOffset = nOffset;
+}
+
 int64_t GetTimeOffset()
 {
     return nTimeOffset;
@@ -1215,7 +1221,7 @@ void CompareTimeWithPeers(const std::vector<int64_t>& vSorted)
 
 void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
 {
-    int64_t nOffsetSample = nTime - GetTime();
+    int64_t nOffsetSample = nTime - GetAdjustedTime();
 
     // Ignore duplicates
     static set<CNetAddr> setKnown;
@@ -1258,11 +1264,11 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
         // Only let other nodes change our time by so much
         if (abs64(nMedian) < 30)
         {
-            nTimeOffset = nMedian;
+            SetTimeOffset(nMedian);
         }
         else
         {
-            nTimeOffset = 0;
+            SetTimeOffset(0);
             CompareTimeWithPeers(vSorted);
         }
         if (fDebug) {
@@ -1270,7 +1276,8 @@ void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
                 printf("%+" PRId64 "  ", n);
             printf("|  ");
         }
-        printf("nTimeOffset = %+" PRId64 "   (%+" PRId64 " minutes)\n", nTimeOffset, nTimeOffset/60);
+        int64_t nOffset = GetTimeOffset();
+        printf("nTimeOffset = %+" PRId64 "   (%+" PRId64 " minutes)\n", nOffset, nOffset/60);
     }
 }
 

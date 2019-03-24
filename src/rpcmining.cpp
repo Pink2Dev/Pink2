@@ -141,7 +141,7 @@ Value getworkex(const Array& params, bool fHelp)
         static int64_t nStart;
         static CBlock* pblock;
         if (pindexPrev != pindexBest ||
-            (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60))
+            (nTransactionsUpdated != nTransactionsUpdatedLast && GetAdjustedTime() - nStart > 60))
         {
             if (pindexPrev != pindexBest)
             {
@@ -153,7 +153,7 @@ Value getworkex(const Array& params, bool fHelp)
             }
             nTransactionsUpdatedLast = nTransactionsUpdated;
             pindexPrev = pindexBest;
-            nStart = GetTime();
+            nStart = GetAdjustedTime();
 
             // Create new block
             pblock = CreateNewBlock(pwalletMain);
@@ -272,7 +272,7 @@ Value getwork(const Array& params, bool fHelp)
         static int64_t nStart;
         static CBlock* pblock;
         if (pindexPrev != pindexBest ||
-            (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60))
+            (nTransactionsUpdated != nTransactionsUpdatedLast && GetAdjustedTime() - nStart > 60))
         {
             if (pindexPrev != pindexBest)
             {
@@ -289,7 +289,7 @@ Value getwork(const Array& params, bool fHelp)
             // Store the pindexBest used before CreateNewBlock, to avoid races
             nTransactionsUpdatedLast = nTransactionsUpdated;
             CBlockIndex* pindexPrevNew = pindexBest;
-            nStart = GetTime();
+            nStart = GetAdjustedTime();
 
             // Create new block
             pblock = CreateNewBlock(pwalletMain);
@@ -408,7 +408,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
     static int64_t nStart;
     static CBlock* pblock;
     if (pindexPrev != pindexBest ||
-        (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 5))
+        (nTransactionsUpdated != nTransactionsUpdatedLast && GetAdjustedTime() - nStart > 5))
     {
         // Clear pindexPrev so future calls make a new block, despite any failures from here on
         pindexPrev = NULL;
@@ -416,7 +416,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
         // Store the pindexBest used before CreateNewBlock, to avoid races
         nTransactionsUpdatedLast = nTransactionsUpdated;
         CBlockIndex* pindexPrevNew = pindexBest;
-        nStart = GetTime();
+        nStart = GetAdjustedTime();
 
         // Create new block
         if(pblock)

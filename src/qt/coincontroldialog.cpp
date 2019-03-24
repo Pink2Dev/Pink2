@@ -230,11 +230,11 @@ void CoinControlDialog::customSelectCoins()
 					
 				//Coin Weight
 				uint64_t nTxWeight = 0;
-                double nTimeWeight = min(GetTime() - out.tx->GetTxTime() - nStakeMinAge, (int64_t)nStakeMaxAge) / 86400;
+                double nTimeWeight = min(GetAdjustedTime() - out.tx->GetTxTime() - nStakeMinAge, (int64_t)nStakeMaxAge) / 86400;
                 nTxWeight = dCoinAmount / COIN * nTimeWeight;
 					
 				//Age
-				double dAge = (GetTime() - out.tx->GetTxTime()) / (double)(1440 * 60);
+                double dAge = (GetAdjustedTime() - out.tx->GetTxTime()) / (double)(1440 * 60);
 			
 				COutPoint outpt(txhash, out.i);
 				
@@ -768,7 +768,7 @@ void CoinControlDialog::updateView()
 			
 			//Coin Weight
             int64_t nAmount = out.tx->vout[out.i].nValue;
-            double nTimeWeight = min(GetTime() - out.tx->GetTxTime() - nStakeMinAge, (int64_t)nStakeMaxAge) / 86400;
+            double nTimeWeight = min(GetAdjustedTime() - out.tx->GetTxTime() - nStakeMinAge, (int64_t)nStakeMaxAge) / 86400;
             nTxWeight = nAmount / COIN * nTimeWeight;
 			nTxWeightSum += nTxWeight;
             
@@ -840,7 +840,7 @@ void CoinControlDialog::updateView()
             itemOutput->setText(COLUMN_WEIGHT, strPad(QString::number((uint64_t)nTxWeight),8," "));
 			
 			// Age
-			uint64_t nAge = GetTime() - out.tx->GetTxTime();
+            uint64_t nAge = GetAdjustedTime() - out.tx->GetTxTime();
 			double age  = (double)nAge/60/60/24;
 			itemOutput->setText(COLUMN_AGE, QString::number(age, 'f', 2));
 			itemOutput->setText(COLUMN_AGE_int64_t, strPad(QString::number(nAge), 15, " "));

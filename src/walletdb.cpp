@@ -575,7 +575,7 @@ void ThreadFlushWalletDB(void* parg)
 
     unsigned int nLastSeen = nWalletDBUpdated;
     unsigned int nLastFlushed = nWalletDBUpdated;
-    int64_t nLastWalletUpdate = GetTime();
+    int64_t nLastWalletUpdate = GetAdjustedTime();
     while (!fShutdown)
     {
         MilliSleep(500);
@@ -583,10 +583,10 @@ void ThreadFlushWalletDB(void* parg)
         if (nLastSeen != nWalletDBUpdated)
         {
             nLastSeen = nWalletDBUpdated;
-            nLastWalletUpdate = GetTime();
+            nLastWalletUpdate = GetAdjustedTime();
         }
 
-        if (nLastFlushed != nWalletDBUpdated && GetTime() - nLastWalletUpdate >= 2)
+        if (nLastFlushed != nWalletDBUpdated && GetAdjustedTime() - nLastWalletUpdate >= 2)
         {
             TRY_LOCK(bitdb.cs_db,lockDb);
             if (lockDb)
@@ -674,7 +674,7 @@ bool CWalletDB::Recover(CDBEnv& dbenv, std::string filename, bool fOnlyKeys)
     // Rewrite salvaged data to wallet.dat
     // Set -rescan so any missing transactions will be
     // found.
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     std::string newFilename = strprintf("wallet.%" PRId64 ".bak", now);
 
     int result = dbenv.dbenv.dbrename(NULL, filename.c_str(), NULL,

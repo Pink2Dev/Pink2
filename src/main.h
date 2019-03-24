@@ -84,6 +84,7 @@ extern int64_t nSplitThreshold;
 extern int64_t nMinimumInputValue;
 extern int64_t nMinimumStakeValue;
 extern bool fUseFastIndex;
+extern bool fNTPSuccess;
 extern unsigned int nDerivationMethodIndex;
 
 // Minimum disk space required - used in CheckDiskSpace()
@@ -643,7 +644,7 @@ public:
         str += strprintf("(hash=%s, nTime=%d, currentTime=%d, ver=%d, vin.size=%" PRIszu ", vout.size=%" PRIszu ", nLockTime=%d)\n",
             GetHash().ToString().substr(0,10).c_str(),
             nTime,
-            (unsigned int)GetTime(),
+            (unsigned int)GetAdjustedTime(),
             nVersion,
             vin.size(),
             vout.size(),

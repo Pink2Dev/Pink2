@@ -7,6 +7,7 @@
 #include "stakedb.h"
 #include "bitcoinrpc.h"
 #include "net.h"
+#include "ntp.h"
 #include "init.h"
 #include "util.h"
 #include "ui_interface.h"
@@ -20,8 +21,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <openssl/crypto.h>
 
-
-
 #ifndef WIN32
 #include <signal.h>
 #endif
@@ -34,6 +33,7 @@ CWallet* pwalletMain;
 CWallet* pstakeDB;
 CClientUIInterface uiInterface;
 bool fConfChange;
+bool fNTPSuccess;
 unsigned int nNodeLifespan;
 unsigned int nDerivationMethodIndex;
 unsigned int nMinerSleep;
@@ -774,7 +774,16 @@ bool AppInit2(boost::thread_group& threadGroup)
     BOOST_FOREACH(string strDest, mapMultiArgs["-seednode"])
         AddOneShot(strDest);
 
-    // ********************************************************* Step 7: load blockchain
+    // ********************************************************* Step 7: set adjusted time from NTP
+
+    if (GetBoolArg("-usentp", true))
+    {
+        uiInterface.InitMessage(_("Starting NTP sync thread..."));
+        printf("Starting NTP sync thread...\n");
+        threadGroup.create_thread(boost::bind(threadNTPUpdate, mapArgs["-ntpserver"]));
+    }
+
+    // ********************************************************* Step 8: load blockchain
 
     if (!bitdb.Open(GetDataDir()))
     {
@@ -838,7 +847,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         return false;
     }
 
-    // ********************************************************* Step 8: load wallet
+    // ********************************************************* Step 9: load wallet
 
     uiInterface.InitMessage(_("Loading wallet..."));
     printf("Loading wallet...\n");
@@ -947,7 +956,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         printf(" rescan      %15" PRId64 "ms\n", GetTimeMillis() - nStart);
     }
 
-    // ********************************************************* Step 9: import blocks
+    // ********************************************************* Step 10: import blocks
 
     if (mapArgs.count("-loadblock"))
     {
@@ -974,7 +983,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         }
     }
 
-    // ********************************************************* Step 10: load peers
+    // ********************************************************* Step 11: load peers
 
     uiInterface.InitMessage(_("Loading addresses..."));
     printf("Loading addresses...\n");
@@ -990,11 +999,11 @@ bool AppInit2(boost::thread_group& threadGroup)
            addrman.size(), GetTimeMillis() - nStart);
     
     
-    // ********************************************************* Step 10.1: startup secure messaging
+    // ********************************************************* Step 11.1: startup secure messaging
     
     SecureMsgStart(fNoSmsg, GetBoolArg("-smsgscanchain"));
     
-    // ********************************************************* Step 11: start node
+    // ********************************************************* Step 12: start node
     
     if (!CheckDiskSpace())
         return false;
@@ -1014,7 +1023,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     if (fServer)
         NewThread(ThreadRPCServer, NULL);
 
-    // ********************************************************* Step 12: finished
+    // ********************************************************* Step 13: finished
 
     uiInterface.InitMessage(_("Done loading"));
     printf("Done loading\n");
