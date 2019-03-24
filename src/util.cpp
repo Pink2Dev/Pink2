@@ -1221,7 +1221,7 @@ void CompareTimeWithPeers(const std::vector<int64_t>& vSorted)
 
 void AddTimeData(const CNetAddr& ip, int64_t nTime, bool fSyncTime)
 {
-    int64_t nOffsetSample = nTime - GetAdjustedTime();
+    int64_t nOffsetSample = nTime - GetTime();
 
     // Ignore duplicates
     static set<CNetAddr> setKnown;
