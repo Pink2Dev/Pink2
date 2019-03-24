@@ -3,7 +3,7 @@
 #include <string>
 
 extern bool fNTPSuccess;
-bool SetNTPOffset(const std::string &strPool = "pool.ntp.org");
-void *threadNTPUpdate(const std::string strNTPool = "");
+bool SetNTPOffset(const std::string &strPool);
+void *threadNTPUpdate(const std::string &strNTPool);
 
 #endif // NTP_H

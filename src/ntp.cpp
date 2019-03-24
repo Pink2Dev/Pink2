@@ -179,7 +179,7 @@ void *threadGetNTPTime(int nServer, const string strPool, uint64_t startMicros)
     // User set :// or tried to use a port (org:###)
     // or is trying to use something other than ntp.org.
     // Drop whatever they set and just use the default.
-    if (strAddress.find(":") != std::string::npos || strAddress.find("pool.ntp.org") == std::string::npos)
+    if (strAddress == "" || strAddress.find(":") != std::string::npos || strAddress.find("pool.ntp.org") == std::string::npos)
         strAddress = "pool.ntp.org";
 
     // Prepend pool server number.
@@ -294,7 +294,7 @@ bool SetNTPOffset(const string &strPool)
 
 }
 
-void *threadNTPUpdate(const string strNTPool)
+void *threadNTPUpdate(const string &strNTPool)
 {
 
     static int nRefreshTime = 0;
