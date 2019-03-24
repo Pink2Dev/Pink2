@@ -158,7 +158,7 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     ntpMicros += ((double)tMicros / std::numeric_limits<uint32_t>::max()) * 1000000;
 
     // Split the difference between when we requested the time
-    // and when we go it to account for the network round trip.
+    // and when we got it to account for the network round trip.
     diffMicros = (endMicros - startMicros) / 2;
 
     // Add the difference to our time so we can better estimate
@@ -172,17 +172,18 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
 static uint64_t ntpTime[4];
 void *threadGetNTPTime(int nServer, const string strPool, uint64_t startMicros)
 {
+    std::string strAddress = strPool;
     if (nServer > 3)
         return nullptr;
 
     // User set :// or tried to use a port (org:###)
     // or is trying to use something other than ntp.org.
     // Drop whatever they set and just use the default.
-    if (strPool.find(":") != std::string::npos || strPool.find("pool.ntp.org") == std::string::npos)
-        strPool = "pool.ntp.org";
+    if (strAddress.find(":") != std::string::npos || strAddress.find("pool.ntp.org") == std::string::npos)
+        strAddress = "pool.ntp.org";
 
     // Prepend pool server number.
-    string strAddress = to_string(nServer) + "." + strPool;
+    strAddress = to_string(nServer) + "." + strAddress;
 
     uint64_t myTime = 0;
     if (GetNTPTime(strAddress.c_str(), myTime))
@@ -249,7 +250,7 @@ bool SetNTPOffset(const string &strPool)
 
         for (int i = 0; i < 4; i++)
         {
-            // Make sure we actually got the time. NTP servers that responde but aren't able
+            // Make sure we actually got the time. NTP servers that respond but aren't able
             // to give us an accurate time as requested instead send us the uint32 max.
             // We tolerate 10 seconds here to accomodate our internal adjustments.
             if (ntpTime[i] > 0 && abs((int64_t)(ntpTime[i] / 1000000) + (int64_t)nNTPUnix - (int64_t)std::numeric_limits<uint32_t>::max()) > 10)
@@ -335,7 +336,7 @@ void *threadNTPUpdate(const string strNTPool)
             nRefreshTime = (nRefreshTime < 3600) ? nRefreshTime + 400 : 3600;
         }
 
-        // Update our
+        // Update our Time Tracker.
         tTrack = tNow;
 
 
