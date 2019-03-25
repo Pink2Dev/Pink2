@@ -42,7 +42,7 @@
         <file alias="close">res/icons/close.png</file>
         <file alias="close_s">res/icons/close_s.png</file>
         <file alias="overview">res/icons/svg/overview.svg</file>
-        <file alias="overview_s">res/icons/svg/overview_S.svg</file>
+        <file alias="overview_s">res/icons/svg/overview_s.svg</file>
         <file alias="send">res/icons/svg/send.svg</file>
         <file alias="send_s">res/icons/svg/send_s.svg</file>
         <file alias="receiving_addresses">res/icons/svg/receive.svg</file>
