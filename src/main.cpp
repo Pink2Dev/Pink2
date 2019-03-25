@@ -3177,6 +3177,14 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
+        if (fNTPSuccess && (nTime > (GetAdjustedTime() + 2) || nTime < (GetAdjustedTime() - 30)))
+        {
+            printf("partner %s does not have current time provided by NTP. "
+                   "Our time: %" PRIi64" Their time: %" PRIi64", disconnecting.", pfrom->addr.ToString().c_str(), GetAdjustedTime(), nTime);
+            pfrom->fDisconnect = true;
+            return false;
+        }
+
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;
         if (!vRecv.empty())
