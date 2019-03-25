@@ -131,6 +131,10 @@ OverviewPage::OverviewPage(QWidget *parent) :
     QFont overviewSpend("Ubuntu", 18, QFont::Normal);
     QFont overviewBalances("Ubuntu", 14, QFont::Normal);
 
+    // HACK: Makes that label transparent for mouse events
+    // Mitigates strange event swallowing behavior in main window
+    ui->label_4->setAttribute(Qt::WA_TransparentForMouseEvents);
+
     ui->label->setFont(overviewHeaders);
     ui->label_3->setFont(overviewHeaders);
     ui->label_4->setFont(overviewHeaders);

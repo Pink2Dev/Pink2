@@ -45,8 +45,6 @@ signals:
 
 protected:
     bool event(QEvent *e);
-//    void mouseReleaseEvent (QMouseEvent * event) ;
-
 };
 
 /**
@@ -167,7 +165,7 @@ private:
     /** Create system tray (notification) icon */
     void createTrayIcon();
 
-    QPoint mLastMousePosition;
+    QPoint mDiffWindowPosition;
     bool mMoving;
 
 public slots:

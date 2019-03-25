@@ -90,23 +90,18 @@ ActiveLabel::ActiveLabel(const QString & text, QWidget * parent):
 
 }
 
-
-/*
-void ActiveLabel::mouseReleaseEvent(QMouseEvent * event)
-{
-    emit clicked();
-}
-*/
-
 bool ActiveLabel::event(QEvent *e)
 {
-//    QHoverEvent me = static_cast<QHoverEvent>(e);
-    if(e->type() == QEvent::HoverMove)
+    if(e->type() == QEvent::MouseButtonPress)
     {
-        //double xpos = me->pos().x();
-        //double ypos = me->pos().y();
+        // Hack: Swallows mouse press event to prevent
+        // from passing it to BitcoinGUI::mousePressEvent
+        // (conflicts with main window grabbing)
+        return true;
+    }
+    else if(e->type() == QEvent::HoverMove)
+    {
         emit hovered();
-        // qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
         return true;
     }
     else if(e->type() == QEvent::HoverLeave)
@@ -122,7 +117,6 @@ bool ActiveLabel::event(QEvent *e)
 
     return QLabel::event(e);
 }
-
 
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
@@ -611,14 +605,14 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
 
-    appMenuBar->setMaximumWidth(220);
-
+    appMenuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     QWidget *w = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(w);
 
     QLabel* pinkCorner = new QLabel(w);
     pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
+    pinkCorner->setAttribute(Qt::WA_TransparentForMouseEvents);
     layout->addWidget(pinkCorner);
 
     layout->addWidget(appMenuBar);
@@ -670,10 +664,7 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 
-    //appMenuBar->setMaximumWidth(180);
 
-
-	
 	/* zeewolf: Hot swappable wallet themes */
     if (themesList.count()>0)
     {
@@ -1618,7 +1609,9 @@ void BitcoinGUI::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = true;
-        mLastMousePosition = event->pos();
+        // Difference between window position and global position of mouse cursor
+        mDiffWindowPosition = this->pos() - event->globalPos();
+        setCursor(Qt::ClosedHandCursor);
     }
 }
 
@@ -1626,7 +1619,7 @@ void BitcoinGUI::mouseMoveEvent(QMouseEvent* event)
 {
     if( event->buttons().testFlag(Qt::LeftButton) && mMoving)
     {
-        this->move(this->pos() + (event->pos() - mLastMousePosition));
+        this->move(mDiffWindowPosition + event->globalPos());
     }
 }
 
@@ -1635,5 +1628,6 @@ void BitcoinGUI::mouseReleaseEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = false;
+        unsetCursor();
     }
 }
