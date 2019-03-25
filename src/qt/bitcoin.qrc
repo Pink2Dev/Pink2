@@ -46,7 +46,7 @@
         <file alias="send">res/icons/svg/send.svg</file>
         <file alias="send_s">res/icons/svg/send_s.svg</file>
         <file alias="receiving_addresses">res/icons/svg/receive.svg</file>
-        <file alias="receiving_addresses_s">res/icons/svg/receive_S.svg</file>
+        <file alias="receiving_addresses_s">res/icons/svg/receive_s.svg</file>
         <file alias="sidestake">res/icons/svg/sidestake.svg</file>
         <file alias="sidestake_s">res/icons/svg/sidestake_s.svg</file>
         <file alias="address-book">res/icons/svg/address-book.svg</file>
