@@ -21,6 +21,8 @@
 #include <QTranslator>
 #include <QSplashScreen>
 #include <QLibraryInfo>
+#include <QDesktopWidget>
+#include <QFontDatabase>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -89,7 +91,7 @@ static void InitMessage(const std::string &message)
 {
     if(splashref)
     {
-        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(0,176,149));
+        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(149,131,216));
         QApplication::instance()->processEvents();
     }
 }
@@ -217,7 +219,20 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    QSplashScreen splash(QPixmap(":/images/splash"), 0);
+    QFontDatabase fontData;
+    fontData.addApplicationFont(":/fonts/Ubuntu-Bold");
+
+    QRect screenGeometry = app.desktop()->screenGeometry();
+    int splashWidth = (int)(0.55*screenGeometry.width());
+    QPixmap splashPixmap = QPixmap(":/images/splash").scaledToWidth(splashWidth, Qt::SmoothTransformation);
+
+    QSplashScreen splash(splashPixmap, 0);
+
+    QFont splashFont;
+    splashFont.setFamily("Ubuntu");
+    splashFont.setPixelSize(15);
+    splash.setFont(splashFont);
+
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
         splash.show();
@@ -254,6 +269,8 @@ int main(int argc, char *argv[])
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel, &stakeModel);
                 window.setMessageModel(&messageModel);
+
+                window.updateMainToolbar();
 
                 // If -min option passed, start window minimized.
                 if(GetBoolArg("-min"))

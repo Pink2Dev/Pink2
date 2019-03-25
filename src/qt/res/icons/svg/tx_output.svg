@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21">
+    <path
+        stroke="none"
+        fill-rule="evenodd"
+        fill="grey"
+        transform="translate(0.004186, -1.379895)"
+        d="M14.94,6.171 L13.592,7.625 L11,5.197 L11,13.563 L9,13.563 L9,5.197 L6.456,7.625 L5.094,6.171 L10.042,1.5 L14.94,6.171 Z M20,21.5 L0,21.5 L0,11.5 L4,11.5 L4,13.5 L2,13.5 L2,19.5 L18,19.5 L18,13.5 L16,13.5 L16,11.5 L20,11.5 L20,21.5 Z"
+    />
+</svg>

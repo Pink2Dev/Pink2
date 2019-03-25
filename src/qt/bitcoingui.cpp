@@ -69,12 +69,12 @@
 #include <QTextStream>
 #include <QTextDocument>
 #include <QSettings>
-#include <QFontDatabase>
 #include <QFile>
 #include <QTextStream>
 #include <QSignalMapper>
 #include <QSettings>
 #include <QWidgetAction>
+#include <QToolButton>
 
 #include <iostream>
 
@@ -142,10 +142,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     #endif
 
     setWindowTitle(tr("Pinkcoin") + " - " + tr("Wallet"));
-    QFontDatabase fontData;
-    fontData.addApplicationFont(":/fonts/Ubuntu-Bold");
-
-
 
     qApp->setStyleSheet(R"(
         QMainWindow
@@ -182,8 +178,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             background: rgb(255, 255, 255);
             text-align: left;
             color: black;
-            min-width: 200px;
-            max-width: 200px;
+            max-width: 210px;
         }
         QToolBar QToolButton
         {
@@ -191,10 +186,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             font-size: 16px;
             border: 0px;
             padding-left: 0px;
-            padding-top: 0px;
-            padding-bottom: 0px;
+            padding-top: 8px;
+            padding-bottom: 8px;
             padding-right: 0px;
-            width: 200px;
             color: black;
             text-align: left;
             background-color: rgb(255, 255, 255);
@@ -282,7 +276,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     vbox->addWidget(transactionView);
 
-    hbox->setContentsMargins(20, 5 ,0, 0);
+    hbox->setContentsMargins(29, 5 ,0, 0);
     hbox->addLayout(vbox);
 
     transactionsPage->setLayout(hbox);
@@ -303,7 +297,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Left side gradient shadow on panels.
     centralWidget->setStyleSheet(R"(
         #StackedWidget {
-            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 250, 255));
+            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 255, 255));
         }
     )");
     centralWidget->addWidget(overviewPage);
@@ -350,7 +344,19 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setAlignment(Qt::AlignLeft);
     progressBar->setVisible(false);
 
-    progressBar->setStyleSheet("QProgressBar { background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(156,219,254), stop: 1 rgb(156,219,254)); border-radius: 7px; margin: 0px; }");
+    progressBar->setStyleSheet(R"(
+        QProgressBar {
+            background-color: #e8e8e8;
+            border: 1px solid grey;
+            border-radius: 7px;
+            padding: 1px;
+            text-align: center;
+        }
+        QProgressBar::chunk {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(156,219,254), stop: 1 rgb(156,219,254));
+            border-radius: 7px; margin: 0px;
+        }
+    )");
 
     addToolBarBreak(Qt::BottomToolBarArea);
     QToolBar *toolbar2 = addToolBar(tr("Tabs toolbar"));
@@ -417,6 +423,40 @@ BitcoinGUI::~BitcoinGUI()
 #endif
 }
 
+/** Hack to make main toolbar width adjusts
+    to the width of the widest button in a group.
+ */
+void BitcoinGUI::updateMainToolbar()
+{
+    this->show();
+    this->layout()->invalidate();
+    this->hide();
+
+    QAction* tabActions[] = {
+        overviewAction, sendCoinsAction, receiveCoinsAction, addressBookAction,
+        stakeCoinsAction, historyAction, messageAction
+    };
+
+    // Finds maximum width in set of tab buttons.
+    int maxWidth = 0;
+    for (auto action : tabActions) {
+        QToolButton *button = dynamic_cast<QToolButton*>(mainToolbar->widgetForAction(action));
+        if (maxWidth < button->width()) {
+            maxWidth = button->width();
+        }
+    }
+
+    // Resize all tab buttons to match maximum width in a group.
+    for (auto action : tabActions) {
+        QToolButton *button = dynamic_cast<QToolButton*>(mainToolbar->widgetForAction(action));
+        button->setMinimumWidth(maxWidth);
+        button->setMaximumWidth(maxWidth);
+    }
+
+    // Resizes main toolbar.
+    mainToolbar->resize(maxWidth, mainToolbar->height());
+}
+
 void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
@@ -463,7 +503,6 @@ void BitcoinGUI::createActions()
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::Off);
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::On);
 
-    //overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
     overviewAction = new QAction(*iOverView, tr("&Overview"), this);
     overviewAction->setToolTip(tr("Show general overview of wallet"));
     overviewAction->setCheckable(true);
@@ -706,7 +745,6 @@ void BitcoinGUI::createToolBars()
     mainToolbar->setContextMenuPolicy(Qt::NoContextMenu);
 
     mainToolbar->layout()->setContentsMargins(0,0,0,0);
-
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
