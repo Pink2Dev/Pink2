@@ -176,7 +176,7 @@ void SecMsgBucket::hashBucket()
     if (fDebugSmsg)
         printf("SecMsgBucket::hashBucket()\n");
     
-    timeChanged = GetTime();
+    timeChanged = GetAdjustedTime();
     
     std::set<SecMsgToken>::iterator it;
     
@@ -605,7 +605,7 @@ void ThreadSecureMsg(void* parg)
             continue;
         delay = 0;
         
-        int64_t now = GetTime();
+        int64_t now = GetAdjustedTime();
         
         if (fDebugSmsg)
             printf("SecureMsgThread %" PRId64 " \n", now);
@@ -662,7 +662,7 @@ void ThreadSecureMsg(void* parg)
                         if (it->second.nLockCount == 0)     // lock timed out
                         {
                             uint32_t    nPeerId     = it->second.nLockPeerId;
-                            int64_t     ignoreUntil = GetTime() + SMSG_TIME_IGNORE;
+                            int64_t     ignoreUntil = GetAdjustedTime() + SMSG_TIME_IGNORE;
                             
                             if (fDebugSmsg)
                                 printf("Lock on bucket %" PRId64 " for peer %u timed out.\n", it->first, nPeerId);
@@ -824,7 +824,7 @@ int SecureMsgBuildBucketSet()
     if (fDebugSmsg)
         printf("SecureMsgBuildBucketSet()\n");
         
-    int64_t  now            = GetTime();
+    int64_t  now            = GetAdjustedTime();
     uint32_t nFiles         = 0;
     uint32_t nMessages      = 0;
     
@@ -1348,7 +1348,7 @@ bool SecureMsgReceiveData(CNode* pfrom, std::string strCommand, CDataStream& vRe
             return false; // not enough data received to be a valid smsgInv
         };
         
-        int64_t now = GetTime();
+        int64_t now = GetAdjustedTime();
         
         if (now < pfrom->smsgData.ignoreUntil)
         {
@@ -1544,7 +1544,7 @@ bool SecureMsgReceiveData(CNode* pfrom, std::string strCommand, CDataStream& vRe
         memcpy(&time, &vchData[0], 8);
         
         // -- Check time valid:
-        int64_t now = GetTime();
+        int64_t now = GetAdjustedTime();
         if (time < now - SMSG_RETENTION)
         {
             if (fDebugSmsg)
@@ -1717,7 +1717,7 @@ bool SecureMsgReceiveData(CNode* pfrom, std::string strCommand, CDataStream& vRe
         int64_t time;
         memcpy(&time, &vchData[0], 8);
         
-        int64_t now = GetTime();
+        int64_t now = GetAdjustedTime();
         if (time > now + SMSG_TIME_LEEWAY)
         {
             printf("Warning: Peer buckets matched in the future: %" PRId64 ".\nEither this node or the peer node has the incorrect time set.\n", time);
@@ -1795,7 +1795,7 @@ bool SecureMsgSendData(CNode* pto, bool fSendTrickle)
     //printf("SecureMsgSendData() %s.\n", pto->addrName.c_str());
     
     
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     
     if (pto->smsgData.lastSeen == 0)
     {
@@ -1805,7 +1805,7 @@ bool SecureMsgSendData(CNode* pto, bool fSendTrickle)
             printf("SecureMsgSendData() new node %s, peer id %u.\n", pto->addrName.c_str(), pto->smsgData.nPeerId);
         // -- Send smsgPing once, do nothing until receive 1st smsgPong (then set fEnabled)
         pto->PushMessage("smsgPing");
-        pto->smsgData.lastSeen = GetTime();
+        pto->smsgData.lastSeen = GetAdjustedTime();
         return true;
     } else
     if (!pto->smsgData.fEnabled
@@ -1882,7 +1882,7 @@ bool SecureMsgSendData(CNode* pto, bool fSendTrickle)
         };
     }
     
-    pto->smsgData.lastSeen = GetTime();
+    pto->smsgData.lastSeen = GetAdjustedTime();
     
     return true;
 };
@@ -2182,7 +2182,7 @@ bool SecureMsgScanBuckets()
         return false;
     
     int64_t  mStart         = GetTimeMillis();
-    int64_t  now            = GetTime();
+    int64_t  now            = GetAdjustedTime();
     uint32_t nFiles         = 0;
     uint32_t nMessages      = 0;
     uint32_t nFoundMessages = 0;
@@ -2339,7 +2339,7 @@ int SecureMsgWalletUnlocked()
         return 1;
     };
     
-    int64_t  now            = GetTime();
+    int64_t  now            = GetAdjustedTime();
     uint32_t nFiles         = 0;
     uint32_t nMessages      = 0;
     uint32_t nFoundMessages = 0;
@@ -2587,7 +2587,7 @@ int SecureMsgScanMessage(unsigned char *pHeader, unsigned char *pPayload, uint32
         memcpy(&chKey[10], pPayload,          8);
         
         SecMsgStored smsgInbox;
-        smsgInbox.timeReceived  = GetTime();
+        smsgInbox.timeReceived  = GetAdjustedTime();
         smsgInbox.status        = (SMSG_MASK_UNREAD) & 0xFF;
         smsgInbox.sAddrTo       = addressTo;
         
@@ -2845,7 +2845,7 @@ int SecureMsgReceive(CNode* pfrom, std::vector<unsigned char>& vchData)
     
     // -- check bktTime ()
     //    bucket may not exist yet - will be created when messages are added
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     if (bktTime > now + SMSG_TIME_LEEWAY)
     {
         if (fDebugSmsg)
@@ -2960,7 +2960,7 @@ int SecureMsgStoreUnscanned(unsigned char *pHeader, unsigned char *pPayload, uin
         return 1;
     };
     
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     if (psmsg->timestamp > now + SMSG_TIME_LEEWAY)
     {
         printf("Message > now.\n");
@@ -3025,7 +3025,7 @@ int SecureMsgStore(unsigned char *pHeader, unsigned char *pPayload, uint32_t nPa
         return 1;
     };
     
-    int64_t now = GetTime();
+    int64_t now = GetAdjustedTime();
     if (psmsg->timestamp > now + SMSG_TIME_LEEWAY)
     {
         printf("Message > now.\n");
@@ -3232,7 +3232,7 @@ int SecureMsgSetHash(unsigned char *pHeader, unsigned char *pPayload, uint32_t n
         if (!fSecMsgenabled)
            break;
         
-        //psmsg->timestamp = GetTime();
+        //psmsg->timestamp = GetAdjustedTime();
         //memcpy(&psmsg->timestamp, &now, 8);
         memcpy(&psmsg->nonse[0], &nonse, 4);
         
@@ -3343,7 +3343,7 @@ int SecureMspinkcrypt(SecureMessage& smsg, std::string& addressFrom, std::string
     
     smsg.version[0] = 1;
     smsg.version[1] = 1;
-    smsg.timestamp = GetTime();
+    smsg.timestamp = GetAdjustedTime();
     
     
     bool fSendAnonymous;
@@ -3645,7 +3645,7 @@ int SecureMsgSend(std::string& addressFrom, std::string& addressTo, std::string&
     
     SecMsgStored smsgSQ;
     
-    smsgSQ.timeReceived  = GetTime();
+    smsgSQ.timeReceived  = GetAdjustedTime();
     smsgSQ.sAddrTo       = addressTo;
     
     try {
@@ -3717,7 +3717,7 @@ int SecureMsgSend(std::string& addressFrom, std::string& addressTo, std::string&
             
             SecMsgStored smsgOutbox;
             
-            smsgOutbox.timeReceived  = GetTime();
+            smsgOutbox.timeReceived  = GetAdjustedTime();
             smsgOutbox.sAddrTo       = addressTo;
             smsgOutbox.sAddrOutbox   = addressOutbox;
             

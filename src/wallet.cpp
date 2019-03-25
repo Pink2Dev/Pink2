@@ -52,7 +52,7 @@ CPubKey CWallet::GenerateNewKey()
     CPubKey pubkey = key.GetPubKey();
 
     // Create new metadata
-    int64_t nCreationTime = GetTime();
+    int64_t nCreationTime = GetAdjustedTime();
     mapKeyMetadata[pubkey.GetID()] = CKeyMetadata(nCreationTime);
     if (!nTimeFirstKey || nCreationTime < nTimeFirstKey)
         nTimeFirstKey = nCreationTime;
@@ -1057,10 +1057,10 @@ void CWallet::ResendWalletTransactions(bool fForce)
         // Do this infrequently and randomly to avoid giving away
         // that these are our transactions.
         static int64_t nNextTime;
-        if (GetTime() < nNextTime)
+        if (GetAdjustedTime() < nNextTime)
             return;
         bool fFirst = (nNextTime == 0);
-        nNextTime = GetTime() + GetRand(30 * 60);
+        nNextTime = GetAdjustedTime() + GetRand(30 * 60);
         if (fFirst)
             return;
 
@@ -1068,7 +1068,7 @@ void CWallet::ResendWalletTransactions(bool fForce)
         static int64_t nLastTime;
         if (nTimeBestReceived < nLastTime)
             return;
-        nLastTime = GetTime();
+        nLastTime = GetAdjustedTime();
     }
 
     // Rebroadcast any of our txes that aren't in a block yet
@@ -2423,7 +2423,7 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nMinWeight, ui
     int64_t nValueIn = 0;
     
     
-    if (!SelectCoinsForStaking(nBalance - nReserveBalance, GetTime(), setCoins, nValueIn))
+    if (!SelectCoinsForStaking(nBalance - nReserveBalance, GetAdjustedTime(), setCoins, nValueIn))
         return false;
     
     if (setCoins.empty())
@@ -2442,7 +2442,7 @@ bool CWallet::GetStakeWeight(const CKeyStore& keystore, uint64_t& nMinWeight, ui
                 continue;
         }
 
-        int64_t nTimeWeight = GetWeight((int64_t)pcoin.first->nTime, (int64_t)GetTime());
+        int64_t nTimeWeight = GetWeight((int64_t)pcoin.first->nTime, (int64_t)GetAdjustedTime());
         // CBigNum bnCoinDayWeight = CBigNum(pcoin.first->vout[pcoin.second].nValue) * nTimeWeight / COIN / (24 * 60 * 60);
 
 
@@ -3219,7 +3219,7 @@ int64_t CWallet::GetOldestKeyPoolTime()
     CKeyPool keypool;
     ReserveKeyFromKeyPool(nIndex, keypool);
     if (nIndex == -1)
-        return GetTime();
+        return GetAdjustedTime();
     ReturnKey(nIndex);
     return keypool.nTime;
 }
@@ -3371,7 +3371,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, in
 		// presstab HyperStake
 		// This finds and deletes transactions that were never accepted by the network
 		// needs to be located above the readtxindex code or else it will not be triggered
-		if(!pcoin->IsConfirmedInMainChain() && (GetTime() - pcoin->GetTxTime()) > (60*10)) //give the tx 10 minutes before considering it failed
+		if(!pcoin->IsConfirmedInMainChain() && (GetAdjustedTime() - pcoin->GetTxTime()) > (60*10)) //give the tx 10 minutes before considering it failed
         {
            nOrphansFound++;
            if (!fCheckOnly)
@@ -3390,7 +3390,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, in
         for (unsigned int n=0; n < pcoin->vout.size(); n++)
         {
             bool fUpdated = false;
-            if (IsMine(pcoin->vout[n]) && pcoin->IsSpent(n) && (txindex.vSpent.size() <= n || txindex.vSpent[n].IsNull()) && (GetTime() - pcoin->GetTxTime()) > (60*10))
+            if (IsMine(pcoin->vout[n]) && pcoin->IsSpent(n) && (txindex.vSpent.size() <= n || txindex.vSpent[n].IsNull()) && (GetAdjustedTime() - pcoin->GetTxTime()) > (60*10))
             {
                 printf("FixSpentCoins found lost coin %spink %s[%d], %s\n",
                     FormatMoney(pcoin->vout[n].nValue).c_str(), hash.ToString().c_str(), n, fCheckOnly? "repair not attempted" : "repairing");
@@ -3403,7 +3403,7 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, in
                     pcoin->WriteToDisk();
                 }
             }
-            else if (IsMine(pcoin->vout[n]) && !pcoin->IsSpent(n) && (txindex.vSpent.size() > n && !txindex.vSpent[n].IsNull()) && (GetTime() - pcoin->GetTxTime()) > (60*10))
+            else if (IsMine(pcoin->vout[n]) && !pcoin->IsSpent(n) && (txindex.vSpent.size() > n && !txindex.vSpent[n].IsNull()) && (GetAdjustedTime() - pcoin->GetTxTime()) > (60*10))
             {
                 printf("FixSpentCoins found spent coin %shyp %s[%d], %s\n",
                     FormatMoney(pcoin->vout[n].nValue).c_str(), hash.ToString().c_str(), n, fCheckOnly? "repair not attempted" : "repairing");

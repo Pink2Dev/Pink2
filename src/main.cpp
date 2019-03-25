@@ -8,6 +8,7 @@
 #include "db.h"
 #include "txdb.h"
 #include "net.h"
+#include "ntp.h"
 #include "init.h"
 #include "ui_interface.h"
 #include "kernel.h"
@@ -681,7 +682,7 @@ bool CTxMemPool::accept(CTxDB& txdb, CTransaction &tx,
             static CCriticalSection cs;
             static double dFreeCount;
             static int64_t nLastTime;
-            int64_t nNow = GetTime();
+            int64_t nNow = GetAdjustedTime();
 
             {
                 LOCK(cs);
@@ -1370,10 +1371,10 @@ bool IsInitialBlockDownload()
     if (pindexBest != pindexLastBest)
     {
         pindexLastBest = pindexBest;
-        nLastUpdate = GetTime();
+        nLastUpdate = GetAdjustedTime();
     }
-    return (GetTime() - nLastUpdate < 15 &&
-            pindexBest->GetBlockTime() < GetTime() - 8 * 60 * 60);
+    return (GetAdjustedTime() - nLastUpdate < 15 &&
+            pindexBest->GetBlockTime() < GetAdjustedTime() - 8 * 60 * 60);
 }
 
 void static InvalidChainFound(CBlockIndex* pindexNew)
@@ -2030,7 +2031,7 @@ bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
     pblockindexFBBHLast = NULL;
     nBestHeight = pindexBest->nHeight;
     nBestChainTrust = pindexNew->nChainTrust;
-    nTimeBestReceived = GetTime();
+    nTimeBestReceived = GetAdjustedTime();
     nTransactionsUpdated++;
 
     uint256 nBestBlockTrust = pindexBest->nHeight != 0 ? (pindexBest->nChainTrust - pindexBest->pprev->nChainTrust) : pindexBest->nChainTrust;
@@ -3176,6 +3177,14 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
+        if (fNTPSuccess && (nTime > (GetAdjustedTime() + 2) || nTime < (GetAdjustedTime() - 30)))
+        {
+            printf("partner %s does not have current time provided by NTP. "
+                   "Our time: %" PRIi64" Their time: %" PRIi64", disconnecting.", pfrom->addr.ToString().c_str(), GetAdjustedTime(), nTime);
+            pfrom->fDisconnect = true;
+            return false;
+        }
+
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;
         if (!vRecv.empty())
@@ -3209,7 +3218,10 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         pfrom->fClient = !(pfrom->nServices & NODE_NETWORK);
 
-        AddTimeData(pfrom->addr, nTime, GetBoolArg("-synctime", false));
+        if (!GetBoolArg("-usentp", true) || !fNTPSuccess)
+        {
+            AddTimeData(pfrom->addr, nTime, GetBoolArg("-synctime", false));
+        }
 
         // Change version
         pfrom->PushMessage("verack");
@@ -3329,7 +3341,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     if (hashSalt == 0)
                         hashSalt = GetRandHash();
                     uint64_t hashAddr = addr.GetHash();
-                    uint256 hashRand = hashSalt ^ (hashAddr<<32) ^ ((GetTime()+hashAddr)/(24*60*60));
+                    uint256 hashRand = hashSalt ^ (hashAddr<<32) ^ ((GetAdjustedTime()+hashAddr)/(24*60*60));
                     hashRand = Hash(BEGIN(hashRand), END(hashRand));
                     multimap<uint256, CNode*> mapMix;
                     BOOST_FOREACH(CNode* pnode, vNodes)
@@ -3670,7 +3682,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return true;
         }
         // Don't return addresses older than nCutOff timestamp
-        int64_t nCutOff = GetTime() - (nNodeLifespan * 24 * 60 * 60);
+        int64_t nCutOff = GetAdjustedTime() - (nNodeLifespan * 24 * 60 * 60);
         pfrom->vAddrToSend.clear();
         vector<CAddress> vAddr = addrman.GetAddr();
         BOOST_FOREACH(const CAddress &addr, vAddr)
@@ -3979,7 +3991,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
 
         // Address refresh broadcast
         static int64_t nLastRebroadcast;
-        if (!IsInitialBlockDownload() && (GetTime() - nLastRebroadcast > 24 * 60 * 60))
+        if (!IsInitialBlockDownload() && (GetAdjustedTime() - nLastRebroadcast > 24 * 60 * 60))
         {
             {
                 LOCK(cs_vNodes);
@@ -3998,7 +4010,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                     }
                 }
             }
-            nLastRebroadcast = GetTime();
+            nLastRebroadcast = GetAdjustedTime();
         }
 
         //
@@ -4090,7 +4102,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         // Message: getdata
         //
         vector<CInv> vGetData;
-        int64_t nNow = GetTime() * 1000000;
+        int64_t nNow = GetAdjustedTime() * 1000000;
         CTxDB txdb("r");
         while (!pto->mapAskFor.empty() && (*pto->mapAskFor.begin()).first <= nNow)
         {

@@ -10,6 +10,7 @@ LIBS= \
  -l boost_filesystem \
  -l boost_program_options \
  -l boost_thread \
+ -l boost_chrono \
  -l db_cxx \
  -l ssl \
  -l crypto
@@ -109,6 +110,7 @@ OBJS= \
 	obj/miner.o \
 	obj/main.o \
 	obj/net.o \
+    obj/ntp.o \
 	obj/protocol.o \
 	obj/bitcoinrpc.o \
 	obj/rpcdump.o \

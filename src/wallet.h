@@ -10,7 +10,6 @@
 
 #include <stdlib.h>
 
-
 #include "main.h"
 #include "key.h"
 #include "keystore.h"
@@ -53,12 +52,12 @@ public:
 
     CKeyPool()
     {
-        nTime = GetTime();
+        nTime = GetAdjustedTime();
     }
 
     CKeyPool(const CPubKey& vchPubKeyIn)
     {
-        nTime = GetTime();
+        nTime = GetAdjustedTime();
         vchPubKey = vchPubKeyIn;
     }
 
@@ -836,7 +835,7 @@ public:
 
     CWalletKey(int64_t nExpires=0)
     {
-        nTimeCreated = (nExpires ? GetTime() : 0);
+        nTimeCreated = (nExpires ? GetAdjustedTime() : 0);
         nTimeExpires = nExpires;
     }
 

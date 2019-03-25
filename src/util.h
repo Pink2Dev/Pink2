@@ -21,6 +21,7 @@
 #include <string>
 
 #include <boost/thread.hpp>
+#include <boost/chrono.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
@@ -206,6 +207,7 @@ uint64_t GetRand(uint64_t nMax);
 uint256 GetRandHash();
 int64_t GetTime();
 void SetMockTime(int64_t nMockTimeIn);
+void SetTimeOffset(const int64_t &nOffset);
 int64_t GetAdjustedTime();
 int64_t GetTimeOffset();
 std::string FormatFullVersion();
