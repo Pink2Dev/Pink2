@@ -91,7 +91,7 @@ static void InitMessage(const std::string &message)
 {
     if(splashref)
     {
-        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(149,131,216));
+        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(149, 131, 216));
         QApplication::instance()->processEvents();
     }
 }
@@ -155,6 +155,10 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 
+    // Enable anti-aliasing for all fonts.
+    QFont f = QApplication::font();
+    f.setStyleStrategy(QFont::PreferAntialias);
+    QApplication::setFont(f);
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
@@ -220,18 +224,19 @@ int main(int argc, char *argv[])
 #endif
 
     QFontDatabase fontData;
-    fontData.addApplicationFont(":/fonts/Ubuntu-Bold");
+    fontData.addApplicationFont(":/fonts/Rubik-Regular");
+    fontData.addApplicationFont(":/fonts/Rubik-Medium");
+    fontData.addApplicationFont(":/fonts/Rubik-Bold");
+
+    // Sets default app font.
+    app.setFont(fontData.font("Rubik", "Regular", 10));
 
     QRect screenGeometry = app.desktop()->screenGeometry();
     int splashWidth = (int)(0.55*screenGeometry.width());
     QPixmap splashPixmap = QPixmap(":/images/splash").scaledToWidth(splashWidth, Qt::SmoothTransformation);
 
     QSplashScreen splash(splashPixmap, 0);
-
-    QFont splashFont;
-    splashFont.setFamily("Ubuntu");
-    splashFont.setPixelSize(15);
-    splash.setFont(splashFont);
+    splash.setFont(fontData.font("Rubik", "Medium", 20));
 
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {

@@ -166,7 +166,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             height: 0px;
             padding-top: 0px;
             padding-bottom: 0px;
-            background-color: rgb(0,0,0);
+            background-color: rgb(0, 0, 0);
         }
         #toolbar
         {
@@ -178,53 +178,66 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             background: rgb(255, 255, 255);
             text-align: left;
             color: black;
-            max-width: 210px;
+            max-width: 13em;
         }
         QToolBar QToolButton
         {
-            font-family: Ubuntu;
-            font-size: 16px;
+            font-family: Rubik;
+            font-size: 1em;
+            font-weight: bold;
             border: 0px;
-            padding-left: 0px;
+            padding-left: 2px;
             padding-top: 8px;
             padding-bottom: 8px;
-            padding-right: 0px;
+            padding-right: 4px;
             color: black;
             text-align: left;
             background-color: rgb(255, 255, 255);
         }
-        #OverviewButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #OverviewButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #SendButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #SendButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #ReceiveButton:hover {background-color:rgb(255, 141, 183); border: none;}
-        #ReceiveButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #HistoryButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #HistoryButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #AddressBookButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #AddressBookButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #SideStakeButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #SideStakeButton:checked {background-color: rgb(255, 121, 170); border: none;}
-        #MessageButton:hover {background-color: rgb(255, 141, 183); border: none;}
-        #MessageButton:checked {background-color: rgb(255, 121, 170); border: none;}
+        #toolbar QToolButton:hover, #toolbar QToolButton:checked {
+            background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(155, 101, 183), stop: 1 rgb(255, 141, 183));
+            border: none;
+        }
         #labelMiningIcon
         {
             padding-left: 5px;
             font-family: Century Gothic;
             width: 100%;
-            font-size: 10px;
+            font-size: 0.7em;
             text-align: center;
             color: white;
         }
-        QMenu { background: rgb(0,0,0); color: white; padding-bottom: 10px; }
-        QMenu::item { color: white; background-color: transparent; }
+        QMenu {
+            background: rgb(0, 0, 0);
+            color: white;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+        QMenu::item {
+            color: white;
+            background-color: transparent;
+            border: 0px;
+            padding-left: 30pt;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            min-width: 150px;
+        }
         QMenu::item:selected {
             background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
+            border: 0px;
+            padding-left: 30pt;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            min-width: 150px;
         }
-        QMenuBar { background: rgb(0,0,0); color: white; }
+        QMenuBar { background: rgb(0, 0, 0); color: white; }
         QMenuBar::item
         {
-            font-size: 12px;
+            font-size: 0.4em;
             padding-bottom: 8px;
             padding-top: 8px;
             padding-left: 15px;
@@ -346,15 +359,15 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     progressBar->setStyleSheet(R"(
         QProgressBar {
-            background-color: #e8e8e8;
-            border: 1px solid grey;
-            border-radius: 7px;
+            background-color: white;
+            border-radius: 4px;
             padding: 1px;
             text-align: center;
         }
         QProgressBar::chunk {
-            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(156,219,254), stop: 1 rgb(156,219,254));
-            border-radius: 7px; margin: 0px;
+            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(116, 85, 195), stop: 1 rgb(172, 143, 238));
+            border-radius: 4px;
+            margin: 0px;
         }
     )");
 
@@ -376,7 +389,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
 
     progressBar->setFixedWidth(600);
-    progressBarLabel->setStyleSheet("QLabel { color: white; } ");
+    progressBarLabel->setStyleSheet("QLabel { color: white; }");
 
     frameSpacer2->addWidget(progressBarLabel);
     frameSpacer2->addWidget(progressBar);
@@ -744,7 +757,8 @@ void BitcoinGUI::createToolBars()
     mainToolbar->widgetForAction(messageAction)->setObjectName("MessageButton");
     mainToolbar->setContextMenuPolicy(Qt::NoContextMenu);
 
-    mainToolbar->layout()->setContentsMargins(0,0,0,0);
+    mainToolbar->layout()->setContentsMargins(0, 0, 0, 0);
+    mainToolbar->layout()->setSpacing(0);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)

@@ -66,7 +66,7 @@
         <file alias="pinkcoin_full">res/images/pinkcoin_full.png</file>
     </qresource>
     <qresource prefix="/movies">
-        <file alias="update_spinner">res/movies/update_spinner.mng</file>
+        <file alias="update_spinner">res/movies/update_spinner.gif</file>
     </qresource>
     <qresource prefix="/translations">
         <file alias="ar">locale/bitcoin_ar.qm</file>
@@ -112,5 +112,8 @@
     <qresource prefix="/fonts">
         <file alias="Ubuntu-Medium">res/fonts/Ubuntu-Medium.ttf</file>
         <file alias="Ubuntu-Bold">res/fonts/Ubuntu-Bold.ttf</file>
+        <file alias="Rubik-Regular">res/fonts/Rubik-Regular.ttf</file>
+        <file alias="Rubik-Medium">res/fonts/Rubik-Medium.ttf</file>
+        <file alias="Rubik-Bold">res/fonts/Rubik-Bold.ttf</file>
     </qresource>
 </RCC>
