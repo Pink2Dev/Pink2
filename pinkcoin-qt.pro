@@ -8,7 +8,7 @@ CONFIG += thread
 CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets network
+    QT += widgets network svg
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
 
