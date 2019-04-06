@@ -18,9 +18,9 @@ for subpath in sys.argv[2:]:
             file_content = file.read()
             new_content = re.sub(r'(?m)^QMAKE_PRL_BUILD_DIR.*\n?', '', file_content)
             for lib in libs:
-                wrong_path = lib.split('/')[-1].split('.')[0]
+                lib_name = lib.split('/')[-1].split('.')[0]
                 new_content = re.sub(
-                    r'\s(\/' + wrong_path + '\.a)+',
+                    r'\s((\/|\/\S*\/)' + lib_name + '\.a)+',
                     ' ' + sys.argv[1] + '/' + lib,
                     new_content,
                 )

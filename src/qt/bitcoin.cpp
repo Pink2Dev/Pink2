@@ -15,6 +15,7 @@
 #include "qtipcserver.h"
 
 #include <QApplication>
+#include <QStyleFactory>
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QLocale>
@@ -23,6 +24,7 @@
 #include <QLibraryInfo>
 #include <QDesktopWidget>
 #include <QFontDatabase>
+#include <QScreen>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -37,8 +39,6 @@ Q_IMPORT_PLUGIN(qjpcodecs)
 Q_IMPORT_PLUGIN(qtwcodecs)
 Q_IMPORT_PLUGIN(qkrcodecs)
 Q_IMPORT_PLUGIN(qtaccessiblewidgets)
-Q_IMPORT_PLUGIN(qsvg)
-Q_IMPORT_PLUGIN(qsvgicon)
 #endif
 
 // Need a global reference for the notifications to find the GUI
@@ -157,10 +157,8 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 
-    // Enable anti-aliasing for all fonts.
-    QFont f = QApplication::font();
-    f.setStyleStrategy(QFont::PreferAntialias);
-    QApplication::setFont(f);
+    // Set common app style for all platforms.
+    app.setStyle(QStyleFactory::create("Fusion"));
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)

@@ -59,6 +59,7 @@
         <file alias="tx_input">res/icons/svg/tx_input.svg</file>
         <file alias="tx_output">res/icons/svg/tx_output.svg</file>
         <file alias="tx_inout">res/icons/tx_inout.png</file>
+        <file alias="about_qt">res/icons/about_qt.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>

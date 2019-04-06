@@ -21,7 +21,8 @@ jobs:
                   --no-install-recommends \
                   -y \
                   qt5-default qt5-qmake qtbase5-dev-tools \
-                  qttools5-dev-tools build-essential libboost-dev \
+                  qttools5-dev-tools libqt5svg5-dev \
+                  build-essential libboost-dev \
                   libboost-system-dev \
                   libboost-filesystem-dev \
                   libboost-program-options-dev \

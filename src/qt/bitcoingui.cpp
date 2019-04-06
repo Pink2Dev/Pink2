@@ -75,6 +75,7 @@
 #include <QSettings>
 #include <QWidgetAction>
 #include <QToolButton>
+#include <QFontDatabase>
 
 #include <iostream>
 
@@ -157,7 +158,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         QToolBar QLabel { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
         QToolBar QLabel:item { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
 
-        #spacer2 { background: rgb(26, 0, 13); border: none; }
+        #spacer2 {
+            background: rgb(26, 0, 13);
+            border: none;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            margin-left: 1px;
+            margin-right: 4px;
+        }
         #spacer { background: rgb(152, 50, 101); border: none; }
         #toolbar2
         {
@@ -219,7 +227,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             color: white;
             background-color: transparent;
             border: 0px;
-            padding-left: 30pt;
             padding-top: 5px;
             padding-bottom: 5px;
             padding-right: 5px;
@@ -228,11 +235,14 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         QMenu::item:selected {
             background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
             border: 0px;
-            padding-left: 30pt;
             padding-top: 5px;
             padding-bottom: 5px;
             padding-right: 5px;
             min-width: 150px;
+        }
+        QMenu::item:disabled {
+            color: darkGrey;
+            background-color: DimGrey;
         }
         QMenuBar { background: rgb(0, 0, 0); color: white; }
         QMenuBar::item
@@ -245,7 +255,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             color: white;
             background-color: transparent;
         }
-
         QMenuBar::item:selected {
             background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
         }
@@ -340,6 +349,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
 
+    labelConnectionsIcon->setStyleSheet(R"(
+        QLabel {
+            padding-right: 2px;
+        }
+    )");
+
     if (GetBoolArg("-staking", true))
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
@@ -363,6 +378,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             border-radius: 4px;
             padding: 1px;
             text-align: center;
+            font-size: 14px;
+            font-family: Rubik;
         }
         QProgressBar::chunk {
             background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(116, 85, 195), stop: 1 rgb(172, 143, 238));
@@ -375,7 +392,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QToolBar *toolbar2 = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::BottomToolBarArea,toolbar2);
     toolbar2->setOrientation(Qt::Horizontal);
-    toolbar2->setMovable( false );
+    toolbar2->setMovable(false);
     toolbar2->setObjectName("toolbar2");
     toolbar2->setFixedHeight(28);
     toolbar2->setIconSize(QSize(28,28));
@@ -389,7 +406,16 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
 
     progressBar->setFixedWidth(600);
-    progressBarLabel->setStyleSheet("QLabel { color: white; }");
+    QFontDatabase fontData;
+    progressBarLabel->setFont(fontData.font("Rubik", "Medium", 10));
+
+    progressBarLabel->setStyleSheet(R"(
+        QLabel {
+            color: white;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    )");
 
     frameSpacer2->addWidget(progressBarLabel);
     frameSpacer2->addWidget(progressBar);
@@ -404,7 +430,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     toolbar2->addWidget(labelStakingIcon);
     toolbar2->addWidget(labelConnectionsIcon);
 
-    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
+    syncIconMovie = new QMovie(":/movies/update_spinner", "gif", this);
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -516,46 +542,55 @@ void BitcoinGUI::createActions()
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::Off);
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::On);
 
+    QFontDatabase fontData;
+
     overviewAction = new QAction(*iOverView, tr("&Overview"), this);
     overviewAction->setToolTip(tr("Show general overview of wallet"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
+    overviewAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(*iSend, tr("&Send coins"), this);
     sendCoinsAction->setToolTip(tr("Send coins to a Pinkcoin address"));
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
+    sendCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(sendCoinsAction);
 
     receiveCoinsAction = new QAction(*iReceive, tr("&Receive coins"), this);
     receiveCoinsAction->setToolTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
+    receiveCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(receiveCoinsAction);
 
     addressBookAction = new QAction(*iAddressBook, tr("&Address Book"), this);
     addressBookAction->setToolTip(tr("Edit the list of stored addresses and labels"));
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
+    addressBookAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(addressBookAction);
 
     stakeCoinsAction = new QAction(*iSideStake, tr("&Side Stakes"), this);
     stakeCoinsAction->setToolTip(tr("Edit the list of addresses for staking out."));
     stakeCoinsAction->setCheckable(true);
     stakeCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    stakeCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(stakeCoinsAction);
 
     historyAction = new QAction(*iHistory, tr("&Transactions"), this);
     historyAction->setToolTip(tr("Browse transaction history"));
     historyAction->setCheckable(true);
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    historyAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(historyAction);
 
     messageAction = new QAction(*iMessage, tr("&Messages"), this);
     messageAction->setToolTip(tr("View and Send Private Messages"));
     messageAction->setCheckable(true);
     messageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    messageAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(messageAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -586,7 +621,7 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About Pinkcoin"), this);
     aboutAction->setToolTip(tr("Show information about Pinkcoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
-    aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
+    aboutQtAction = new QAction(QIcon(":/icons/about_qt"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
