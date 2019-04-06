@@ -431,6 +431,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     toolbar2->addWidget(labelConnectionsIcon);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "gif", this);
+    QSize gifSize(16, 16);
+    syncIconMovie->setScaledSize(gifSize);
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
