@@ -68,22 +68,34 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
         return false;
 
     struct sockaddr_in sockAddr;
-    struct hostent *hNTPServ;
 
     // Zero out our socket address.
     memset(&sockAddr, 0, sizeof(sockAddr));
 
-    // Get our host from DNS.
-    hNTPServ = gethostbyname(addrConnect);
 
-    if (hNTPServ == nullptr)
+    // Use getaddrinfo() with support code from netbase.cpp.
+    // getaddrinfo() is required to be thread safe (RFC3493).
+    // https://tools.ietf.org/html/rfc3493#section-6.1
+    struct addrinfo aiHint;
+    memset(&aiHint, 0, sizeof(struct addrinfo));
+
+    aiHint.ai_socktype = SOCK_DGRAM;
+    aiHint.ai_protocol = IPPROTO_UDP;
+    aiHint.ai_family = AF_INET;
+#ifdef WIN32
+    aiHint.ai_flags = 0;
+#else
+    aiHint.ai_flags = AI_ADDRCONFIG;
+#endif
+    struct addrinfo *aiRes = NULL;
+    int nErr = getaddrinfo(addrConnect, NULL, &aiHint, &aiRes);
+    if (nErr)
         return false;
 
-    // Set our connection information.
-    sockAddr.sin_family = AF_INET;
-    memcpy(&sockAddr.sin_addr.s_addr, hNTPServ->h_addr_list[0], hNTPServ->h_length);
+    sockAddr.sin_addr.s_addr = ((struct sockaddr_in *)(aiRes->ai_addr))->sin_addr.s_addr;
     sockAddr.sin_port = udpPort;
 
+    freeaddrinfo(aiRes);
 
     // Set our timeout to 2 seconds.
 #ifdef WIN32
@@ -120,7 +132,6 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     if (n < 0)
         return false;
 
-
     n = recv(socketNTP, (char*)&bTimeReq, 48, 0);
     // Time we got it
     endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
@@ -154,8 +165,9 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // Get our NTP time down to the microsecond.
     // We have to convert NTP fractional time to Micros.
     uint64_t ntpMicros = 0;
-    ntpMicros = (nEpoch * 1000000);
-    ntpMicros += ((double)tMicros / std::numeric_limits<uint32_t>::max()) * 1000000;
+    uint64_t nMax = (uint64_t)std::numeric_limits<uint32_t>::max();
+    ntpMicros = (nEpoch * 1000000UL);
+    ntpMicros += (tMicros * 1000000UL / nMax); // ((double)tMicros / std::numeric_limits<uint32_t>::max()) * 1000000;
 
     // Split the difference between when we requested the time
     // and when we got it to account for the network round trip.
