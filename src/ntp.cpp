@@ -278,7 +278,8 @@ bool SetNTPOffset(const string &strPool)
              avMicros += *it;
 
         // Average of what we got.
-        avMicros /= ntpMicros.size();
+        if (ntpMicros.size() > 0)
+            avMicros /= ntpMicros.size();
 
         // Set our offset based on the difference and maintain an average.
         nTimeOffset += (avMicros - nowMicros);
