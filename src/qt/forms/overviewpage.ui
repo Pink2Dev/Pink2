@@ -90,26 +90,14 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout">
                <property name="spacing">
-                <number>6</number>
+                <number>0</number>
                </property>
                <property name="sizeConstraint">
                 <enum>QLayout::SetDefaultConstraint</enum>
                </property>
                <property name="bottomMargin">
-                <number>0</number>
+                <number>12</number>
                </property>
-               <item>
-                <widget class="QLabel" name="labMyWallet">
-                 <property name="font">
-                  <font>
-                   <pointsize>36</pointsize>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>My Wallet</string>
-                 </property>
-                </widget>
-               </item>
                <item>
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
@@ -123,12 +111,69 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                 </spacer>
                </item>
+               <item>
+                <widget class="QLabel" name="labMyWallet">
+                 <property name="maximumSize">
+                  <size>
+                   <width>280</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>36</pointsize>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>false</bool>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="midLineWidth">
+                  <number>1</number>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../bitcoin.qrc">:/images/pinkcoin_full</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="margin">
+                  <number>3</number>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
               <widget class="QLabel" name="labelWalletStatus">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="baseSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="toolTip">
                 <string>The displayed information may be out of date. Your wallet automatically synchronizes with the BitBay network after a connection is established, but this process has not completed yet.</string>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true">QLabel { color: red; }</string>
@@ -138,6 +183,12 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <property name="indent">
+                <number>-1</number>
                </property>
               </widget>
              </item>
@@ -817,7 +868,6 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                       </widget>
                      </item>
                     </layout>
-                    <zorder>listTransactions</zorder>
                    </widget>
                   </item>
                  </layout>
@@ -837,6 +887,8 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
  <connections/>
 </ui>

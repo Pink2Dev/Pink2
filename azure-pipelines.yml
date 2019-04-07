@@ -2,11 +2,12 @@ name: 'Pinkcoin - Build For All Platforms'
 
 variables:
   macos.toolkit.name: 'MacOS_toolkit'
-  macos.build.name: 'Pinkcoin-MacOS'
+  macos.build.name: 'Pinkcoin-Daemon-MacOS'
   macos.path: '/opt/local/libexec/qt5/bin:/opt/local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:/usr/local/sbin:/Users/vsts/bin:/Users/vsts/.yarn/bin:/usr/local/go/bin:/Users/vsts/Library/Android/sdk/tools:/Users/vsts/Library/Android/sdk/platform-tools:/Users/vsts/Library/Android/sdk/ndk-bundle:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/vsts/.azcopy'
 
   linux.toolkit.name: 'Linux_toolkit'
   linux.build.name: 'Pinkcoin-Linux'
+  linux.qt.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qt'
   linux.bdb.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/db4'
   linux.qrencode.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qrencode'
   linux.openssl.prefix: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/openssl'
@@ -27,8 +28,9 @@ variables:
 
 resources:
   containers:
-  - container: u14
-    image: ubuntu:trusty
+  - container: docimg
+    # Uses custom image as there is no public Ubuntu based one with sudo preinstalled :/
+    image: registry.gitlab.com/pinkcoin/docker-files:latest
 
 jobs:
 #===================================================================================================
@@ -187,6 +189,13 @@ jobs:
       artifactName: $(linux.toolkit.name)
     condition: eq(variables.toolkitExists, 'true')
 
+  - task: PublishBuildArtifacts@1
+    displayName: 'Republish Qt5'
+    inputs:
+      pathtoPublish: '$(Build.BinariesDirectory)/$(linux.toolkit.name)/qt.tar.gz'
+      artifactName: $(linux.toolkit.name)
+    condition: eq(variables.toolkitExists, 'true')
+
 # --------------------------------------------------------------------------------------------------
 
 - template: .azure/linux/build-toolkit.yml
@@ -194,6 +203,7 @@ jobs:
     job1: build_linux_toolkit_1
     job2: build_linux_toolkit_2
     job3: build_linux_toolkit_3
+    job4: build_linux_toolkit_4
     condition: eq(dependencies.init_linux.outputs['check.toolkitExists'], 'false')
 
 # --------------------------------------------------------------------------------------------------
@@ -207,6 +217,7 @@ jobs:
     - build_linux_toolkit_1
     - build_linux_toolkit_2
     - build_linux_toolkit_3
+    - build_linux_toolkit_4
   condition: and(ne(variables['Agent.JobStatus'], 'Canceled'), ne(variables['Agent.JobStatus'], 'Failed'))
   variables:
     toolkitExists: $[ dependencies.init_linux.outputs['check.toolkitExists'] ]
@@ -351,7 +362,7 @@ jobs:
   pool:
     vmImage: 'Ubuntu 16.04'
     cancelTimeoutInMinutes: 1
-  container: 'u14'
+  container: 'docimg'
   dependsOn:
     - init_windows
     - build_windows_toolkit_1
@@ -367,9 +378,8 @@ jobs:
 
   - bash: |
       sudo apt-get update
-      sudo apt-get install --no-install-recommends -y \
-      wget g++ ca-certificates pkg-config zip \
-      bash gettext git libtool make g++-mingw-w64-x86-64
+      sudo apt-get install --no-install-recommends -y zip gettext
+      sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
     displayName: 'Install Required System Libs'
 
   - bash: |

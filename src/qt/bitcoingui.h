@@ -73,6 +73,8 @@ public:
         functionality.
     */
     void setMessageModel(MessageModel *messageModel);
+    /*** Adjust main toolbar size. */
+    void updateMainToolbar();
 
 protected:
     void changeEvent(QEvent *e);

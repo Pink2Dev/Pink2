@@ -15,12 +15,16 @@
 #include "qtipcserver.h"
 
 #include <QApplication>
+#include <QStyleFactory>
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QLocale>
 #include <QTranslator>
 #include <QSplashScreen>
 #include <QLibraryInfo>
+#include <QDesktopWidget>
+#include <QFontDatabase>
+#include <QScreen>
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -89,7 +93,7 @@ static void InitMessage(const std::string &message)
 {
     if(splashref)
     {
-        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(0,176,149));
+        splashref->showMessage(QString::fromStdString(message), Qt::AlignBottom|Qt::AlignHCenter, QColor(149, 131, 216));
         QApplication::instance()->processEvents();
     }
 }
@@ -153,6 +157,8 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 
+    // Set common app style for all platforms.
+    app.setStyle(QStyleFactory::create("Fusion"));
 
     // Application identification (must be set before OptionsModel is initialized,
     // as it is used to locate QSettings)
@@ -217,7 +223,21 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    QSplashScreen splash(QPixmap(":/images/splash"), 0);
+    QFontDatabase fontData;
+    fontData.addApplicationFont(":/fonts/Rubik-Regular");
+    fontData.addApplicationFont(":/fonts/Rubik-Medium");
+    fontData.addApplicationFont(":/fonts/Rubik-Bold");
+
+    // Sets default app font.
+    app.setFont(fontData.font("Rubik", "Regular", 10));
+
+    QRect screenGeometry = app.desktop()->screenGeometry();
+    int splashWidth = (int)(0.55*screenGeometry.width());
+    QPixmap splashPixmap = QPixmap(":/images/splash").scaledToWidth(splashWidth, Qt::SmoothTransformation);
+
+    QSplashScreen splash(splashPixmap, 0);
+    splash.setFont(fontData.font("Rubik", "Medium", 20));
+
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
         splash.show();
@@ -254,6 +274,8 @@ int main(int argc, char *argv[])
                 window.setClientModel(&clientModel);
                 window.setWalletModel(&walletModel, &stakeModel);
                 window.setMessageModel(&messageModel);
+
+                window.updateMainToolbar();
 
                 // If -min option passed, start window minimized.
                 if(GetBoolArg("-min"))
