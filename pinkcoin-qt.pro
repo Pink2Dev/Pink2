@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = Pinkcoin-Qt
-VERSION = 2.2.3.1
+VERSION = 2.2.3.2
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
@@ -8,7 +8,7 @@ CONFIG += thread
 CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets network
+    QT += widgets network svg
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
 
@@ -189,7 +189,7 @@ contains(USE_DBUS, 1) {
 
 contains(BITCOIN_NEED_QT_PLUGINS, 1) {
     DEFINES += BITCOIN_NEED_QT_PLUGINS
-    QTPLUGIN += qcncodecs qjpcodecs qtwcodecs qkrcodecs qtaccessiblewidgets
+    QTPLUGIN += qcncodecs qjpcodecs qtwcodecs qkrcodecs qtaccessiblewidgets qsvg qsvgicon
 }
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers

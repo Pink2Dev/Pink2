@@ -21,7 +21,8 @@ jobs:
                   --no-install-recommends \
                   -y \
                   qt5-default qt5-qmake qtbase5-dev-tools \
-                  qttools5-dev-tools build-essential libboost-dev \
+                  qttools5-dev-tools libqt5svg5-dev \
+                  build-essential libboost-dev \
                   libboost-system-dev \
                   libboost-filesystem-dev \
                   libboost-program-options-dev \
@@ -86,7 +87,7 @@ jobs:
           name: Build headless bin pink2d
           command: |
                   cd src
-                  make -j 2 -f makefile.unix STATIC=all USE_UPNP=1 USE_QRCODE=1 BDB_INCLUDE_PATH=$BDB_PREFIX/include BDB_LIB_PATH=$BDB_PREFIX/lib OPENSSL_LIB_PATH=$OPENSSL_PREFIX/lib OPENSSL_INCLUDE_PATH=$OPENSSL_PREFIX/include
+                  make -j 2 -f makefile.unix STATIC=1 USE_UPNP=1 USE_QRCODE=1 BDB_INCLUDE_PATH=$BDB_PREFIX/include BDB_LIB_PATH=$BDB_PREFIX/lib OPENSSL_LIB_PATH=$OPENSSL_PREFIX/lib OPENSSL_INCLUDE_PATH=$OPENSSL_PREFIX/include
                   strip pink2d
       - run:
           name: Set Artifact name as env

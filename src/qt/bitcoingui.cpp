@@ -69,12 +69,13 @@
 #include <QTextStream>
 #include <QTextDocument>
 #include <QSettings>
-#include <QFontDatabase>
 #include <QFile>
 #include <QTextStream>
 #include <QSignalMapper>
 #include <QSettings>
 #include <QWidgetAction>
+#include <QToolButton>
+#include <QFontDatabase>
 
 #include <iostream>
 
@@ -90,23 +91,18 @@ ActiveLabel::ActiveLabel(const QString & text, QWidget * parent):
 
 }
 
-
-/*
-void ActiveLabel::mouseReleaseEvent(QMouseEvent * event)
-{
-    emit clicked();
-}
-*/
-
 bool ActiveLabel::event(QEvent *e)
 {
-//    QHoverEvent me = static_cast<QHoverEvent>(e);
-    if(e->type() == QEvent::HoverMove)
+    if(e->type() == QEvent::MouseButtonPress)
     {
-        //double xpos = me->pos().x();
-        //double ypos = me->pos().y();
+        // Hack: Swallows mouse press event to prevent
+        // from passing it to BitcoinGUI::mousePressEvent
+        // (conflicts with main window grabbing)
+        return true;
+    }
+    else if(e->type() == QEvent::HoverMove)
+    {
         emit hovered();
-        // qDebug() << Q_FUNC_INFO << QString("xpos %1, ypos %2").arg(xpos).arg(ypos);
         return true;
     }
     else if(e->type() == QEvent::HoverLeave)
@@ -122,7 +118,6 @@ bool ActiveLabel::event(QEvent *e)
 
     return QLabel::event(e);
 }
-
 
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
@@ -148,109 +143,122 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     #endif
 
     setWindowTitle(tr("Pinkcoin") + " - " + tr("Wallet"));
-    QFontDatabase fontData;
-    fontData.addApplicationFont(":/fonts/Ubuntu-Bold");
 
+    qApp->setStyleSheet(R"(
+        QMainWindow
+        {
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-top: 0px;
+            border: 0px;
+        }
 
+        #frame { }
+        QToolBar QLabel { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
+        QToolBar QLabel:item { padding-top: 0px; padding-bottom: 0px; spacing: 0px; border: 0px; }
 
-    qApp->setStyleSheet(\
-                      "QMainWindow \
-                      { \
-                        \
-                        padding-left: 0px;\
-                        padding-right: 0px;\
-                        padding-bottom: 0px;\
-                        padding-top: 0px;\
-                        border: 0px;\
-                        \
-                      } \
-                      \
-                      #frame { } \
-                      QToolBar QLabel { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border:0px;} \
-                      QToolBar QLabel:item { padding-top: 0px;padding-bottom: 0px;spacing: 0px; border: 0px;} \
-                      \
-                      #spacer2 { background:rgb(26, 0, 13);border:none; } \
-                      #spacer { background:rgb(152, 50, 101);border:none; } \
-                      #toolbar2 \
-                      { \
-                           border:none; \
-                           width:0px; \
-                           height:0px; \
-                           padding-top:0px; \
-                           padding-bottom:0px; \
-                           background-color:rgb(0,0,0); \
-                      } \
-                      \
-                      #toolbar \
-                      { \
-                           border:0px; \
-                           height:100%; \
-                           padding-top:0px; \
-                           padding-left: 0px; \
-                           padding-right: 0px;\
-                           background: rgb(255, 255, 255); \
-                           text-align: left; \
-                           color: black; \
-                           min-width:200px; \
-                           max-width:200px; \
-                      } \
-                      \
-                    QToolBar QToolButton \
-                     { \
-                       \
-                           font-family:Ubuntu; \
-                           font-size:16px; \
-                           border: 0px; \
-                           padding-left:0px; \
-                           padding-top:0px; \
-                           padding-bottom:0px; \
-                           padding-right:0px;\
-                           width:200px; \
-                           color: black; \
-                           text-align: left; \
-                           background-color: rgb(255, 255, 255); \
-                      } \
-                     #OverviewButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #OverviewButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #SendButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #SendButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #ReceiveButton:hover {background-color:rgb(255, 141, 183); border: none;} \
-                       #ReceiveButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #HistoryButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #HistoryButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #AddressBookButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #AddressBookButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #SideStakeButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #SideStakeButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                       #MessageButton:hover {background-color: rgb(255, 141, 183); border: none;} \
-                       #MessageButton:checked {background-color: rgb(255, 121, 170); border: none;} \
-                     #labelMiningIcon \
-                      { \
-                           padding-left:5px; \
-                           font-family:Century Gothic; \
-                           width:100%; \
-                           font-size:10px; \
-                           text-align:center; \
-                           color:white; \
-                      } \
-                      \
-                      QMenu { background: rgb(0,0,0); color:white; padding-bottom:10px; } \
-                      QMenu::item { color:white; background-color: transparent; } \
-                      QMenu::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
-                      QMenuBar { background: rgb(0,0,0); color:white; } \
-                      QMenuBar::item \
-                      { \
-                            font-size:12px; \
-                            padding-bottom:8px; \
-                            padding-top:8px; \
-                            padding-left:15px; \
-                            padding-right:15px; \
-                            color:white; \
-                            background-color: transparent; \
-                      } \
-                      \
-                      QMenuBar::item:selected { background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));} \
-                      ");
+        #spacer2 {
+            background: rgb(26, 0, 13);
+            border: none;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            margin-left: 1px;
+            margin-right: 4px;
+        }
+        #spacer { background: rgb(152, 50, 101); border: none; }
+        #toolbar2
+        {
+            border: none;
+            width: 0px;
+            height: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            background-color: rgb(0, 0, 0);
+        }
+        #toolbar
+        {
+            border: 0px;
+            height: 100%;
+            padding-top: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
+            background: rgb(255, 255, 255);
+            text-align: left;
+            color: black;
+            max-width: 13em;
+        }
+        QToolBar QToolButton
+        {
+            font-family: Rubik;
+            font-size: 1em;
+            font-weight: bold;
+            border: 0px;
+            padding-left: 2px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-right: 4px;
+            color: black;
+            text-align: left;
+            background-color: rgb(255, 255, 255);
+        }
+        #toolbar QToolButton:hover, #toolbar QToolButton:checked {
+            background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(155, 101, 183), stop: 1 rgb(255, 141, 183));
+            border: none;
+        }
+        #labelMiningIcon
+        {
+            padding-left: 5px;
+            font-family: Century Gothic;
+            width: 100%;
+            font-size: 0.7em;
+            text-align: center;
+            color: white;
+        }
+        QMenu {
+            background: rgb(0, 0, 0);
+            color: white;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+        QMenu::item {
+            color: white;
+            background-color: transparent;
+            border: 0px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            min-width: 150px;
+        }
+        QMenu::item:selected {
+            background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
+            border: 0px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            min-width: 150px;
+        }
+        QMenu::item:disabled {
+            color: darkGrey;
+            background-color: DimGrey;
+        }
+        QMenuBar { background: rgb(0, 0, 0); color: white; }
+        QMenuBar::item
+        {
+            font-size: 0.4em;
+            padding-bottom: 8px;
+            padding-top: 8px;
+            padding-left: 15px;
+            padding-right: 15px;
+            color: white;
+            background-color: transparent;
+        }
+        QMenuBar::item:selected {
+            background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
+        }
+    )");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -290,7 +298,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     vbox->addWidget(transactionView);
 
-    hbox->setContentsMargins(20, 5 ,0, 0);
+    hbox->setContentsMargins(29, 5 ,0, 0);
     hbox->addLayout(vbox);
 
     transactionsPage->setLayout(hbox);
@@ -308,7 +316,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setObjectName("StackedWidget");
-    centralWidget->setStyleSheet("#StackedWidget{background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(255, 121, 170, 255), stop:1 rgba(255, 245, 250, 255));}");
+    // Left side gradient shadow on panels.
+    centralWidget->setStyleSheet(R"(
+        #StackedWidget {
+            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 255, 255));
+        }
+    )");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(stakeCoinsPage);
@@ -336,6 +349,12 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
 
+    labelConnectionsIcon->setStyleSheet(R"(
+        QLabel {
+            padding-right: 2px;
+        }
+    )");
+
     if (GetBoolArg("-staking", true))
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
@@ -353,13 +372,27 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setAlignment(Qt::AlignLeft);
     progressBar->setVisible(false);
 
-    progressBar->setStyleSheet("QProgressBar { background-color: #e8e8e8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(156,219,254), stop: 1 rgb(156,219,254)); border-radius: 7px; margin: 0px; }");
+    progressBar->setStyleSheet(R"(
+        QProgressBar {
+            background-color: white;
+            border-radius: 4px;
+            padding: 1px;
+            text-align: center;
+            font-size: 14px;
+            font-family: Rubik;
+        }
+        QProgressBar::chunk {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(116, 85, 195), stop: 1 rgb(172, 143, 238));
+            border-radius: 4px;
+            margin: 0px;
+        }
+    )");
 
     addToolBarBreak(Qt::BottomToolBarArea);
     QToolBar *toolbar2 = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::BottomToolBarArea,toolbar2);
     toolbar2->setOrientation(Qt::Horizontal);
-    toolbar2->setMovable( false );
+    toolbar2->setMovable(false);
     toolbar2->setObjectName("toolbar2");
     toolbar2->setFixedHeight(28);
     toolbar2->setIconSize(QSize(28,28));
@@ -373,7 +406,16 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
 
     progressBar->setFixedWidth(600);
-    progressBarLabel->setStyleSheet("QLabel { color: white; } ");
+    QFontDatabase fontData;
+    progressBarLabel->setFont(fontData.font("Rubik", "Medium", 10));
+
+    progressBarLabel->setStyleSheet(R"(
+        QLabel {
+            color: white;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    )");
 
     frameSpacer2->addWidget(progressBarLabel);
     frameSpacer2->addWidget(progressBar);
@@ -388,7 +430,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     toolbar2->addWidget(labelStakingIcon);
     toolbar2->addWidget(labelConnectionsIcon);
 
-    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
+    syncIconMovie = new QMovie(":/movies/update_spinner", "gif", this);
+    QSize gifSize(16, 16);
+    syncIconMovie->setScaledSize(gifSize);
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -418,6 +462,40 @@ BitcoinGUI::~BitcoinGUI()
 #ifdef Q_OS_MAC
     delete appMenuBar;
 #endif
+}
+
+/** Hack to make main toolbar width adjusts
+    to the width of the widest button in a group.
+ */
+void BitcoinGUI::updateMainToolbar()
+{
+    this->show();
+    this->layout()->invalidate();
+    this->hide();
+
+    QAction* tabActions[] = {
+        overviewAction, sendCoinsAction, receiveCoinsAction, addressBookAction,
+        stakeCoinsAction, historyAction, messageAction
+    };
+
+    // Finds maximum width in set of tab buttons.
+    int maxWidth = 0;
+    for (auto action : tabActions) {
+        QToolButton *button = dynamic_cast<QToolButton*>(mainToolbar->widgetForAction(action));
+        if (maxWidth < button->width()) {
+            maxWidth = button->width();
+        }
+    }
+
+    // Resize all tab buttons to match maximum width in a group.
+    for (auto action : tabActions) {
+        QToolButton *button = dynamic_cast<QToolButton*>(mainToolbar->widgetForAction(action));
+        button->setMinimumWidth(maxWidth);
+        button->setMaximumWidth(maxWidth);
+    }
+
+    // Resizes main toolbar.
+    mainToolbar->resize(maxWidth, mainToolbar->height());
 }
 
 void BitcoinGUI::createActions()
@@ -466,47 +544,55 @@ void BitcoinGUI::createActions()
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::Off);
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::On);
 
-    //overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    QFontDatabase fontData;
+
     overviewAction = new QAction(*iOverView, tr("&Overview"), this);
     overviewAction->setToolTip(tr("Show general overview of wallet"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
+    overviewAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(*iSend, tr("&Send coins"), this);
     sendCoinsAction->setToolTip(tr("Send coins to a Pinkcoin address"));
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
+    sendCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(sendCoinsAction);
 
     receiveCoinsAction = new QAction(*iReceive, tr("&Receive coins"), this);
     receiveCoinsAction->setToolTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
+    receiveCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(receiveCoinsAction);
 
     addressBookAction = new QAction(*iAddressBook, tr("&Address Book"), this);
     addressBookAction->setToolTip(tr("Edit the list of stored addresses and labels"));
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
+    addressBookAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(addressBookAction);
 
     stakeCoinsAction = new QAction(*iSideStake, tr("&Side Stakes"), this);
     stakeCoinsAction->setToolTip(tr("Edit the list of addresses for staking out."));
     stakeCoinsAction->setCheckable(true);
     stakeCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    stakeCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(stakeCoinsAction);
 
     historyAction = new QAction(*iHistory, tr("&Transactions"), this);
     historyAction->setToolTip(tr("Browse transaction history"));
     historyAction->setCheckable(true);
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    historyAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(historyAction);
 
     messageAction = new QAction(*iMessage, tr("&Messages"), this);
     messageAction->setToolTip(tr("View and Send Private Messages"));
     messageAction->setCheckable(true);
     messageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
+    messageAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(messageAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -537,7 +623,7 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/bitcoin"), tr("&About Pinkcoin"), this);
     aboutAction->setToolTip(tr("Show information about Pinkcoin"));
     aboutAction->setMenuRole(QAction::AboutRole);
-    aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
+    aboutQtAction = new QAction(QIcon(":/icons/about_qt"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
@@ -611,14 +697,14 @@ void BitcoinGUI::createMenuBar()
 
     // Configure the menus
 
-    appMenuBar->setMaximumWidth(220);
-
+    appMenuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     QWidget *w = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(w);
 
     QLabel* pinkCorner = new QLabel(w);
     pinkCorner->setText("<html><head/><body><p><img src=\":/icons/pinkcoin-32\"/></p></body></html>");
+    pinkCorner->setAttribute(Qt::WA_TransparentForMouseEvents);
     layout->addWidget(pinkCorner);
 
     layout->addWidget(appMenuBar);
@@ -670,10 +756,7 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 
-    //appMenuBar->setMaximumWidth(180);
 
-
-	
 	/* zeewolf: Hot swappable wallet themes */
     if (themesList.count()>0)
     {
@@ -711,8 +794,8 @@ void BitcoinGUI::createToolBars()
     mainToolbar->widgetForAction(messageAction)->setObjectName("MessageButton");
     mainToolbar->setContextMenuPolicy(Qt::NoContextMenu);
 
-    mainToolbar->layout()->setContentsMargins(0,0,0,0);
-
+    mainToolbar->layout()->setContentsMargins(0, 0, 0, 0);
+    mainToolbar->layout()->setSpacing(0);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -1618,7 +1701,9 @@ void BitcoinGUI::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = true;
-        mLastMousePosition = event->pos();
+        // Difference between window position and global position of mouse cursor
+        mDiffWindowPosition = this->pos() - event->globalPos();
+        setCursor(Qt::ClosedHandCursor);
     }
 }
 
@@ -1626,7 +1711,7 @@ void BitcoinGUI::mouseMoveEvent(QMouseEvent* event)
 {
     if( event->buttons().testFlag(Qt::LeftButton) && mMoving)
     {
-        this->move(this->pos() + (event->pos() - mLastMousePosition));
+        this->move(mDiffWindowPosition + event->globalPos());
     }
 }
 
@@ -1635,5 +1720,6 @@ void BitcoinGUI::mouseReleaseEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         mMoving = false;
+        unsetCursor();
     }
 }

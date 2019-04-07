@@ -64,13 +64,13 @@ public:
 
         painter->setPen(foreground);
 
-        if (fontID > 0)
-        {
-            QString fUbuntu = QFontDatabase::applicationFontFamilies(fontID).at(0);
-            QFont* Ubuntu = new QFont(fUbuntu, 8, QFont::Normal, false);
-            painter->setFont(*Ubuntu);
+        // if (fontID > 0)
+        // {
+        //     QString fUbuntu = QFontDatabase::applicationFontFamilies(fontID).at(0);
+        //     QFont* Ubuntu = new QFont(fUbuntu, 8, QFont::Normal, false);
+        //     painter->setFont(*Ubuntu);
 
-        }
+        // }
 
         painter->drawText(addressRect, Qt::AlignLeft|Qt::AlignVCenter, address);
 
@@ -127,9 +127,13 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     txdelegate->fontID = -1;
 
-    QFont overviewHeaders("Ubuntu", 14, QFont::Normal);
-    QFont overviewSpend("Ubuntu", 18, QFont::Normal);
-    QFont overviewBalances("Ubuntu", 14, QFont::Normal);
+    QFont overviewHeaders("Rubik", 14, QFont::Bold);
+    QFont overviewSpend("Rubik", 18, QFont::Normal);
+    QFont overviewBalances("Rubik", 14, QFont::Normal);
+
+    // HACK: Makes that label transparent for mouse events
+    // Mitigates strange event swallowing behavior in main window
+    ui->label_4->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     ui->label->setFont(overviewHeaders);
     ui->label_3->setFont(overviewHeaders);
@@ -279,11 +283,11 @@ void OverviewPage::updateDisplayUnit()
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
-        if (txdelegate->fontID < 0)
-        {
-            FontID = QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Medium");
-            txdelegate->fontID = FontID;
-        }
+        // if (txdelegate->fontID < 0)
+        // {
+        //     FontID = QFontDatabase::addApplicationFont(":/fonts/Rubik-Regular");
+        //     txdelegate->fontID = FontID;
+        // }
 
         ui->listTransactions->update();
     }

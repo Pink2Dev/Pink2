@@ -45,8 +45,6 @@ signals:
 
 protected:
     bool event(QEvent *e);
-//    void mouseReleaseEvent (QMouseEvent * event) ;
-
 };
 
 /**
@@ -75,6 +73,8 @@ public:
         functionality.
     */
     void setMessageModel(MessageModel *messageModel);
+    /*** Adjust main toolbar size. */
+    void updateMainToolbar();
 
 protected:
     void changeEvent(QEvent *e);
@@ -167,7 +167,7 @@ private:
     /** Create system tray (notification) icon */
     void createTrayIcon();
 
-    QPoint mLastMousePosition;
+    QPoint mDiffWindowPosition;
     bool mMoving;
 
 public slots:

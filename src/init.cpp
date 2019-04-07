@@ -341,7 +341,11 @@ std::string HelpMessage()
         "\n" + _("Secure messaging options:") + "\n" +
         "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
-        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n";
+        "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
+
+        "\n" + _("NTP Time options:") + "\n" +
+        "  -usentp                                  " + _("Use NTP to set internal time offset (Enabled by default. Disable with -usentp=0)") + "\n" +
+        "  -ntpserver=<*.pool.ntp.org>              " + _("Use specific geographic NTP pool. See https://www.pool.ntp.org/zone/@") + "\n";
 
     return strUsage;
 }
