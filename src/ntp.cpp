@@ -59,19 +59,8 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // because that hasn't been set up for UDP requests. This can be moved into netbase
     // should we ever need UDP support for any other reason, but for now this is fine.
 
-    // Gotta use BigEndian for networks. NTP uses UDP port 123.
-    int udpPort = htons(123);
-
     // Standard UDP socket.
-    int socketNTP = socket( AF_INET , SOCK_DGRAM, IPPROTO_UDP);
-    if (socketNTP < 0)
-        return false;
-
-    struct sockaddr_in sockAddr;
-
-    // Zero out our socket address.
-    memset(&sockAddr, 0, sizeof(sockAddr));
-
+    int socketNTP;
 
     // Use getaddrinfo() with support code from netbase.cpp.
     // getaddrinfo() is required to be thread safe (RFC3493).
@@ -80,36 +69,41 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     memset(&aiHint, 0, sizeof(struct addrinfo));
 
     aiHint.ai_socktype = SOCK_DGRAM;
-    aiHint.ai_protocol = IPPROTO_UDP;
     aiHint.ai_family = AF_INET;
-#ifdef WIN32
-    aiHint.ai_flags = 0;
-#else
-    aiHint.ai_flags = AI_ADDRCONFIG;
-#endif
+
     struct addrinfo *aiRes = NULL;
-    int nErr = getaddrinfo(addrConnect, NULL, &aiHint, &aiRes);
+    int nErr = getaddrinfo(addrConnect, "123", &aiHint, &aiRes);
     if (nErr)
         return false;
 
-    sockAddr.sin_addr.s_addr = ((struct sockaddr_in *)(aiRes->ai_addr))->sin_addr.s_addr;
-    sockAddr.sin_port = udpPort;
+    // Connect to NTP
+    for (; aiRes != NULL; aiRes = aiRes->ai_next)
+    {
+        socketNTP = socket(aiRes->ai_family , aiRes->ai_socktype, aiRes->ai_protocol);
+        if (socketNTP < 0)
+            continue;
 
-    freeaddrinfo(aiRes);
-
-    // Set our timeout to 2 seconds.
+        // Set our timeout to 2 seconds.
 #ifdef WIN32
-    DWORD timeout = 2000;
-    setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+        DWORD timeout = 2000;
+        setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 #else
-    struct timeval tv;
-    tv.tv_sec = 2;
-    tv.tv_usec = 0;
-    setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+        struct timeval tv;
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
+        setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
 #endif
 
-    // Connect to NTP
-    if (connect(socketNTP, (struct sockaddr*) &sockAddr, sizeof(sockAddr)) < 0)
+        if (connect(socketNTP, (struct sockaddr*) aiRes->ai_addr, aiRes->ai_addrlen) < 0)
+        {
+            close(socketNTP);
+            continue;
+        }
+
+        break;
+    }
+
+    if (aiRes == NULL)
         return false;
 
     // Our buffer for our request from NTP. See note above for its structure.
@@ -135,6 +129,8 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     n = recv(socketNTP, (char*)&bTimeReq, 48, 0);
     // Time we got it
     endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+
+    freeaddrinfo(aiRes);
 
     if (n < 0)
         return false;
