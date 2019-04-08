@@ -59,45 +59,51 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // because that hasn't been set up for UDP requests. This can be moved into netbase
     // should we ever need UDP support for any other reason, but for now this is fine.
 
-    // Gotta use BigEndian for networks. NTP uses UDP port 123.
-    int udpPort = htons(123);
-
     // Standard UDP socket.
-    int socketNTP = socket( AF_INET , SOCK_DGRAM, IPPROTO_UDP);
-    if (socketNTP < 0)
+    int socketNTP;
+
+    // Use getaddrinfo() with support code from netbase.cpp.
+    // getaddrinfo() is required to be thread safe (RFC3493).
+    // https://tools.ietf.org/html/rfc3493#section-6.1
+    struct addrinfo aiHint;
+    memset(&aiHint, 0, sizeof(struct addrinfo));
+
+    aiHint.ai_socktype = SOCK_DGRAM;
+    aiHint.ai_family = AF_INET;
+
+    struct addrinfo *aiRes = NULL;
+    int nErr = getaddrinfo(addrConnect, "123", &aiHint, &aiRes);
+    if (nErr)
         return false;
-
-    struct sockaddr_in sockAddr;
-    struct hostent *hNTPServ;
-
-    // Zero out our socket address.
-    memset(&sockAddr, 0, sizeof(sockAddr));
-
-    // Get our host from DNS.
-    hNTPServ = gethostbyname(addrConnect);
-
-    if (hNTPServ == nullptr)
-        return false;
-
-    // Set our connection information.
-    sockAddr.sin_family = AF_INET;
-    memcpy(&sockAddr.sin_addr.s_addr, hNTPServ->h_addr_list[0], hNTPServ->h_length);
-    sockAddr.sin_port = udpPort;
-
-
-    // Set our timeout to 2 seconds.
-#ifdef WIN32
-    DWORD timeout = 2000;
-    setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
-#else
-    struct timeval tv;
-    tv.tv_sec = 2;
-    tv.tv_usec = 0;
-    setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
-#endif
 
     // Connect to NTP
-    if (connect(socketNTP, (struct sockaddr*) &sockAddr, sizeof(sockAddr)) < 0)
+    for (; aiRes != NULL; aiRes = aiRes->ai_next)
+    {
+        socketNTP = socket(aiRes->ai_family , aiRes->ai_socktype, aiRes->ai_protocol);
+        if (socketNTP < 0)
+            continue;
+
+        // Set our timeout to 2 seconds.
+#ifdef WIN32
+        DWORD timeout = 2000;
+        setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+#else
+        struct timeval tv;
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
+        setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+#endif
+
+        if (connect(socketNTP, (struct sockaddr*) aiRes->ai_addr, aiRes->ai_addrlen) < 0)
+        {
+            close(socketNTP);
+            continue;
+        }
+
+        break;
+    }
+
+    if (aiRes == NULL)
         return false;
 
     // Our buffer for our request from NTP. See note above for its structure.
@@ -120,10 +126,11 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     if (n < 0)
         return false;
 
-
     n = recv(socketNTP, (char*)&bTimeReq, 48, 0);
     // Time we got it
     endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+
+    freeaddrinfo(aiRes);
 
     if (n < 0)
         return false;
@@ -154,8 +161,9 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // Get our NTP time down to the microsecond.
     // We have to convert NTP fractional time to Micros.
     uint64_t ntpMicros = 0;
-    ntpMicros = (nEpoch * 1000000);
-    ntpMicros += ((double)tMicros / std::numeric_limits<uint32_t>::max()) * 1000000;
+    uint64_t nMax = (uint64_t)std::numeric_limits<uint32_t>::max();
+    ntpMicros = (nEpoch * 1000000UL);
+    ntpMicros += (tMicros * 1000000UL / nMax); // ((double)tMicros / std::numeric_limits<uint32_t>::max()) * 1000000;
 
     // Split the difference between when we requested the time
     // and when we got it to account for the network round trip.
@@ -266,7 +274,8 @@ bool SetNTPOffset(const string &strPool)
              avMicros += *it;
 
         // Average of what we got.
-        avMicros /= ntpMicros.size();
+        if (ntpMicros.size() > 0)
+            avMicros /= ntpMicros.size();
 
         // Set our offset based on the difference and maintain an average.
         nTimeOffset += (avMicros - nowMicros);

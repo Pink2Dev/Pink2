@@ -127,9 +127,15 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     txdelegate->fontID = -1;
 
+#ifdef MAC_OSX
+    QFont overviewHeaders("Rubik", 16, QFont::Bold);
+    QFont overviewSpend("Rubik", 20, QFont::Normal);
+    QFont overviewBalances("Rubik", 16, QFont::Normal);
+#else
     QFont overviewHeaders("Rubik", 14, QFont::Bold);
     QFont overviewSpend("Rubik", 18, QFont::Normal);
     QFont overviewBalances("Rubik", 14, QFont::Normal);
+#endif
 
     // HACK: Makes that label transparent for mouse events
     // Mitigates strange event swallowing behavior in main window

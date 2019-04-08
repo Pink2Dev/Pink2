@@ -47,8 +47,12 @@ endif
 LIBS+= \
  -Wl,-B$(LMODE2) \
    -l z \
-   -l dl \
-   -l pthread
+   -l stdc++ \
+   -l gcc \
+ -Wl,-Bdynamic \
+   -l rt \
+   -l dl
+
 
 
 # Hardening
