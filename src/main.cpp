@@ -2527,8 +2527,8 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (mapOrphanBlocks.count(hash))
         return error("ProcessBlock() : already have block (orphan) %s", hash.ToString().substr(0,20).c_str());
 
-    if (pindexBest->nTime > nTimeV301)
-        pblock->IsProofOfWork();
+    if (pindexBest->nTime > nTimeV301 && pblock->IsProofOfWork())
+        return error("ProcessBlock() : Received POW Block. Proof-of-work was disabled on Friday August 9, 2019 12:00:00 AM UTC. \n");
 
     // ppcoin: check proof-of-stake
     // Limited duplicity on stake: prevents block flood attack
