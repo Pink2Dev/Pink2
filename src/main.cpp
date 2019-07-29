@@ -94,7 +94,7 @@ int64_t nMinimumStakeValue = 0; // Don't stake old 0 reward blocks.
 extern enum Checkpoints::CPMode CheckpointsMode;
 
 unsigned int nTimeV221 = 1540771200; // Version 2.2.1.0 Consensus Update. Monday, October 29, 2018 12:00:00 AM UTC
-unsigned int nTimeV301 = 1565308800; // Version 3.0.1.0 Disable POW, compensate with F/POS. Friday August 9, 2019 12:00:00 AM UTC
+unsigned int nTimeV231 = 1565308800; // Version 3.0.1.0 Disable POW, compensate with F/POS. Friday August 9, 2019 12:00:00 AM UTC
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1021,7 +1021,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
     int64_t nSubsidy = 0;
     int64_t nHalving = 0;
 
-    bool fDisablePOW = pindexBest->nTime > nTimeV301;
+    bool fDisablePOW = pindexBest->nTime > nTimeV231;
 
     if (nHeight >= 16240)
     {
@@ -1173,7 +1173,7 @@ unsigned int GetNextTargetRequiredV1(const CBlockIndex* pindexLast, bool fProofO
                 fFlashFlip = true;
         }
         else {
-            nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
+            nTS = (pindexBest->nTime > nTimeV231) ? nTargetSpacing : nTargetSpacing_Staking;
             if (IsFlashStake(pindexPrev->nTime))
                 fFlashFlip = true;
         }
@@ -1246,7 +1246,7 @@ unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofO
         }
         else {
             bnTargetLimit = bnProofOfStakeLimit;
-            nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
+            nTS = (pindexBest->nTime > nTimeV231) ? nTargetSpacing : nTargetSpacing_Staking;
         }
 
         // Gets two previous same algorithm (PoS or FPoS) blocks.
@@ -2527,7 +2527,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     if (mapOrphanBlocks.count(hash))
         return error("ProcessBlock() : already have block (orphan) %s", hash.ToString().substr(0,20).c_str());
 
-    if (pindexBest->nTime > nTimeV301 && pblock->IsProofOfWork())
+    if (pindexBest->nTime > nTimeV231 && pblock->IsProofOfWork())
         return error("ProcessBlock() : Received POW Block. Proof-of-work was disabled on Friday August 9, 2019 12:00:00 AM UTC. \n");
 
     // ppcoin: check proof-of-stake

@@ -136,7 +136,7 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
     // Sort candidate blocks by timestamp
     vector<pair<int64_t, uint256> > vSortedByTimestamp;
 
-    unsigned int nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
+    unsigned int nTS = (pindexBest->nTime > nTimeV231) ? nTargetSpacing : nTargetSpacing_Staking;
     time_t rawtime;
     time ( &rawtime );
 
@@ -298,7 +298,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
 
     // FlashPOS 2.0 End
 
-    fFlashStake = fFlashStake && (pindexBest->nTime > nTimeV301);
+    fFlashStake = fFlashStake && (pindexBest->nTime > nTimeV231);
     // int64_t nDivideBase = nDayTime;
     bnCoinDayWeight_Calc = nValueIn * GetWeight((int64_t)txPrev.nTime, (int64_t)nTimeTx, fFlashStake) / nDayTime;
 

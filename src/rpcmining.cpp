@@ -82,7 +82,7 @@ Value getstakinginfo(const Array& params, bool fHelp)
     bool staking = nLastCoinStakeSearchInterval && nWeight;
 
     unsigned int nTS;
-    nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
+    nTS = (pindexBest->nTime > nTimeV231) ? nTargetSpacing : nTargetSpacing_Staking;
 
     time_t rawtime;
     time ( &rawtime );
