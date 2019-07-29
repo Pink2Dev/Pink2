@@ -107,6 +107,7 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     {
         if (socketNTP >= 0)
             close(socketNTP);
+
         return false;
     }
 
