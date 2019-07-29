@@ -1,4 +1,4 @@
-https://github.com/Pink2Dev/Pink2/pull/34/conflict?name=src%252Fclientversion.h&ancestor_oid=d8d5927e63c1ea6c57ee9439ba44dd0a3ed9c8db&base_oid=19556a05aed392ee14903f2be82579df35338628&head_oid=cb42bb6e7ec06a70350000dfd955703d7d3da5ee#ifndef CLIENTVERSION_H
+#ifndef CLIENTVERSION_H
 #define CLIENTVERSION_H
 
 //
