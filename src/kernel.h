@@ -28,6 +28,6 @@ bool CheckProofOfStake(const CTransaction& tx, unsigned int nBits, uint256& hash
 bool CheckCoinStakeTimestamp(int64_t nTimeBlock, int64_t nTimeTx);
 
 // Get time weight using supplied timestamps
-int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd);
+int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd, const bool fFlashStake);
 
 #endif // PPCOIN_KERNEL_H

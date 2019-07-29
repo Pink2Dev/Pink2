@@ -12,11 +12,14 @@
 using namespace std;
 
 // Get time weight
-int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd)
+int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd, const bool fFlashStake)
 {
     // Kernel hash weight starts from 0 at the min age
     // this change increases active coins participating the hash and helps
     // to secure the network when proof-of-stake difficulty is low
+
+    if (fFlashStake)
+        return min(nIntervalEnd - nIntervalBeginning - nStakeMinAge, (int64_t)nFlashStakeMaxAge);
 
     return min(nIntervalEnd - nIntervalBeginning - nStakeMinAge, (int64_t)nStakeMaxAge);
 }
@@ -133,7 +136,7 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
     // Sort candidate blocks by timestamp
     vector<pair<int64_t, uint256> > vSortedByTimestamp;
 
-    unsigned int nTS = nTargetSpacing_Staking;
+    unsigned int nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
     time_t rawtime;
     time ( &rawtime );
 
@@ -289,14 +292,15 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock& blockFrom, unsigned 
     const unsigned int btFlash2 = fTestNet ? 1534208400 : 1538265600; // September 30th, 2018 @ 12:00am UTC MainNet, August 14th, 2018 @ 1:00am UTC TestNet
     const unsigned int minFlash2 = 100000; // Minimum coin requirement to stake during FPOS
 
-    if (IsFlashStake(nTimeTx) && nTimeTx > btFlash2 && nValueIn < minFlash2)
+    bool fFlashStake = IsFlashStake(nTimeTx);
+    if (fFlashStake && nTimeTx > btFlash2 && nValueIn < minFlash2)
         return false;
 
     // FlashPOS 2.0 End
 
-
+    fFlashStake = fFlashStake && (pindexBest->nTime > nTimeV301);
     // int64_t nDivideBase = nDayTime;
-    bnCoinDayWeight_Calc = nValueIn * GetWeight((int64_t)txPrev.nTime, (int64_t)nTimeTx) / nDayTime;
+    bnCoinDayWeight_Calc = nValueIn * GetWeight((int64_t)txPrev.nTime, (int64_t)nTimeTx, fFlashStake) / nDayTime;
 
 
     CBigNum bnCoinDayWeight = CBigNum(bnCoinDayWeight_Calc);

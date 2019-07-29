@@ -47,6 +47,9 @@ static const uint256 hashGenesisBlockTestNet("0x000076a007b949e5f8cdee6c18817d26
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 10 minutes from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 10 minutes from the future
 
+extern unsigned int nTimeV301;
+extern unsigned int nTimeV221;
+
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
 extern std::map<uint256, CBlockIndex*> mapBlockIndex;
@@ -57,6 +60,7 @@ extern unsigned int nTargetSpacing_Staking;
 extern unsigned int nTargetSpacing_FlashStaking;
 extern unsigned int nStakeMinAge;
 extern unsigned int nStakeMaxAge;
+extern unsigned int nFlashStakeMaxAge;
 extern unsigned int nNodeLifespan;
 extern int nCoinbaseMaturity;
 extern int nBestHeight;

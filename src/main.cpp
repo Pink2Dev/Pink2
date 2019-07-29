@@ -50,6 +50,7 @@ unsigned int nTargetSpacing_Staking = 360;           // 6 Minutes
 unsigned int nTargetSpacing_FlashStaking = 60;       // 1 Minute
 unsigned int nStakeMinAge       = 1 * 60 * 60;       // 1 hour
 unsigned int nStakeMaxAge       = 24 * 60 * 60 * 30; // 30 days
+unsigned int nFlashStakeMaxAge  = 24 * 60 * 60 * 7;  // 7 days
 unsigned int nModifierInterval  = 5 * 60;            // time to elapse before new modifier is computed
 
 const unsigned int nHour1 = 15;  // 7am UTC-8
@@ -93,6 +94,7 @@ int64_t nMinimumStakeValue = 0; // Don't stake old 0 reward blocks.
 extern enum Checkpoints::CPMode CheckpointsMode;
 
 unsigned int nTimeV221 = 1540771200; // Version 2.2.1.0 Consensus Update. Monday, October 29, 2018 12:00:00 AM UTC
+unsigned int nTimeV301 = 1565308800; // Version 3.0.1.0 Disable POW, compensate with F/POS. Friday August 9, 2019 12:00:00 AM UTC
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1019,6 +1021,8 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
     int64_t nSubsidy = 0;
     int64_t nHalving = 0;
 
+    bool fDisablePOW = pindexBest->nTime > nTimeV301;
+
     if (nHeight >= 16240)
     {
         if (IsFlashStakeReward(nTime))
@@ -1028,7 +1032,18 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
         } else {
             nHalving = nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT;
             nSubsidy = (100 * COIN) >> nHalving;
+
+            if (fDisablePOW)
+                nSubsidy /= 3;
         }
+
+
+        // Account for difference; (Daily Rewards / Daily Rewards - POW); 92000/56000 ~ 1.64285714286
+        if (fDisablePOW)
+        {
+            nSubsidy *= 16 / 10;
+        }
+
     }
 
     if (fDebug && GetBoolArg("-printcreation"))
@@ -1158,7 +1173,7 @@ unsigned int GetNextTargetRequiredV1(const CBlockIndex* pindexLast, bool fProofO
                 fFlashFlip = true;
         }
         else {
-            nTS = nTargetSpacing_Staking;
+            nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
             if (IsFlashStake(pindexPrev->nTime))
                 fFlashFlip = true;
         }
@@ -1231,7 +1246,7 @@ unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofO
         }
         else {
             bnTargetLimit = bnProofOfStakeLimit;
-            nTS = nTargetSpacing_Staking;
+            nTS = (pindexBest->nTime > nTimeV301) ? nTargetSpacing : nTargetSpacing_Staking;
         }
 
         // Gets two previous same algorithm (PoS or FPoS) blocks.
@@ -2511,6 +2526,9 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         return error("ProcessBlock() : already have block %d %s", mapBlockIndex[hash]->nHeight, hash.ToString().substr(0,20).c_str());
     if (mapOrphanBlocks.count(hash))
         return error("ProcessBlock() : already have block (orphan) %s", hash.ToString().substr(0,20).c_str());
+
+    if (pindexBest->nTime > nTimeV301)
+        pblock->IsProofOfWork();
 
     // ppcoin: check proof-of-stake
     // Limited duplicity on stake: prevents block flood attack
