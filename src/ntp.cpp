@@ -60,7 +60,7 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // should we ever need UDP support for any other reason, but for now this is fine.
 
     // Standard UDP socket.
-    int socketNTP;
+    int socketNTP = -1;
 
     // Use getaddrinfo() with support code from netbase.cpp.
     // getaddrinfo() is required to be thread safe (RFC3493).
@@ -105,7 +105,8 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
 
     if (aiRes == NULL)
     {
-        close(socketNTP);
+        if (socketNTP >= 0)
+            close(socketNTP);
         return false;
     }
 
