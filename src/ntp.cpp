@@ -60,7 +60,7 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // should we ever need UDP support for any other reason, but for now this is fine.
 
     // Standard UDP socket.
-    int socketNTP;
+    int socketNTP = -1;
 
     // Use getaddrinfo() with support code from netbase.cpp.
     // getaddrinfo() is required to be thread safe (RFC3493).
@@ -104,7 +104,12 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     }
 
     if (aiRes == NULL)
+    {
+        if (socketNTP >= 0)
+            close(socketNTP);
+
         return false;
+    }
 
     // Our buffer for our request from NTP. See note above for its structure.
     // Note: we're not bothering with the struct. We're just grabbing what we need.
@@ -123,14 +128,17 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     startMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
     int n = send(socketNTP, (char*)&bTimeReq, 48, 0);
 
-    if (n < 0)
+    if (n < 0) {
+        close(socketNTP);
         return false;
+    }
 
     n = recv(socketNTP, (char*)&bTimeReq, 48, 0);
     // Time we got it
     endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
 
     freeaddrinfo(aiRes);
+    close(socketNTP);
 
     if (n < 0)
         return false;
