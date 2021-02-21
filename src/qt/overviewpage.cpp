@@ -326,7 +326,9 @@ void OverviewPage::sendRequest()
     connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(handlePriceReply(QNetworkReply*)));
 
     //build our URL to send GET request to
-    QString strURL = "https://api.coinmarketcap.com/v1/ticker/pinkcoin/";
+    QString strURL = "https://api.coingecko.com/api/v3/coins/pinkcoin?localization=false&"
+                     "tickers=false&market_data=true&community_data=false&"
+                     "developer_data=false&sparkline=false";
 
     manager->get(QNetworkRequest(QUrl(strURL)));
 }
@@ -342,35 +344,34 @@ void OverviewPage::handlePriceReply(QNetworkReply *reply)
         if (v >= 200 && v < 300) // Success
         {
             // Here we got the final reply
-            QString replyText = reply->readAll();
-            if (replyText.size() > 100)
-            {
-
-            replyText = replyText.mid(1, replyText.size() - 2);
-
+            QByteArray result = reply->readAll();
 
             //Parse the json
-            QJsonDocument jsonResponse = QJsonDocument::fromJson(replyText.toUtf8());
-            QJsonObject  ResponseObject = jsonResponse.object();
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+            QJsonObject responseObject = jsonResponse.object();
 
-            if(ResponseObject.contains("price_usd"))
+            if (responseObject.contains("market_data") && responseObject["market_data"].isObject())
             {
-               QString sLastPrice = ResponseObject["price_btc"].toString();
-               sLastPrice = sLastPrice.trimmed();
-               if (sLastPrice.toDouble() > 0)
-                   nLastPrice = sLastPrice.toDouble();
+                QJsonObject marketData = responseObject["market_data"].toObject();
+                if(marketData.contains("current_price") && marketData["current_price"].isObject())
+                {
+                    QJsonObject currentPrice = marketData["current_price"].toObject();
+                    if (
+                           currentPrice.contains("btc") && currentPrice["usd"].isDouble() &&
+                           currentPrice.contains("usd") && currentPrice["usd"].isDouble()
+                    )
+                    {
+                        if (currentPrice["btc"].toDouble() > 0)
+                            nLastPrice = currentPrice["btc"].toDouble();
 
-               sLastPrice = "";
-
-               sLastPrice = ResponseObject["price_usd"].toString();
-               sLastPrice = sLastPrice.trimmed();
-               if (sLastPrice.toDouble() > 0)
-                   nLastPriceUSD = sLastPrice.toDouble();
+                        if (currentPrice["usd"].toDouble() > 0)
+                            nLastPriceUSD = currentPrice["usd"].toDouble();
+                    }
+                }
             }
 
             updateBtcValueLabel(nLastPrice, nLastPriceUSD);
 
-            }
             return;
         }
         else if (v >= 300 && v < 400) // Redirection
