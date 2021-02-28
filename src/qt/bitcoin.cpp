@@ -116,7 +116,12 @@ static std::string Translate(const char* psz)
 static void handleRunawayException(std::exception *e)
 {
     PrintExceptionContinue(e, "Runaway exception");
-    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. Pinkcoin can no longer continue safely and will quit.") + QString("\n\n") + QString::fromStdString(strMiscWarning));
+    QMessageBox::critical(
+        nullptr,
+        "Runaway exception",
+        BitcoinGUI::tr(
+            "A fatal error occurred. Pinkcoin can no longer continue safely and will quit."
+        ) + QString("\n\n") + QString::fromStdString(strMiscWarning));
     exit(1);
 }
 
@@ -125,12 +130,6 @@ int main(int argc, char *argv[])
 {
     // Do this early as we don't want to bother initializing if we are just calling IPC
     ipcScanRelay(argc, argv);
-
-#if QT_VERSION < 0x050000
-    // Internal string conversion is all UTF-8
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
-#endif
 
     Q_INIT_RESOURCE(bitcoin);
     QApplication app(argc, argv);
@@ -146,16 +145,18 @@ int main(int argc, char *argv[])
     {
         // This message can not be translated, as translation is not initialized yet
         // (which not yet possible because lang=XX can be overridden in bitcoin.conf in the data directory)
-        QMessageBox::critical(0, "Pinkcoin",
-                              QString("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
+        QMessageBox::critical(
+            nullptr, "Pinkcoin",
+            QString("Error: Specified data directory \"%1\" does not exist.").arg(
+                QString::fromStdString(mapArgs["-datadir"])
+            )
+        );
         return 1;
     }
     ReadConfigFile(mapArgs, mapMultiArgs);
 
-#if QT_VERSION > 0x050100
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
 
     // Set common app style for all platforms.
     app.setStyle(QStyleFactory::create("Fusion"));
@@ -235,7 +236,7 @@ int main(int argc, char *argv[])
     int splashWidth = (int)(0.55*screenGeometry.width());
     QPixmap splashPixmap = QPixmap(":/images/splash").scaledToWidth(splashWidth, Qt::SmoothTransformation);
 
-    QSplashScreen splash(splashPixmap, 0);
+    QSplashScreen splash(splashPixmap, nullptr);
     splash.setFont(fontData.font("Rubik", "Medium", 20));
 
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
@@ -293,13 +294,13 @@ int main(int argc, char *argv[])
                 app.exec();
 
                 window.hide();
-                window.setClientModel(0);
-                window.setWalletModel(0, 0);
-                window.setMessageModel(0);
-                guiref = 0;
+                window.setClientModel(nullptr);
+                window.setWalletModel(nullptr, nullptr);
+                window.setMessageModel(nullptr);
+                guiref = nullptr;
             }
             // Shutdown the core and its threads, but don't exit Bitcoin-Qt here
-            Shutdown(NULL);
+            Shutdown(nullptr);
             threadGroup.interrupt_all();
             threadGroup.join_all();
         }
@@ -310,7 +311,7 @@ int main(int argc, char *argv[])
     } catch (std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
-        handleRunawayException(NULL);
+        handleRunawayException(nullptr);
     }
     return 0;
 }

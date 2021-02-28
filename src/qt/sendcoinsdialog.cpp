@@ -25,7 +25,7 @@
 SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SendCoinsDialog),
-    model(0)
+    model(nullptr)
 {
     ui->setupUi(this);
 
@@ -35,15 +35,14 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     ui->sendButton->setIcon(QIcon());
 #endif
 
-#if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Ok, so now we can move it to XML??
     ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)"));
 	ui->splitBlockLineEdit->setPlaceholderText(tr("# of Blocks"));
 	ui->splitBlockCheckBox->setToolTip(tr("Enable/Disable Block Splitting"));
 	ui->returnChangeCheckBox->setToolTip(tr("Use your sending address as the change address"));
 	ui->checkBoxCoinControlChange->setToolTip(tr("Send change to a custom address"));
     ui->labelBlockSize->setText(QString("0 PINK"));
-#endif
 
     addEntry();
 
@@ -184,27 +183,25 @@ void SendCoinsDialog::on_sendButton_clicked()
 	{
 		if(!model->getSplitBlock())
 		{
-			#if QT_VERSION < 0x050000
-			formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), Qt::escape(rcp.label), rcp.address));
-			#else
-			formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), rcp.label.toHtmlEscaped(), rcp.address));
-			#endif
+            formatted.append(
+                tr("<b>%1</b> to %2 (%3)").arg(
+                    BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount),
+                    rcp.label.toHtmlEscaped(),
+                    rcp.address
+                )
+            );
 		}
 		else
 		{
-			#if QT_VERSION < 0x050000
-			formatted.append(tr("<b>%1</b> in %4 blocks of %5 each to %2 (%3)?").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), 
-				Qt::escape(rcp.label), 
-				rcp.address, 
-				QString::number(nSplitBlock), 
-				BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount / nSplitBlock)));
-			#else
-			formatted.append(tr("<b>%1</b> in %4 blocks of %5 each to %2 (%3)?").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount), 
-				rcp.label.toHtmlEscaped(), 
-				rcp.address, 
-				QString::number(nSplitBlock), 
-				BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount / nSplitBlock)));
-			#endif	
+            formatted.append(
+                tr("<b>%1</b> in %4 blocks of %5 each to %2 (%3)?").arg(
+                    BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount),
+                    rcp.label.toHtmlEscaped(),
+                    rcp.address,
+                    QString::number(nSplitBlock),
+                    BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, rcp.amount / nSplitBlock)
+                )
+            );
 		}
 	}
 
@@ -346,7 +343,7 @@ void SendCoinsDialog::updateRemoveEnabled()
             entry->setRemoveEnabled(enabled);
         }
     }
-    setupTabChain(0);
+    setupTabChain(nullptr);
     coinControlUpdateLabels();
 }
 
@@ -376,7 +373,7 @@ void SendCoinsDialog::pasteEntry(const SendCoinsRecipient &rv)
     if(!fNewRecipientAllowed)
         return;
 
-    SendCoinsEntry *entry = 0;
+    SendCoinsEntry *entry = nullptr;
     // Replace the first entry if it is still unused
     if(ui->entries->count() == 1)
     {

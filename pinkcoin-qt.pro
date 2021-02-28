@@ -1,12 +1,11 @@
 TEMPLATE = app
 TARGET = Pinkcoin-Qt
 VERSION = 2.3.1.0
-
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
-CONFIG += c++11
+CONFIG += c++17
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets network svg
@@ -52,7 +51,7 @@ macx {
 
 isEmpty(BOOST_LIB_SUFFIX) {
     macx:BOOST_LIB_SUFFIX = -mt
-    windows:BOOST_LIB_SUFFIX = -mgw49-mt-s-1_57
+    windows:BOOST_LIB_SUFFIX = -mt-s
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
@@ -139,6 +138,9 @@ contains(RELEASE, 1) {
     # We need to exclude this for Windows cross compile with MinGW 4.2.x, as it will result in a non-working executable!
     # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
+
+# Temporarily fix issue with too big main.o file
+Debug:win32:QMAKE_CXXFLAGS *= -Wa,-mbig-obj -O2
 
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat

@@ -30,8 +30,8 @@
 #include <QDateTimeEdit>
 
 TransactionView::TransactionView(QWidget *parent) :
-    QWidget(parent), model(0), transactionProxyModel(0),
-    transactionView(0)
+    QWidget(parent), model(nullptr), transactionProxyModel(nullptr),
+    transactionView(nullptr)
 {
     // Build filter row
     setContentsMargins(0,0,0,0);
@@ -86,17 +86,19 @@ TransactionView::TransactionView(QWidget *parent) :
     hlayout->addWidget(typeWidget);
 
     addressWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
+
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Can we move it now??
     addressWidget->setPlaceholderText(tr("Enter address or label to search"));
-#endif
+
     hlayout->addWidget(addressWidget);
 
     amountWidget = new QLineEdit(this);
-#if QT_VERSION >= 0x040700
+
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Can we move it now??
     amountWidget->setPlaceholderText(tr("Min amount"));
-#endif
+
 #ifdef Q_OS_MAC
     amountWidget->setFixedWidth(97);
 #else

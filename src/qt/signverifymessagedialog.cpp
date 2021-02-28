@@ -18,18 +18,17 @@
 SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SignVerifyMessageDialog),
-    model(0)
+    model(nullptr)
 {
     ui->setupUi(this);
 
-#if (QT_VERSION >= 0x040700)
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Can we move it now??
     ui->addressIn_SM->setPlaceholderText(tr("Enter an Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)"));
     ui->signatureOut_SM->setPlaceholderText(tr("Click \"Sign Message\" to generate signature"));
 
     ui->addressIn_VM->setPlaceholderText(tr("Enter an Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)"));
     ui->signatureIn_VM->setPlaceholderText(tr("Enter Pinkcoin signature"));
-#endif
 
     GUIUtil::setupAddressWidget(ui->addressIn_SM, this);
     GUIUtil::setupAddressWidget(ui->addressIn_VM, this);
