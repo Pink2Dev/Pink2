@@ -12,6 +12,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QAbstractItemView>
+#include <QtGlobal>
 #include <QPainter>
 #include <QLabel>
 #include <QFrame>
@@ -168,7 +169,12 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 2));
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
 
-    connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
+    connect(
+        ui->listTransactions,
+        SIGNAL(clicked(QModelIndex)),
+        this,
+        SLOT(handleTransactionClicked(QModelIndex))
+    );
 
     // init "out of sync" warning labels
     ui->labelWalletStatus->setText(tr("out of sync"));
@@ -178,19 +184,30 @@ OverviewPage::OverviewPage(QWidget *parent) :
     showOutOfSyncWarning(true);
 
     networkManager = new QNetworkAccessManager();
-    // Set a timer for price API.
+
     nLastPriceCheck = 0;
-    currencyListDone = false;
+    currenciesListDone = false;
+
+    // Set a timer for price API.
     QTimer *timerPriceAPI = new QTimer();
-    connect(timerPriceAPI, SIGNAL(timeout()), this, SLOT(sendRequest()));
+    connect(
+        timerPriceAPI,
+        &QTimer::timeout,
+        [=]() { sendRequest(); }
+    );
     timerPriceAPI->start(90 * 1000);
 
     // To limit height of combobox.
     ui->labelCurrency->setStyleSheet("combobox-popup: 0;");
-    // Add scroolbar to combobox.
-    ui->labelCurrency->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
     // Handle currency combobox changes.
-    connect(ui->labelCurrency, SIGNAL(currentTextChanged(QString)), this, SLOT(handleCurrencyChange(QString)));
+    connect(
+        ui->labelCurrency,
+        QOverload<const QString &>::of(&QComboBox::activated),
+        [=](const QString &selectedCurrency) {
+            updatePrices(selectedCurrency);
+        }
+    );
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -252,7 +269,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
     ui->labelImmature->setVisible(showImmature);
     ui->labelImmatureText->setVisible(showImmature);
 
-    sendRequest();
+    updatePrices(ui->labelCurrency->currentText());
 }
 
 void OverviewPage::setModel(WalletModel *model)
@@ -272,16 +289,37 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModel(filter);
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
-        // Keep up to date with wallet
-        setBalance(model->getBalance(), model->getTotalMinted(), model->getStake(), model->getUnconfirmedBalance(), model->getConfirmingBalance(), model->getImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64, qint64, qint64)));
+        // Initial balance set.
+        setBalance(
+            model->getBalance(),
+            model->getTotalMinted(),
+            model->getStake(),
+            model->getUnconfirmedBalance(),
+            model->getConfirmingBalance(),
+            model->getImmatureBalance()
+        );
 
-        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        // Keep up to date with wallet
+        connect(
+            model,
+            SIGNAL(balanceChanged(qint64, qint64, qint64, qint64, qint64, qint64)),
+            this,
+            SLOT(setBalance(qint64, qint64, qint64, qint64, qint64, qint64))
+        );
+
+        connect(
+            model->getOptionsModel(),
+            SIGNAL(displayUnitChanged(int)),
+            this,
+            SLOT(updateDisplayUnit())
+        );
+
+        // Initial price API request.
+        sendRequest();
     }
 
     // update the display unit, to not use the default ("BTC")
     updateDisplayUnit();
-
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -289,7 +327,16 @@ void OverviewPage::updateDisplayUnit()
     if(model && model->getOptionsModel())
     {
         if(currentBalance != -1)
-            setBalance(currentBalance, nTotalMinted, model->getStake(), currentUnconfirmedBalance, currentConfirmingBalance, currentImmatureBalance);
+        {
+            setBalance(
+                currentBalance,
+                nTotalMinted,
+                model->getStake(),
+                currentUnconfirmedBalance,
+                currentConfirmingBalance,
+                currentImmatureBalance
+            );
+        }
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
@@ -313,38 +360,43 @@ void OverviewPage::updateValueLabel(double priceBTC, double priceOther, const QS
 {
     ui->labelBtcValue->setText(
         QString::number(priceBTC * currentBalance / COIN, 'f', 6) +
-        " BTC / " + QString::number(priceOther * currentBalance / COIN, 'f', 2) + " " + currency.toUpper()
+        " BTC / " + QString::number(priceOther * currentBalance / COIN, 'f', 2) +
+        " " + currency.toUpper()
     );
 }
 
-std::tuple<double, double> OverviewPage::updatePrices(const QString &currency)
+void OverviewPage::constructPricesList()
 {
-    double priceBTC = -1.0;
-    double priceOther = -1.0;
+    ui->labelCurrency->clear();
+    for (const QString &key : currentPrices.keys())
+    {
+        ui->labelCurrency->addItem(key.toUpper());
+    }
+    ui->labelCurrency->setCurrentText("USD");
+}
+
+std::tuple<double, double> OverviewPage::getCachedPrices(const QString &currency)
+{
+    double priceBTC = 0;
+    double priceOther = 0;
 
     if (
             currentPrices.contains("btc") && currentPrices["btc"].isDouble() &&
             currentPrices.contains(currency) && currentPrices[currency].isDouble()
     )
     {
-        if (currentPrices["btc"].toDouble() > 0)
-        {
-            priceBTC = currentPrices["btc"].toDouble();
-        }
-
-        if (currentPrices[currency].toDouble() > 0)
-        {
-            priceOther = currentPrices[currency].toDouble();
-        }
+        priceBTC = currentPrices["btc"].toDouble();
+        priceOther = currentPrices[currency].toDouble();
     }
 
     return std::make_tuple(priceBTC, priceOther);
 }
 
-void OverviewPage::handleCurrencyChange(QString currency)
+void OverviewPage::updatePrices(const QString &currency)
 {
     auto selectedCurrency = currency.toLower();
-    auto [priceBTC, priceOther] = updatePrices(selectedCurrency);
+    auto [priceBTC, priceOther] = getCachedPrices(selectedCurrency);
+    // Checks if values are sensible.
     if (priceBTC > 0 && priceOther > 0)
     {
         updateValueLabel(priceBTC, priceOther, selectedCurrency);
@@ -363,7 +415,12 @@ void OverviewPage::sendRequest()
     nLastPriceCheck = nTimeNow;
 
     // decide how to process finished() signal
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handlePriceReply(QNetworkReply*)));
+    connect(
+        networkManager,
+        SIGNAL(finished(QNetworkReply*)),
+        this,
+        SLOT(handlePriceReply(QNetworkReply*))
+    );
 
     //build our URL to send GET request to
     QString strURL = "https://api.coingecko.com/api/v3/coins/pinkcoin?localization=false&"
@@ -404,22 +461,13 @@ void OverviewPage::handlePriceReply(QNetworkReply *reply)
                     currentPrices = marketData["current_price"].toObject();
 
                     // Construct list (combobox) of all available currencies in resposne.
-                    if (!currencyListDone)
+                    if (!currenciesListDone)
                     {
-                        for (const QString &key : currentPrices.keys())
-                        {
-                            ui->labelCurrency->addItem(key.toUpper());
-                        }
-                        ui->labelCurrency->setCurrentText("USD");
-                        currencyListDone = true;
+                        constructPricesList();
+                        currenciesListDone = true;
                     }
 
-                    auto selectedCurrency = (ui->labelCurrency->currentText()).toLower();
-                    auto [priceBTC, priceOther] = updatePrices(selectedCurrency);
-                    if (priceBTC > 0 && priceOther > 0)
-                    {
-                        updateValueLabel(priceBTC, priceOther, selectedCurrency);
-                    }
+                    updatePrices(ui->labelCurrency->currentText());
                 }
             }
 

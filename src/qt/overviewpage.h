@@ -36,9 +36,7 @@ public:
 
 public slots:
     void setBalance(qint64 balance, qint64 minted, qint64 stake, qint64 unconfirmedBalance, qint64 confirmingBalance, qint64 immatureBalance);
-	void sendRequest();
     void handlePriceReply(QNetworkReply *reply);
-    void handleCurrencyChange(QString currency);
     void updateValueLabel(double priceBTC, double priceOther, const QString &currency);
 
 signals:
@@ -57,13 +55,16 @@ private:
     qint64 nTotalMinted;
     uint nLastPriceCheck;
     QJsonObject currentPrices;
-    bool currencyListDone;
+    bool currenciesListDone;
     int FontID;
 
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;
 
-    std::tuple<double, double> updatePrices(const QString &currency);
+    std::tuple<double, double> getCachedPrices(const QString &currency);
+    void updatePrices(const QString &currency);
+    void constructPricesList();
+    void sendRequest();
 
 private slots:
     void updateDisplayUnit();
