@@ -18,7 +18,7 @@
 SendMessagesDialog::SendMessagesDialog(Mode mode, Type type, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SendMessagesDialog),
-    model(0),
+    model(nullptr),
     mode(mode),
     type(type)
 {
@@ -31,11 +31,11 @@ SendMessagesDialog::SendMessagesDialog(Mode mode, Type type, QWidget *parent) :
     ui->sendButton->setIcon(QIcon());
 #endif
 
-#if QT_VERSION >= 0x040700
      /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Can we move it now??
     if(mode == SendMessagesDialog::Encrypted)
         ui->addressFrom->setPlaceholderText(tr("Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)"));
- #endif
+
     addEntry();
 
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
@@ -290,7 +290,7 @@ void SendMessagesDialog::updateRemoveEnabled()
             entry->setRemoveEnabled(enabled);
     }
 
-    setupTabChain(0);
+    setupTabChain(nullptr);
 }
 
 void SendMessagesDialog::removeEntry(SendMessagesEntry* entry)
@@ -322,7 +322,7 @@ void SendMessagesDialog::pasteEntry(const SendMessagesRecipient &rv)
     if(!fNewRecipientAllowed)
         return;
 
-    SendMessagesEntry *entry = 0;
+    SendMessagesEntry *entry = nullptr;
     // Replace the first entry if it is still unused
     if(ui->entries->count() == 1)
     {

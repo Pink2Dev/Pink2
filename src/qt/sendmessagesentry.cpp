@@ -15,20 +15,21 @@
 SendMessagesEntry::SendMessagesEntry(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SendMessagesEntry),
-    model(0)
+    model(nullptr)
 {
     ui->setupUi(this);
 
 #ifdef Q_OS_MAC
     ui->sendToLayout->setSpacing(4);
 #endif
-#if QT_VERSION >= 0x040700
+
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: Can we move it now??
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
     ui->sendTo->setPlaceholderText(tr("Enter a Pinkcoin Message address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M!fkCGFMd3GuLqESk3fQ37mwB5c78zQT6KEU6QXdRE6QZ1)"));
     ui->publicKey->setPlaceholderText(tr("Enter the public key for the address above, it is not in the blockchain"));
     ui->messageText->setErrorText(tr("You cannot send a blank message!"));
-#endif
+
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->sendTo);
 

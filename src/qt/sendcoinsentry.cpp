@@ -14,19 +14,20 @@
 SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::SendCoinsEntry),
-    model(0)
+    model(nullptr)
 {
     ui->setupUi(this);
 
 #ifdef Q_OS_MAC
     ui->payToLayout->setSpacing(4);
 #endif
-#if QT_VERSION >= 0x040700
+
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    // CHECK: can we move it now??
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
     ui->payTo->setPlaceholderText(tr("Enter a Pinkcoin address (e.g. 2XywGBZBowrppUwwNUo1GCRDTibzJi7g2M)"));
     ui->note->setPlaceholderText(tr("Enter a short note to send with payment (max 24 characters)"));
-#endif
+
     setFocusPolicy(Qt::TabFocus);
     setFocusProxy(ui->payTo);
 

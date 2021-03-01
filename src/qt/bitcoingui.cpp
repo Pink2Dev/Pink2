@@ -122,16 +122,16 @@ bool ActiveLabel::event(QEvent *e)
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
-    clientModel(0),
-    walletModel(0),
-    encryptWalletAction(0),
-    changePassphraseAction(0),
-    unlockWalletAction(0),
-    lockWalletAction(0),
-    aboutQtAction(0),
-    trayIcon(0),
-    notificator(0),
-    rpcConsole(0),
+    clientModel(nullptr),
+    walletModel(nullptr),
+    encryptWalletAction(nullptr),
+    changePassphraseAction(nullptr),
+    unlockWalletAction(nullptr),
+    lockWalletAction(nullptr),
+    aboutQtAction(nullptr),
+    trayIcon(nullptr),
+    notificator(nullptr),
+    rpcConsole(nullptr),
     nWeight(0)
 {
     setFixedSize(1050, 600);

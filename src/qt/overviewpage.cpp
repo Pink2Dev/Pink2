@@ -11,19 +11,17 @@
 #include "guiconstants.h"
 
 #include <QAbstractItemDelegate>
+#include <QAbstractItemView>
+#include <QtGlobal>
 #include <QPainter>
 #include <QLabel>
 #include <QFrame>
 #include <QStaticText>
 #include <QFontDatabase>
 #include <QTimer>
-
-#if QT_VERSION >= 0x050000
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QVariantMap>
-#endif
 
 
 #define DECORATION_SIZE 64
@@ -120,7 +118,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     currentConfirmingBalance(-1),
     currentImmatureBalance(-1),
     txdelegate(new TxViewDelegate()),
-    filter(0)
+    filter(nullptr)
 {
     ui->setupUi(this);
 
@@ -138,7 +136,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
 #endif
 
     // HACK: Makes that label transparent for mouse events
-    // Mitigates strange event swallowing behavior in main window
+    // Mitigates strange event swallowing behavior in main window.
     ui->label_4->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     ui->label->setFont(overviewHeaders);
@@ -171,35 +169,58 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 2));
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
 
-    connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
+    connect(
+        ui->listTransactions,
+        SIGNAL(clicked(QModelIndex)),
+        this,
+        SLOT(handleTransactionClicked(QModelIndex))
+    );
 
     // init "out of sync" warning labels
-    ui->labelWalletStatus->setText("(" + tr("out of sync") + ")");
+    ui->labelWalletStatus->setText(tr("out of sync"));
     ui->labelTransactionsStatus->setText("(" + tr("out of sync") + ")");
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
 
+    networkManager = new QNetworkAccessManager();
 
+    nLastPriceCheck = 0;
+    currenciesListDone = false;
 
-#if QT_VERSION >= 0x050000
-    // set a timer for price API
-    nLastPrice = 0;
-    nLastPriceUSD = 0;
+    // Set a timer for price API.
     QTimer *timerPriceAPI = new QTimer();
-    connect(timerPriceAPI, SIGNAL(timeout()), this, SLOT(sendRequest()));
+    connect(
+        timerPriceAPI,
+        &QTimer::timeout,
+        [=]() { sendRequest(); }
+    );
     timerPriceAPI->start(90 * 1000);
-#endif
+
+    // To limit height of combobox.
+    ui->labelCurrency->setStyleSheet("combobox-popup: 0;");
+
+    // Handle currency combobox changes.
+    connect(
+        ui->labelCurrency,
+        QOverload<const QString &>::of(&QComboBox::activated),
+        [=](const QString &selectedCurrency) {
+            updatePrices(selectedCurrency);
+        }
+    );
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 {
     if(filter)
+    {
         emit transactionClicked(filter->mapToSource(index));
+    }
 }
 
 OverviewPage::~OverviewPage()
 {
+    delete networkManager;
     delete ui;
 }
 
@@ -219,22 +240,27 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
     ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance, false, 2));
     ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, balance + stake + unconfirmedBalance + immatureBalance, false, 2));
 
-
     if (confirmingBalance > unconfirmedBalance)
     {
-            ui->label_3->setText("Confirming");
-            ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, confirmingBalance, false, 2));
-    } else {
-            if (ui->label_3->text() != "Unconfirmed")
-                ui->label_3->setText("Unconfirmed");
+        ui->label_3->setText("Confirming");
+        ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, confirmingBalance, false, 2));
+    }
+    else
+    {
+        if (ui->label_3->text() != "Unconfirmed")
+        {
+            ui->label_3->setText("Unconfirmed");
+        }
     }
 
-    // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
-    // for the non-mining users
+    // Only show immature (newly mined) balance if it's non-zero, so as not to complicate things
+    // for the non-mining users.
     bool showUnconfirmed = false;
 
     if(confirmingBalance !=0 || unconfirmedBalance !=0)
+    {
         showUnconfirmed = true;
+    }
 
     bool showImmature = immatureBalance != 0;
 
@@ -243,12 +269,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
     ui->labelImmature->setVisible(showImmature);
     ui->labelImmatureText->setVisible(showImmature);
 
-#if QT_VERSION >= 0x050000
-    sendRequest();
-#else
-	ui->labelBtcValueText->setVisible(false);
-	ui->labelBtcValue->setVisible(false);
-#endif
+    updatePrices(ui->labelCurrency->currentText());
 }
 
 void OverviewPage::setModel(WalletModel *model)
@@ -268,16 +289,37 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModel(filter);
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
-        // Keep up to date with wallet
-        setBalance(model->getBalance(), model->getTotalMinted(), model->getStake(), model->getUnconfirmedBalance(), model->getConfirmingBalance(), model->getImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64, qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64, qint64, qint64, qint64)));
+        // Initial balance set.
+        setBalance(
+            model->getBalance(),
+            model->getTotalMinted(),
+            model->getStake(),
+            model->getUnconfirmedBalance(),
+            model->getConfirmingBalance(),
+            model->getImmatureBalance()
+        );
 
-        connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+        // Keep up to date with wallet
+        connect(
+            model,
+            SIGNAL(balanceChanged(qint64, qint64, qint64, qint64, qint64, qint64)),
+            this,
+            SLOT(setBalance(qint64, qint64, qint64, qint64, qint64, qint64))
+        );
+
+        connect(
+            model->getOptionsModel(),
+            SIGNAL(displayUnitChanged(int)),
+            this,
+            SLOT(updateDisplayUnit())
+        );
+
+        // Initial price API request.
+        sendRequest();
     }
 
     // update the display unit, to not use the default ("BTC")
     updateDisplayUnit();
-
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -285,7 +327,16 @@ void OverviewPage::updateDisplayUnit()
     if(model && model->getOptionsModel())
     {
         if(currentBalance != -1)
-            setBalance(currentBalance, nTotalMinted, model->getStake(), currentUnconfirmedBalance, currentConfirmingBalance, currentImmatureBalance);
+        {
+            setBalance(
+                currentBalance,
+                nTotalMinted,
+                model->getStake(),
+                currentUnconfirmedBalance,
+                currentConfirmingBalance,
+                currentImmatureBalance
+            );
+        }
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
@@ -305,30 +356,78 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
     ui->labelTransactionsStatus->setVisible(fShow);
 }
 
-uint nLastPriceCheck = 0;
-// #if QT_VERSION >= 0x050000
-void OverviewPage::updateBtcValueLabel(double nPrice, double nPriceUSD)
+void OverviewPage::updateValueLabel(double priceBTC, double priceOther, const QString &currency)
 {
-    ui->labelBtcValue->setText(QString::number(nPrice * currentBalance / COIN, 'f', 6) + " BTC / $" + QString::number(nPriceUSD * currentBalance / COIN, 'f', 2) + " USD");
+    ui->labelBtcValue->setText(
+        QString::number(priceBTC * currentBalance / COIN, 'f', 6) +
+        " BTC / " + QString::number(priceOther * currentBalance / COIN, 'f', 2) +
+        " " + currency.toUpper()
+    );
 }
 
-QNetworkAccessManager *manager = new QNetworkAccessManager();
+void OverviewPage::constructPricesList()
+{
+    ui->labelCurrency->clear();
+    for (const QString &key : currentPrices.keys())
+    {
+        ui->labelCurrency->addItem(key.toUpper());
+    }
+    ui->labelCurrency->setCurrentText("USD");
+}
+
+std::tuple<double, double> OverviewPage::getCachedPrices(const QString &currency)
+{
+    double priceBTC = 0;
+    double priceOther = 0;
+
+    if (
+            currentPrices.contains("btc") && currentPrices["btc"].isDouble() &&
+            currentPrices.contains(currency) && currentPrices[currency].isDouble()
+    )
+    {
+        priceBTC = currentPrices["btc"].toDouble();
+        priceOther = currentPrices[currency].toDouble();
+    }
+
+    return std::make_tuple(priceBTC, priceOther);
+}
+
+void OverviewPage::updatePrices(const QString &currency)
+{
+    auto selectedCurrency = currency.toLower();
+    auto [priceBTC, priceOther] = getCachedPrices(selectedCurrency);
+    // Checks if values are sensible.
+    if (priceBTC > 0 && priceOther > 0)
+    {
+        updateValueLabel(priceBTC, priceOther, selectedCurrency);
+    }
+}
 
 void OverviewPage::sendRequest()
 {
-    //only update the price once every 60 seconds, don't want to call the API too many times
+    // Only update the prices once every 60 seconds, don't want to call the API too many times
     uint nTimeNow = QDateTime::currentDateTime().toUTC().toTime_t();
     if(nTimeNow - nLastPriceCheck < 60)
-        updateBtcValueLabel(nLastPrice, nLastPriceUSD);
+    {
+        return;
+    }
+
     nLastPriceCheck = nTimeNow;
 
     // decide how to process finished() signal
-    connect(manager,SIGNAL(finished(QNetworkReply*)),this,SLOT(handlePriceReply(QNetworkReply*)));
+    connect(
+        networkManager,
+        SIGNAL(finished(QNetworkReply*)),
+        this,
+        SLOT(handlePriceReply(QNetworkReply*))
+    );
 
     //build our URL to send GET request to
-    QString strURL = "https://api.coinmarketcap.com/v1/ticker/pinkcoin/";
+    QString strURL = "https://api.coingecko.com/api/v3/coins/pinkcoin?localization=false&"
+                     "tickers=false&market_data=true&community_data=false&"
+                     "developer_data=false&sparkline=false";
 
-    manager->get(QNetworkRequest(QUrl(strURL)));
+    networkManager->get(QNetworkRequest(QUrl(strURL)));
 }
 
 void OverviewPage::handlePriceReply(QNetworkReply *reply)
@@ -342,35 +441,36 @@ void OverviewPage::handlePriceReply(QNetworkReply *reply)
         if (v >= 200 && v < 300) // Success
         {
             // Here we got the final reply
-            QString replyText = reply->readAll();
-            if (replyText.size() > 100)
-            {
-
-            replyText = replyText.mid(1, replyText.size() - 2);
-
+            QByteArray result = reply->readAll();
 
             //Parse the json
-            QJsonDocument jsonResponse = QJsonDocument::fromJson(replyText.toUtf8());
-            QJsonObject  ResponseObject = jsonResponse.object();
-
-            if(ResponseObject.contains("price_usd"))
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
+            if (!jsonResponse.isObject())
             {
-               QString sLastPrice = ResponseObject["price_btc"].toString();
-               sLastPrice = sLastPrice.trimmed();
-               if (sLastPrice.toDouble() > 0)
-                   nLastPrice = sLastPrice.toDouble();
-
-               sLastPrice = "";
-
-               sLastPrice = ResponseObject["price_usd"].toString();
-               sLastPrice = sLastPrice.trimmed();
-               if (sLastPrice.toDouble() > 0)
-                   nLastPriceUSD = sLastPrice.toDouble();
+                return;
             }
 
-            updateBtcValueLabel(nLastPrice, nLastPriceUSD);
+            QJsonObject responseObject = jsonResponse.object();
 
+            if (responseObject.contains("market_data") && responseObject["market_data"].isObject())
+            {
+                QJsonObject marketData = responseObject["market_data"].toObject();
+                if(marketData.contains("current_price") && marketData["current_price"].isObject())
+                {
+                    // Updates cache with current prices.
+                    currentPrices = marketData["current_price"].toObject();
+
+                    // Construct list (combobox) of all available currencies in resposne.
+                    if (!currenciesListDone)
+                    {
+                        constructPricesList();
+                        currenciesListDone = true;
+                    }
+
+                    updatePrices(ui->labelCurrency->currentText());
+                }
             }
+
             return;
         }
         else if (v >= 300 && v < 400) // Redirection
@@ -386,8 +486,7 @@ void OverviewPage::handlePriceReply(QNetworkReply *reply)
             return;
         }
     }
-    else
-        return;
+
+    return;
 }
 
-// #endif
