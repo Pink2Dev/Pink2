@@ -48,9 +48,8 @@
 using namespace std;
 static uint64_t nNTPUnix = 2208988800ull;
 
-bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
+bool GetNTPTime(const char *addrConnect, uint64_t &timeRet)
 {
-
     uint64_t startMicros = 0;
     uint64_t endMicros = 0;
     uint64_t diffMicros = 0;
@@ -60,7 +59,7 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     // should we ever need UDP support for any other reason, but for now this is fine.
 
     // Standard UDP socket.
-    int socketNTP = -1;
+    SOCKET socketNTP = INVALID_SOCKET;
 
     // Use getaddrinfo() with support code from netbase.cpp.
     // getaddrinfo() is required to be thread safe (RFC3493).
@@ -74,14 +73,18 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     struct addrinfo *aiRes = NULL;
     int nErr = getaddrinfo(addrConnect, "123", &aiHint, &aiRes);
     if (nErr)
+    {
         return false;
+    }
 
     // Connect to NTP
     for (; aiRes != NULL; aiRes = aiRes->ai_next)
     {
         socketNTP = socket(aiRes->ai_family , aiRes->ai_socktype, aiRes->ai_protocol);
-        if (socketNTP < 0)
+        if (socketNTP == INVALID_SOCKET)
+        {
             continue;
+        }
 
         // Set our timeout to 2 seconds.
 #ifdef WIN32
@@ -94,9 +97,9 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
         setsockopt(socketNTP, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
 #endif
 
-        if (connect(socketNTP, (struct sockaddr*) aiRes->ai_addr, aiRes->ai_addrlen) < 0)
+        if (connect(socketNTP, (struct sockaddr*) aiRes->ai_addr, aiRes->ai_addrlen) == SOCKET_ERROR)
         {
-            close(socketNTP);
+            closesocket(socketNTP);
             continue;
         }
 
@@ -105,8 +108,10 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
 
     if (aiRes == NULL)
     {
-        if (socketNTP >= 0)
-            close(socketNTP);
+        if (socketNTP != INVALID_SOCKET)
+        {
+            closesocket(socketNTP);
+        }
 
         return false;
     }
@@ -125,23 +130,30 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     bTimeReq[0] = 0x1b;
 
     // Time we send our request
-    startMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+    startMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(
+        boost::chrono::system_clock::now().time_since_epoch()
+    ).count();
     int n = send(socketNTP, (char*)&bTimeReq, 48, 0);
 
-    if (n < 0) {
-        close(socketNTP);
+    if (n == SOCKET_ERROR)
+    {
+        closesocket(socketNTP);
         return false;
     }
 
     n = recv(socketNTP, (char*)&bTimeReq, 48, 0);
     // Time we got it
-    endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+    endMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(
+        boost::chrono::system_clock::now().time_since_epoch()
+    ).count();
 
     freeaddrinfo(aiRes);
-    close(socketNTP);
+    closesocket(socketNTP);
 
-    if (n < 0)
+    if (n == SOCKET_ERROR)
+    {
         return false;
+    }
 
     uint32_t tSeconds = 0;
     uint32_t tMicros = 0;
@@ -160,11 +172,15 @@ bool GetNTPTime(const char *addrConnect, uint64_t& timeRet)
     int64_t nEpoch = tSeconds - nNTPUnix;
 
     if (nEpoch < 0)
+    {
         nEpoch += std::numeric_limits<uint32_t>::max(); // NTP Rolled over int32 limit. Happens in Y2036.
+    }
 
     // There is no reason this should *still* be < 0;
     if (nEpoch < 0)
+    {
         return false;
+    }
 
     // Get our NTP time down to the microsecond.
     // We have to convert NTP fractional time to Micros.
@@ -190,13 +206,20 @@ void *threadGetNTPTime(int nServer, const string strPool, uint64_t startMicros)
 {
     std::string strAddress = strPool;
     if (nServer > 3)
+    {
         return nullptr;
+    }
 
     // User set :// or tried to use a port (org:###)
     // or is trying to use something other than ntp.org.
     // Drop whatever they set and just use the default.
-    if (strAddress == "" || strAddress.find(":") != std::string::npos || strAddress.find("pool.ntp.org") == std::string::npos)
+    if (
+            strAddress == "" || strAddress.find(":") != std::string::npos ||
+            strAddress.find("pool.ntp.org") == std::string::npos
+    )
+    {
         strAddress = "pool.ntp.org";
+    }
 
     // Prepend pool server number.
     strAddress = to_string(nServer) + "." + strAddress;
@@ -204,7 +227,9 @@ void *threadGetNTPTime(int nServer, const string strPool, uint64_t startMicros)
     uint64_t myTime = 0;
     if (GetNTPTime(strAddress.c_str(), myTime))
     {
-        uint64_t nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+        uint64_t nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(
+            boost::chrono::system_clock::now().time_since_epoch()
+        ).count();
 
         // Subtract how long it took our thread to get the time.
         myTime -= (nowMicros - startMicros);
@@ -238,14 +263,20 @@ bool SetNTPOffset(const string &strPool)
         // If we don't have 4 good times after 4 iterations and waiting
         // 2 seconds for a response on our last try then we give up.
         if (nWait == 5)
+        {
             return false;
+        }
 
         for (int i = 0; i < 4; i++)
+        {
             ntpTime[i] = 0;
+        }
 
         // Let our threads know when we're starting from so they can give
         // us times that are consistent with what we need.
-        nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+        nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(
+            boost::chrono::system_clock::now().time_since_epoch()
+        ).count();
 
         // Any regional ntp pool can be used. But we prepend the number for NTP's randomized selection.
         // By default we use pool.ntp.org - which generally selects pools that are appropriate for your ip.
@@ -262,14 +293,20 @@ bool SetNTPOffset(const string &strPool)
 
         // Get this now so we know exactly when we woke up again.
         // Helps us get an accurate offset.
-        nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(boost::chrono::system_clock::now().time_since_epoch()).count();
+        nowMicros = boost::chrono::duration_cast<boost::chrono::microseconds>(
+            boost::chrono::system_clock::now().time_since_epoch()
+        ).count();
 
         for (int i = 0; i < 4; i++)
         {
             // Make sure we actually got the time. NTP servers that respond but aren't able
             // to give us an accurate time as requested instead send us the uint32 max.
             // We tolerate 10 seconds here to accomodate our internal adjustments.
-            if (ntpTime[i] > 0 && abs((int64_t)(ntpTime[i] / 1000000) + (int64_t)nNTPUnix - (int64_t)std::numeric_limits<uint32_t>::max()) > 10)
+            auto timeCheck = abs(
+                (int64_t)(ntpTime[i] / 1000000) + (int64_t)nNTPUnix -
+                (int64_t)std::numeric_limits<uint32_t>::max()
+            );
+            if (ntpTime[i] > 0 && timeCheck > 10)
             {
                 // Account for our wait time.
                 ntpTime[i] += (500000 * nWait);
@@ -279,16 +316,22 @@ bool SetNTPOffset(const string &strPool)
 
         // Add it up.
         for (vector<uint64_t>::iterator it = ntpMicros.begin(); it != ntpMicros.end(); it++)
-             avMicros += *it;
+        {
+            avMicros += *it;
+        }
 
         // Average of what we got.
         if (ntpMicros.size() > 0)
+        {
             avMicros /= ntpMicros.size();
+        }
 
         // Set our offset based on the difference and maintain an average.
         nTimeOffset += (avMicros - nowMicros);
         if (nWait > 1)
+        {
             nTimeOffset /= 2;
+        }
 
         // Add these to our successful NTP Request count.
         tCount += ntpMicros.size();
@@ -367,7 +410,9 @@ void *threadNTPUpdate(const string &strNTPool)
             if (!SetNTPOffset(strNTPool))
             {
                 nFailCount++;
-            } else {
+            }
+            else
+            {
                 fNTPSuccess = true;
                 nFailCount = 0;
             }
@@ -377,11 +422,9 @@ void *threadNTPUpdate(const string &strNTPool)
 
             // Start our next loop with a fresh tTrack;
             tTrack = GetAdjustedTime();
-
         }
 
     }
 
     return nullptr;
 }
-
