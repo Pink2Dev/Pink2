@@ -267,16 +267,6 @@ bool CTxDB::WriteHashBestChain(uint256 hashBestChain)
     return Write(string("hashBestChain"), hashBestChain);
 }
 
-bool CTxDB::ReadBestInvalidTrust(CBigNum& bnBestInvalidTrust)
-{
-    return Read(string("bnBestInvalidTrust"), bnBestInvalidTrust);
-}
-
-bool CTxDB::WriteBestInvalidTrust(CBigNum bnBestInvalidTrust)
-{
-    return Write(string("bnBestInvalidTrust"), bnBestInvalidTrust);
-}
-
 bool CTxDB::ReadSyncCheckpoint(uint256& hashCheckpoint)
 {
     return Read(string("hashSyncCheckpoint"), hashCheckpoint);
@@ -426,11 +416,6 @@ bool CTxDB::LoadBlockIndex()
     if (!ReadSyncCheckpoint(Checkpoints::hashSyncCheckpoint))
         return error("CTxDB::LoadBlockIndex() : hashSyncCheckpoint not loaded");
     printf("LoadBlockIndex(): synchronized checkpoint %s\n", Checkpoints::hashSyncCheckpoint.ToString().c_str());
-
-    // Load bnBestInvalidTrust, OK if it doesn't exist
-    CBigNum bnBestInvalidTrust;
-    ReadBestInvalidTrust(bnBestInvalidTrust);
-    nBestInvalidTrust = bnBestInvalidTrust.getuint256();
 
     // Verify blocks in the best chain
     int nStartFrom = GetArg("-startfrom", 0);

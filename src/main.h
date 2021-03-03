@@ -66,7 +66,6 @@ extern int nCoinbaseMaturity;
 extern int nBestHeight;
 extern const unsigned int MAX_PEERS;
 extern uint256 nBestChainTrust;
-extern uint256 nBestInvalidTrust;
 extern uint256 hashBestChain;
 extern CBlockIndex* pindexBest;
 extern unsigned int nTransactionsUpdated;
