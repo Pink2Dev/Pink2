@@ -23,7 +23,7 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 64;
+int MAX_OUTBOUND_CONNECTIONS = 32;
 
 void ThreadMessageHandler2(void* parg);
 void ThreadSocketHandler2(void* parg);
@@ -1977,6 +1977,8 @@ void StartNode(void* parg)
 {
     // Make this thread recognisable as the startup thread
     RenameThread("pinkcoin-start");
+    
+    MAX_OUTBOUND_CONNECTIONS = (int)GetArg("-maxoutboundconnections", 32);
 
     if (semOutbound == NULL) {
         // initialize semaphore
