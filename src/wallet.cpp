@@ -2180,6 +2180,12 @@ bool CWallet::SendStealthMoneyToDestination(CStealthAddress& sxAddress, int64_t 
 
 bool CWallet::FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNarr)
 {
+    // Do not check Coinbase or Coinstake for stealth transactions.
+    if (tx.IsCoinBase() || tx.IsCoinStake())
+    {
+        return false;
+    }
+    
     if (fDebug)
         printf("FindStealthTransactions() tx: %s\n", tx.GetHash().GetHex().c_str());
     
