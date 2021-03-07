@@ -1052,7 +1052,7 @@ public:
 
         // Flush stdio buffers and commit to disk before returning
         fflush(fileout);
-        if (!IsInitialBlockDownload() || (nBestHeight+1) % 500 == 0)
+        if (!IsInitialBlockDownload() || (nBestHeight+1) % 5000 == 0)
             FileCommit(fileout);
 
         return true;
