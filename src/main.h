@@ -19,7 +19,6 @@ class CBlockIndex;
 class CKeyItem;
 class CReserveKey;
 class COutPoint;
-
 class CAddress;
 class CInv;
 class CNode;
@@ -849,7 +848,7 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-
+    
     // network and disk
     std::vector<CTransaction> vtx;
 
@@ -903,6 +902,7 @@ public:
         vchBlockSig.clear();
         vMerkleTree.clear();
         nDoS = 0;
+        m_hash_cache = 0;
     }
 
     bool IsNull() const
@@ -910,9 +910,27 @@ public:
         return (nBits == 0);
     }
 
-    uint256 GetHash() const
+    uint256 GetHash(const bool use_cache = false) const
     {
-        return GetPoWHash();
+        // The block hash cache field prevents repeated computations of the
+        // block's hash in the block acceptance pipeline. It's particularly
+        // effective for early blocks with expensive scrypt hashes. Dynamic
+        // caching isn't the prettiest solution, but it provides an interim
+        // performance advantage as we refactor legacy code.
+        //
+        // use_cache defaults to false to discourage use of the cache except
+        // in carefully chosen single-threaded scenarios. Avoid hash caching
+        // for block objects except where thread-safety is obvious and where
+        // performance improves significantly.
+        //
+        if (use_cache) {
+            if (!m_hash_cache == 0) {
+                return m_hash_cache;
+            }
+            m_hash_cache = ComputeHash();
+            return m_hash_cache;
+        }
+        return ComputeHash();
     }
 
     uint256 GetPoWHash() const
@@ -932,9 +950,9 @@ public:
     unsigned int GetStakeEntropyBit() const
     {
         // Take last bit of block hash as entropy bit
-        unsigned int nEntropyBit = ((GetHash().Get64()) & (long long unsigned int)1); // 1llu);
+        unsigned int nEntropyBit = ((GetHash(true).Get64()) & (long long unsigned int)1); // 1llu);
         if (fDebug && GetBoolArg("-printstakemodifier"))
-            printf("GetStakeEntropyBit: hashBlock=%s nEntropyBit=%u\n", GetHash().ToString().c_str(), nEntropyBit);
+            printf("GetStakeEntropyBit: hashBlock=%s nEntropyBit=%u\n", GetHash(true).ToString().c_str(), nEntropyBit);
         return nEntropyBit;
     }
 
@@ -1102,13 +1120,14 @@ public:
     bool CheckBlockSignature() const;
 
 private:
+    mutable uint256 m_hash_cache;
+    uint256 ComputeHash() const
+    {
+        return GetPoWHash();
+    }
+
     bool SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew);
 };
-
-
-
-
-
 
 /** The block chain is a tree shaped structure starting with the
  * genesis block at the root, with each block potentially having multiple

@@ -463,7 +463,7 @@ int CMerkleTx::SetMerkleBranch(const CBlock* pblock)
     }
 
     // Update the tx's hashBlock
-    hashBlock = pblock->GetHash();
+    hashBlock = pblock->GetHash(true);
 
     // Locate the transaction
     for (nIndex = 0; nIndex < (int)pblock->vtx.size(); nIndex++)
@@ -899,7 +899,7 @@ int CTxIndex::GetDepthInMainChain() const
     if (!block.ReadFromDisk(pos.nFile, pos.nBlockPos, false))
         return 0;
     // Find the block in the index
-    map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(block.GetHash());
+    map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(block.GetHash(true));
     if (mi == mapBlockIndex.end())
         return 0;
     CBlockIndex* pindex = (*mi).second;
@@ -925,7 +925,7 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock)
         {
             CBlock block;
             if (block.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos, false))
-                hashBlock = block.GetHash();
+                hashBlock = block.GetHash(true);
             return true;
         }
     }
@@ -971,7 +971,7 @@ bool CBlock::ReadFromDisk(const CBlockIndex* pindex, bool fReadTransactions)
     }
     if (!ReadFromDisk(pindex->nFile, pindex->nBlockPos, fReadTransactions))
         return false;
-    if (GetHash() != pindex->GetBlockHash())
+    if (GetHash(true) != pindex->GetBlockHash())
         return error("CBlock::ReadFromDisk() : GetHash() doesn't match index");
     return true;
 }
@@ -1938,7 +1938,7 @@ bool static Reorganize(CTxDB& txdb, CBlockIndex* pindexNew)
 // Called from inside SetBestChain: attaches a block to the new best chain being built
 bool CBlock::SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew)
 {
-    uint256 hash = GetHash();
+    uint256 hash = GetHash(true);
 
     // Adding to current best branch
     if (!ConnectBlock(txdb, pindexNew) || !txdb.WriteHashBestChain(hash))
@@ -1962,7 +1962,7 @@ bool CBlock::SetBestChainInner(CTxDB& txdb, CBlockIndex *pindexNew)
 
 bool CBlock::SetBestChain(CTxDB& txdb, CBlockIndex* pindexNew)
 {
-    uint256 hash = GetHash();
+    uint256 hash = GetHash(true);
 
     if (!txdb.TxnBegin())
         return error("SetBestChain() : TxnBegin failed");
@@ -2152,7 +2152,7 @@ bool CBlock::GetCoinAge(uint64_t& nCoinAge) const
 bool CBlock::AddToBlockIndex(unsigned int nFile, unsigned int nBlockPos, const uint256& hashProof)
 {
     // Check for duplicate
-    uint256 hash = GetHash();
+    uint256 hash = GetHash(true);
     if (mapBlockIndex.count(hash))
         return error("AddToBlockIndex() : %s already exists", hash.ToString().substr(0,20).c_str());
 
@@ -2230,7 +2230,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
         return DoS(100, error("CheckBlock() : size limits failed"));
 
     // Check proof of work matches claimed amount
-    if (fCheckPOW && IsProofOfWork() && !CheckProofOfWork(GetPoWHash(), nBits))
+    if (fCheckPOW && IsProofOfWork() && !CheckProofOfWork(GetHash(true), nBits))
         return DoS(50, error("CheckBlock() : proof of work failed"));
 
 
@@ -2336,7 +2336,7 @@ bool CBlock::AcceptBlock()
     }
 
     // Check for duplicate
-    uint256 hash = GetHash();
+    uint256 hash = GetHash(true);
     if (mapBlockIndex.count(hash))
         return error("AcceptBlock() : block already in mapBlockIndex");
 
@@ -2378,7 +2378,7 @@ bool CBlock::AcceptBlock()
     // PoW is checked in CheckBlock()
     if (IsProofOfWork())
     {
-        hashProof = GetPoWHash();
+        hashProof = GetHash(true);
     }
 
     bool cpSatisfies = Checkpoints::CheckSync(hash, pindexPrev);
@@ -2514,7 +2514,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     AssertLockHeld(cs_main);
 
     // Check for duplicate
-    uint256 hash = pblock->GetHash();
+    uint256 hash = pblock->GetHash(true);
     if (mapBlockIndex.count(hash))
         return error("ProcessBlock() : already have block %d %s", mapBlockIndex[hash]->nHeight, hash.ToString().substr(0,20).c_str());
     if (mapOrphanBlocks.count(hash))
@@ -2567,7 +2567,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     // If don't already have its previous block, shunt it off to holding area until we get it
     if (!mapBlockIndex.count(pblock->hashPrevBlock))
     {
-        printf("ProcessBlock: ORPHAN BLOCK, orphan=%s prev=%s\n", pblock->GetHash().ToString().c_str(), pblock->hashPrevBlock.ToString().c_str());
+        printf("ProcessBlock: ORPHAN BLOCK, orphan=%s prev=%s\n", pblock->GetHash(true).ToString().c_str(), pblock->hashPrevBlock.ToString().c_str());
         // ppcoin: check proof-of-stake
         if (pblock->IsProofOfStake())
         {
@@ -2645,7 +2645,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         {
             CBlock* pblockOrphan = (*mi).second;
             if (pblockOrphan->AcceptBlock())
-                vWorkQueue.push_back(pblockOrphan->GetHash());
+                vWorkQueue.push_back(pblockOrphan->GetHash(true));
             mapOrphanBlocks.erase(pblockOrphan->GetHash());
             setStakeSeenOrphan.erase(pblockOrphan->GetProofOfStake());
             delete pblockOrphan;
@@ -2734,7 +2734,7 @@ bool CBlock::CheckBlockSignature() const
             return false;
         if (vchBlockSig.empty())
             return false;
-        return key.Verify(GetHash(), vchBlockSig);
+        return key.Verify(GetHash(true), vchBlockSig);
     }
 
     return false;
@@ -2855,7 +2855,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nBits    = bnProofOfWorkLimit.GetCompact();
         block.nNonce   = !fTestNet ? 6777712 : 23112;
 
-        if (false && (block.GetHash() != hashGenesisBlock)) {
+        if (false && (block.GetHash(true) != hashGenesisBlock)) {
 
         // This will figure out a valid hash and Nonce if you're
         // creating a different genesis block:
@@ -2871,7 +2871,7 @@ bool LoadBlockIndex(bool fAllowNew)
                }
         }
         block.print();
-        printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
+        printf("block.GetHash() == %s\n", block.GetHash(true).ToString().c_str());
         printf("block.hashMerkleRoot == %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nTime = %u \n", block.nTime);
         printf("block.nNonce = %u \n", block.nNonce);
@@ -2879,7 +2879,7 @@ bool LoadBlockIndex(bool fAllowNew)
         //// debug print
         assert(block.hashMerkleRoot == uint256("0x96f872319c330aadbdc18543e27a305c6ab046801cfc81e20a004f3b26fad891"));
         block.print();
-        assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
+        assert(block.GetHash(true) == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
 
         // Start new block file
@@ -2965,7 +2965,7 @@ void PrintBlockTree()
             pindex->nHeight,
             pindex->nFile,
             pindex->nBlockPos,
-            block.GetHash().ToString().c_str(),
+            block.GetHash(true).ToString().c_str(),
             block.nBits,
             DateTimeStrFormat("%x %H:%M:%S", block.GetBlockTime()).c_str(),
             FormatMoney(pindex->nMint).c_str(),
@@ -3661,7 +3661,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
     {
         CBlock block;
         vRecv >> block;
-        uint256 hashBlock = block.GetHash();
+        uint256 hashBlock = block.GetHash(true);
 
         // printf("received block %s\n", hashBlock.ToString().substr(0,20).c_str());
         // block.print();
