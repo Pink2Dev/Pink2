@@ -29,14 +29,14 @@ static const int DATABASE_VERSION = 70509;
 //
 // network protocol versioning
 //
-
-static const int PROTOCOL_VERSION = 60018;
+//static const int PROTOCOL_VERSION = 60018;    // 2.3.1 (Riley)
+static const int PROTOCOL_VERSION = 60019;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
 
 // disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 60017;
+static const int MIN_PEER_PROTO_VERSION = 60018;
 
 // Allow connections from old peers, intended for temporary use when a mandatory update is pending.
 static const int MIN_PEER_PROTO_VERSION_OLD = 60016;
