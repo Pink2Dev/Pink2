@@ -262,12 +262,6 @@ private slots:
 
     void updateWeight();
     void updateStakingIcon();
-	
-	/** Load external QSS stylesheet */
-    void changeTheme(QString theme);
-    void loadTheme(QString theme);
-    void listThemes(QStringList& themes);
-    void keyPressEvent(QKeyEvent * e);
 };
 
 #endif
