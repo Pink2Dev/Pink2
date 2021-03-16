@@ -137,6 +137,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setFixedSize(1050, 600);
     
     QFontDatabase::addApplicationFont(":/fonts/Rubik");
+    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Bold");
+    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Medium");
+    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Regular");
+    QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-Regular");
 
     #ifdef Q_OS_WIN
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
