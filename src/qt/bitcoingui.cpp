@@ -135,6 +135,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     nWeight(0)
 {
     setFixedSize(1050, 600);
+    
+    QFontDatabase::addApplicationFont(":/fonts/Rubik");
 
     #ifdef Q_OS_WIN
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
