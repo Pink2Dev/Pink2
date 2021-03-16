@@ -264,6 +264,34 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         QMenuBar::item:selected {
             background-color:qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,stop: 0 rgb(255, 101, 183), stop: 1 rgb(255, 101, 183));
         }
+        
+        #StackedWidget {
+            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 255, 255));
+        }
+
+        QProgressBar {
+            background-color: white;
+            border-radius: 4px;
+            padding: 1px;
+            text-align: center;
+            font-size: 14px;
+            font-family: Rubik;
+        }
+
+        QProgressBar::chunk {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(116, 85, 195), stop: 1 rgb(172, 143, 238));
+            border-radius: 4px;
+            margin: 0px;
+        }
+        
+        labelConnectionsIcon::QLabel {
+            padding-right: 2px;
+        }
+
+        progressBarLabel::QLabel {
+            color: white;
+            font-size: 14px;
+        }
     )");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
@@ -319,12 +347,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setObjectName("StackedWidget");
-    // Left side gradient shadow on panels.
-    centralWidget->setStyleSheet(R"(
-        #StackedWidget {
-            background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rgba(225, 225, 220, 255), stop:1 rgba(255, 255, 255, 255));
-        }
-    )");
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(stakeCoinsPage);
@@ -352,12 +374,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     labelConnectionsIcon = new QLabel();
     labelBlocksIcon = new QLabel();
 
-    labelConnectionsIcon->setStyleSheet(R"(
-        QLabel {
-            padding-right: 2px;
-        }
-    )");
-
     if (GetBoolArg("-staking", true))
     {
         QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
@@ -375,22 +391,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     progressBar->setAlignment(Qt::AlignLeft);
     progressBar->setVisible(false);
 
-    progressBar->setStyleSheet(R"(
-        QProgressBar {
-            background-color: white;
-            border-radius: 4px;
-            padding: 1px;
-            text-align: center;
-            font-size: 14px;
-            font-family: Rubik;
-        }
-        QProgressBar::chunk {
-            background: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5, stop: 0 rgb(116, 85, 195), stop: 1 rgb(172, 143, 238));
-            border-radius: 4px;
-            margin: 0px;
-        }
-    )");
-
     addToolBarBreak(Qt::BottomToolBarArea);
     QToolBar *toolbar2 = addToolBar(tr("Tabs toolbar"));
     addToolBar(Qt::BottomToolBarArea,toolbar2);
@@ -407,18 +407,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameSpacer2->setContentsMargins(0,0,0,0);
     spacer2->setContentsMargins(0,0,0,0);
 
-
     progressBar->setFixedWidth(600);
-    QFontDatabase fontData;
-    progressBarLabel->setFont(fontData.font("Rubik", "Medium", 10));
-
-    progressBarLabel->setStyleSheet(R"(
-        QLabel {
-            color: white;
-            font-size: 14px;
-            font-weight: 400;
-        }
-    )");
 
     frameSpacer2->addWidget(progressBarLabel);
     frameSpacer2->addWidget(progressBar);
