@@ -198,14 +198,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         {
             font-family: Rubik;
             font-size: 1em;
-            font-weight: bold;
             border: 0px;
             padding-left: 2px;
             padding-top: 8px;
             padding-bottom: 8px;
             padding-right: 4px;
             color: black;
-            text-align: left;
+            text-align: center;
             background-color: rgb(255, 255, 255);
         }
         #toolbar QToolButton:hover, #toolbar QToolButton:checked {
@@ -215,7 +214,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         #labelMiningIcon
         {
             padding-left: 5px;
-            font-family: Century Gothic;
             width: 100%;
             font-size: 0.7em;
             text-align: center;
@@ -536,55 +534,46 @@ void BitcoinGUI::createActions()
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::Off);
     iMessage->addFile(":/icons/message_s", QSize(), QIcon::Active, QIcon::On);
 
-    QFontDatabase fontData;
-
     overviewAction = new QAction(*iOverView, tr("&Overview"), this);
     overviewAction->setToolTip(tr("Show general overview of wallet"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
-    overviewAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(*iSend, tr("&Send coins"), this);
+    sendCoinsAction = new QAction(*iSend, tr("&Send"), this);
     sendCoinsAction->setToolTip(tr("Send coins to a Pinkcoin address"));
     sendCoinsAction->setCheckable(true);
-    sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
-    sendCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
+    sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));;
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(*iReceive, tr("&Receive coins"), this);
+    receiveCoinsAction = new QAction(*iReceive, tr("&Receive"), this);
     receiveCoinsAction->setToolTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
-    receiveCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(receiveCoinsAction);
 
     addressBookAction = new QAction(*iAddressBook, tr("&Address Book"), this);
     addressBookAction->setToolTip(tr("Edit the list of stored addresses and labels"));
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
-    addressBookAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(addressBookAction);
 
     stakeCoinsAction = new QAction(*iSideStake, tr("&Side Stakes"), this);
     stakeCoinsAction->setToolTip(tr("Edit the list of addresses for staking out."));
     stakeCoinsAction->setCheckable(true);
     stakeCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
-    stakeCoinsAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(stakeCoinsAction);
 
     historyAction = new QAction(*iHistory, tr("&Transactions"), this);
     historyAction->setToolTip(tr("Browse transaction history"));
     historyAction->setCheckable(true);
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-    historyAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(historyAction);
 
     messageAction = new QAction(*iMessage, tr("&Messages"), this);
     messageAction->setToolTip(tr("View and Send Private Messages"));
     messageAction->setCheckable(true);
     messageAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
-    messageAction->setFont(fontData.font("Rubik", "Regular", 10));
     tabGroup->addAction(messageAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
