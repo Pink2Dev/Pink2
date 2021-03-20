@@ -151,6 +151,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     setWindowTitle(tr("Pinkcoin") + " - " + tr("Wallet"));
 
     qApp->setStyleSheet(R"(
+        * {
+            font-family: Rubik;
+        }
+
         QMainWindow
         {
             padding-left: 0px;
