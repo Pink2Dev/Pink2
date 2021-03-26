@@ -544,13 +544,13 @@ void BitcoinGUI::createActions()
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(*iSend, tr("&Send"), this);
+    sendCoinsAction = new QAction(*iSend, tr("&Send coins"), this);
     sendCoinsAction->setToolTip(tr("Send coins to a Pinkcoin address"));
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));;
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(*iReceive, tr("&Receive"), this);
+    receiveCoinsAction = new QAction(*iReceive, tr("&Receive coins"), this);
     receiveCoinsAction->setToolTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
