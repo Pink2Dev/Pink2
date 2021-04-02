@@ -111,10 +111,10 @@
         <file alias="zh_TW">locale/bitcoin_zh_TW.qm</file>
     </qresource>
     <qresource prefix="/fonts">
-        <file alias="Ubuntu-Medium">res/fonts/Ubuntu-Medium.ttf</file>
+        <file alias="Rubik">res/fonts/Rubik-VariableFont_wght.ttf</file>
         <file alias="Ubuntu-Bold">res/fonts/Ubuntu-Bold.ttf</file>
-        <file alias="Rubik-Regular">res/fonts/Rubik-Regular.ttf</file>
-        <file alias="Rubik-Medium">res/fonts/Rubik-Medium.ttf</file>
-        <file alias="Rubik-Bold">res/fonts/Rubik-Bold.ttf</file>
+        <file alias="Ubuntu-Medium">res/fonts/Ubuntu-Medium.ttf</file>
+        <file alias="Ubuntu-Regular">res/fonts/Ubuntu-Regular.ttf</file>
+        <file alias="UbuntuMono-Regular">res/fonts/UbuntuMono-Regular.ttf</file>
     </qresource>
 </RCC>
