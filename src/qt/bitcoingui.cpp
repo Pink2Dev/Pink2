@@ -299,6 +299,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             font-family: "UbuntuMono-Regular";
             font-size: 12px;
         }
+        
+        #treeWidget, #lineEditCustomCC {
+            font-family: "UbuntuMono-Regular";
+            font-size: 12px;
+        }
     )");
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
