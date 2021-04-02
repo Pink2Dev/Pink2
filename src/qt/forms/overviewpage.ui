@@ -253,7 +253,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                <item row="6" column="0">
                 <widget class="QLabel" name="labelTotalMintedText">
                  <property name="text">
-                  <string>Total Minted</string>
+                  <string>Total Staked</string>
                  </property>
                 </widget>
                </item>
@@ -297,7 +297,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                   </palette>
                  </property>
                  <property name="text">
-                  <string>Stake</string>
+                  <string>Staking</string>
                  </property>
                 </widget>
                </item>
