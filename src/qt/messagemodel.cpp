@@ -601,8 +601,8 @@ void MessageModel::subscribeToCoreSignals()
     qRegisterMetaType<SecMsgStored>("SecMsgStored");
 
     // Connect signals
-    NotifySecMsgInboxChanged.connect(boost::bind(NotifySecMsgInbox, this, _1));
-    NotifySecMsgOutboxChanged.connect(boost::bind(NotifySecMsgOutbox, this, _1));
+    NotifySecMsgInboxChanged.connect(boost::bind(NotifySecMsgInbox, this, boost::placeholders::_1));
+    NotifySecMsgOutboxChanged.connect(boost::bind(NotifySecMsgOutbox, this, boost::placeholders::_1));
     NotifySecMsgWalletUnlocked.connect(boost::bind(NotifySecMsgWallet, this));
     
     connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -611,8 +611,8 @@ void MessageModel::subscribeToCoreSignals()
 void MessageModel::unsubscribeFromCoreSignals()
 {
     // Disconnect signals
-    NotifySecMsgInboxChanged.disconnect(boost::bind(NotifySecMsgInbox, this, _1));
-    NotifySecMsgOutboxChanged.disconnect(boost::bind(NotifySecMsgOutbox, this, _1));
+    NotifySecMsgInboxChanged.disconnect(boost::bind(NotifySecMsgInbox, this, boost::placeholders::_1));
+    NotifySecMsgOutboxChanged.disconnect(boost::bind(NotifySecMsgOutbox, this, boost::placeholders::_1));
     NotifySecMsgWalletUnlocked.disconnect(boost::bind(NotifySecMsgWallet, this));
     
     disconnect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
