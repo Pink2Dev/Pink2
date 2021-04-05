@@ -1023,7 +1023,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight, unsi
 
     if (nHeight >= 16240)
     {
-        if (IsFlashStakeReward(nTime))
+        if (IsFlashStake(nTime))
         {
             nHalving = nHeight / nHalvingPoint / YEARLY_BLOCKCOUNT;
             nSubsidy = (150 * COIN) >> nHalving;
@@ -1325,36 +1325,6 @@ bool IsFlashStake(unsigned int nTime)
     rawtime = nTime;
     ptm = gmtime ( &rawtime );
     int nHour = ptm->tm_hour ;
-    switch(nHour)
-    {
-        case nHour1:
-        bIsFlash = true;
-        break;
-        case nHour2:
-        bIsFlash = true;
-        break;
-        case nHour3:
-        bIsFlash = true;
-        break;
-        case nHour4:
-        bIsFlash = true;
-        break;
-    }
-
-    return bIsFlash;
-}
-
-bool IsFlashStakeReward(unsigned int nTime)
-{
-
-    time_t rawtime;
-    struct tm * ptm;
-
-    bool bIsFlash = false;
-
-    rawtime = nTime;
-    ptm = gmtime ( &rawtime );
-    int nHour = ptm->tm_hour;
     switch(nHour)
     {
         case nHour1:
