@@ -84,7 +84,6 @@ extern int64_t nReserveBalance;
 extern int64_t nCombineThreshold;
 extern int64_t nSplitThreshold;
 extern int64_t nMinimumInputValue;
-extern int64_t nMinimumStakeValue;
 extern bool fUseFastIndex;
 extern bool fNTPSuccess;
 extern unsigned int nDerivationMethodIndex;
