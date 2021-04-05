@@ -2497,18 +2497,6 @@ uint256 CBlockIndex::GetBlockTrust(bool isNew) const
     return ((CBigNum(1)<<256) / (bnTarget+1)).getuint256();
 }
 
-bool CBlockIndex::IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned int nRequired, unsigned int nToCheck)
-{
-    unsigned int nFound = 0;
-    for (unsigned int i = 0; i < nToCheck && nFound < nRequired && pstart != NULL; i++)
-    {
-        if (pstart->nVersion >= minVersion)
-            ++nFound;
-        pstart = pstart->pprev;
-    }
-    return (nFound >= nRequired);
-}
-
 bool ProcessBlock(CNode* pfrom, CBlock* pblock)
 {
     AssertLockHeld(cs_main);
