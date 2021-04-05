@@ -43,7 +43,6 @@
 #include <QFormLayout>
 #include <QBitmap>
 #include <QPixmap>
-#include <QPainter>
 #include <QIcon>
 #include <QTabWidget>
 #include <QVBoxLayout>
@@ -367,16 +366,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(messagePage);
 
-
     setCentralWidget(centralWidget);
-
-    QPainterPath painterPath;
-    painterPath.addRoundedRect(0, 0, 1050, 600, 3, 3);
-    QPolygon maskPolygon = painterPath.toFillPolygon().toPolygon();
-
-    QRegion maskedRegion(maskPolygon, Qt::OddEvenFill);
-
-    setMask(maskedRegion);
 
     // Create status bar
 
