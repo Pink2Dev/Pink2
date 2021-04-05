@@ -223,20 +223,11 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    QFontDatabase fontData;
-    fontData.addApplicationFont(":/fonts/Rubik-Regular");
-    fontData.addApplicationFont(":/fonts/Rubik-Medium");
-    fontData.addApplicationFont(":/fonts/Rubik-Bold");
-
-    // Sets default app font.
-    app.setFont(fontData.font("Rubik", "Regular", 10));
-
     QRect screenGeometry = app.desktop()->screenGeometry();
     int splashWidth = (int)(0.55*screenGeometry.width());
     QPixmap splashPixmap = QPixmap(":/images/splash").scaledToWidth(splashWidth, Qt::SmoothTransformation);
 
     QSplashScreen splash(splashPixmap, 0);
-    splash.setFont(fontData.font("Rubik", "Medium", 20));
 
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
