@@ -36,7 +36,6 @@ bool fConfChange;
 bool fNTPSuccess;
 unsigned int nNodeLifespan;
 unsigned int nDerivationMethodIndex;
-unsigned int nMinerSleep;
 bool fUseFastIndex;
 enum Checkpoints::CPMode CheckpointsMode;
 
@@ -421,7 +420,6 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
-    nMinerSleep = GetArg("-minersleep", 800);
 
     // Parses and adds configurable checkpoints.
     Checkpoints::GetCheckpointsFromConfig();

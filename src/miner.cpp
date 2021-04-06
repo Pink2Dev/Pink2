@@ -10,13 +10,6 @@
 
 using namespace std;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-// BitcoinMiner
-//
-
-extern unsigned int nMinerSleep;
-
 int static FormatHashBlocks(void* pbuffer, unsigned int len)
 {
     unsigned char* pdata = (unsigned char*)pbuffer;
@@ -592,6 +585,6 @@ void StakeMiner(CWallet *pwallet)
             MilliSleep(500);
         }
         else
-            MilliSleep(nMinerSleep);
+            MilliSleep(800);
     }
 }
