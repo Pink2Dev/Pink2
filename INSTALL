@@ -1,9 +1,0 @@
-Building Genstake
-
-See doc/readme-qt.rst for instructions on building Genstake QT,
-the intended-for-end-users, nice-graphical-interface, reference
-implementation of genstake.
-
-See doc/build-*.txt for instructions on building genstaked,
-the intended-for-services, no-graphical-interface, reference
-implementation of genstake.
