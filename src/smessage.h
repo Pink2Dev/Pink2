@@ -327,7 +327,7 @@ int SecureMsgAddWalletAddresses();
 int SecureMsgReadIni();
 int SecureMsgWriteIni();
 
-bool SecureMsgStart(bool fDontStart, bool fScanChain);
+bool SecureMsgStart(bool fScanChain);
 bool SecureMsgShutdown();
 
 bool SecureMsgEnable();

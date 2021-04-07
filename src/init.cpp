@@ -339,7 +339,7 @@ std::string HelpMessage()
         "  -rpcsslciphers=<ciphers>                 " + _("Acceptable ciphers (default: TLSv1+HIGH:!SSLv2:!aNULL:!eNULL:!AH:!3DES:@STRENGTH)") + "\n" +
 
         "\n" + _("Secure messaging options:") + "\n" +
-        "  -nosmsg                                  " + _("Disable secure messaging.") + "\n" +
+        "  -smsg                                    " + _("Enables/Disables secure messaging. (default: false)") + "\n" +
         "  -debugsmsg                               " + _("Log extra debug messages.") + "\n" +
         "  -smsgscanchain                           " + _("Scan the block chain for public key addresses on startup.") + "\n" +
 
@@ -487,8 +487,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         fDebugNet  = GetBoolArg("-debugnet");
         fDebugSmsg = GetBoolArg("-debugsmsg");
     }
-    fNoSmsg = GetBoolArg("-nosmsg");
-    
+
     bitdb.SetDetach(GetBoolArg("-detachdb", false));
 
 #if !defined(WIN32) && !defined(QT_GUI)
@@ -1004,7 +1003,12 @@ bool AppInit2(boost::thread_group& threadGroup)
     
     // ********************************************************* Step 11.1: startup secure messaging
     
-    SecureMsgStart(fNoSmsg, GetBoolArg("-smsgscanchain"));
+    if (fSmsg || GetBoolArg("-smsg")) {
+        SecureMsgStart(GetBoolArg("-smsgscanchain"));
+        printf("{SMSG} Status: Enabled\n");
+    } else {
+        printf("{SMSG} Status: Disabled\n");
+    }
     
     // ********************************************************* Step 12: start node
     

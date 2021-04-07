@@ -8,7 +8,6 @@ Notes:
     
     
     parameters:
-        -nosmsg             Disable secure messaging (fNoSmsg)
         -debugsmsg          Show extra debug messages (fDebugSmsg)
         -smsgscanchain      Scan the block chain for public key addresses on startup
     
@@ -1136,16 +1135,8 @@ int SecureMsgWriteIni()
 
 
 /** called from AppInit2() in init.cpp */
-bool SecureMsgStart(bool fDontStart, bool fScanChain)
+bool SecureMsgStart(bool fScanChain)
 {
-    if (fDontStart)
-    {
-        printf("Secure messaging not started.\n");
-        return false;
-    };
-    
-    printf("Secure messaging starting.\n");
-    
     fSecMsgenabled = true;
     
     if (SecureMsgReadIni() != 0)
