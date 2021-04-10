@@ -197,61 +197,15 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                <property name="spacing">
                 <number>0</number>
                </property>
-               <item row="11" column="0">
-                <spacer name="verticalSpacer_7">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="5" column="0">
-                <spacer name="verticalSpacer_5">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="15" column="0">
-                <spacer name="verticalSpacer_8">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
                <item row="0" column="0">
-                <widget class="QLabel" name="label">
+                <widget class="QLabel" name="ov_spendable_label">
                  <property name="text">
                   <string>Spendable</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="labelTotalMintedText">
-                 <property name="text">
-                  <string>Total Staked</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="1">
-                <widget class="QLabel" name="label_6">
+                <widget class="QLabel" name="ov_staking_label">
                  <property name="palette">
                   <palette>
                    <active>
@@ -294,142 +248,8 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                 </widget>
                </item>
-               <item row="21" column="0">
-                <spacer name="verticalSpacer_10">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="0" column="2">
-                <widget class="QLabel" name="labelTotalText">
-                 <property name="palette">
-                  <palette>
-                   <active>
-                    <colorrole role="WindowText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                   </active>
-                   <inactive>
-                    <colorrole role="WindowText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                   </inactive>
-                   <disabled>
-                    <colorrole role="WindowText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>120</red>
-                       <green>120</green>
-                       <blue>120</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                   </disabled>
-                  </palette>
-                 </property>
-                 <property name="text">
-                  <string>Total</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="18" column="0">
-                <spacer name="verticalSpacer_9">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>10</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="labelBalance">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="cursor">
-                  <cursorShape>IBeamCursor</cursorShape>
-                 </property>
-                 <property name="toolTip">
-                  <string>Your current spendable balance</string>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">top: -5px;</string>
-                 </property>
-                 <property name="text">
-                  <string notr="true">0</string>
-                 </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="25" column="0">
-                <spacer name="verticalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="labelTotalMinted">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="26" column="2">
-                <widget class="QLabel" name="labelImmature">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="25" column="2">
-                <widget class="QLabel" name="labelImmatureText">
+               <item row="20" column="2">
+                <widget class="QLabel" name="ov_immature_label">
                  <property name="palette">
                   <palette>
                    <active>
@@ -496,6 +316,75 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                  <property name="text">
                   <string>Immature:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="labelBalance">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>IBeamCursor</cursorShape>
+                 </property>
+                 <property name="toolTip">
+                  <string>Your current spendable balance</string>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">top: -5px;</string>
+                 </property>
+                 <property name="text">
+                  <string notr="true">0</string>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="ov_balance_label">
+                 <property name="palette">
+                  <palette>
+                   <active>
+                    <colorrole role="WindowText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="255">
+                       <red>0</red>
+                       <green>0</green>
+                       <blue>0</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
+                   </active>
+                   <inactive>
+                    <colorrole role="WindowText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="255">
+                       <red>0</red>
+                       <green>0</green>
+                       <blue>0</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
+                   </inactive>
+                   <disabled>
+                    <colorrole role="WindowText">
+                     <brush brushstyle="SolidPattern">
+                      <color alpha="255">
+                       <red>120</red>
+                       <green>120</green>
+                       <blue>120</blue>
+                      </color>
+                     </brush>
+                    </colorrole>
+                   </disabled>
+                  </palette>
+                 </property>
+                 <property name="text">
+                  <string>Total</string>
                  </property>
                 </widget>
                </item>
@@ -617,8 +506,8 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
-                <widget class="QLabel" name="label_3">
+               <item row="5" column="1">
+                <widget class="QLabel" name="ov_unconfirmed_label">
                  <property name="palette">
                   <palette>
                    <active>
@@ -661,7 +550,40 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
+               <item row="21" column="2">
+                <widget class="QLabel" name="labelImmature">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="ov_total_staked_label">
+                 <property name="text">
+                  <string>Total Staked</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="labelTotalMinted">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
                 <widget class="QLabel" name="labelUnconfirmed">
                  <property name="palette">
                   <palette>
@@ -726,7 +648,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                  </property>
                 </widget>
                </item>
-               <item row="6" column="2">
+               <item row="5" column="2">
                 <widget class="QLabel" name="labelBtcValue">
                  <property name="font">
                   <font>
@@ -742,11 +664,17 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
               </layout>
              </item>
              <item>
-              <widget class="QLabel" name="labelInfoPlatform">
-               <property name="text">
-                <string/>
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
-              </widget>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>5</height>
+                </size>
+               </property>
+              </spacer>
              </item>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -804,7 +732,7 @@ background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:.04, y2:0, stop:0 rg
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_2">
                        <item>
-                        <widget class="QLabel" name="label_4">
+                        <widget class="QLabel" name="ov_recent_tx_label">
                          <property name="text">
                           <string>&lt;b&gt;Recent transactions&lt;/b&gt;</string>
                          </property>

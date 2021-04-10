@@ -152,11 +152,6 @@ int main(int argc, char *argv[])
     }
     ReadConfigFile(mapArgs, mapMultiArgs);
 
-#if QT_VERSION > 0x050100
-    // Generate high-dpi pixmaps
-    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-
     // Set common app style for all platforms.
     app.setStyle(QStyleFactory::create("Fusion"));
 

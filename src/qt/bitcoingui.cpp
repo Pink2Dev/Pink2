@@ -134,12 +134,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     nWeight(0)
 {
     setFixedSize(1050, 600);
-    
-    QFontDatabase::addApplicationFont(":/fonts/Rubik");
-    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Bold");
-    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Medium");
-    QFontDatabase::addApplicationFont(":/fonts/Ubuntu-Regular");
-    QFontDatabase::addApplicationFont(":/fonts/UbuntuMono-Regular");
+
+    QFontDatabase::addApplicationFont(":/fonts/Inconsolata-Regular");
+    QFontDatabase::addApplicationFont(":/fonts/Inter-Bold");
+    QFontDatabase::addApplicationFont(":/fonts/Inter-Regular");
 
     #ifdef Q_OS_WIN
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
@@ -151,11 +149,13 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     qApp->setStyleSheet(R"(
         * {
-            font-family: Rubik;
+            font-family: Inter;
+            font-size: 10pt;
         }
 
         QMainWindow
         {
+            background-color: rgb(255, 255, 255);
             padding-left: 0px;
             padding-right: 0px;
             padding-bottom: 0px;
@@ -199,8 +199,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         }
         QToolBar QToolButton
         {
-            font-family: Rubik;
-            font-size: 1em;
             border: 0px;
             padding-left: 2px;
             padding-top: 8px;
@@ -254,7 +252,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         QMenuBar { background: rgb(0, 0, 0); color: white; }
         QMenuBar::item
         {
-            font-size: 0.4em;
             padding-bottom: 8px;
             padding-top: 8px;
             padding-left: 15px;
@@ -275,8 +272,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
             border-radius: 4px;
             padding: 1px;
             text-align: center;
-            font-size: 14px;
-            font-family: Rubik;
         }
 
         QProgressBar::chunk {
@@ -291,17 +286,25 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
         progressBarLabel::QLabel {
             color: white;
-            font-size: 14px;
+            font-size: 14pt;
         }
         
         #messagesWidget, #lineEdit {
-            font-family: "UbuntuMono-Regular";
-            font-size: 12px;
+            font-family: "Inconsolata";
+            font-size: 10pt;
+        }
+
+        #ov_spendable_label, #ov_staking_label, #ov_balance_label, #ov_total_staked_label, #ov_immature_label, #ov_unconfirmed_label, #ov_recent_tx_label {
+            font-size: 12pt;
+        }
+
+        #labelImmatureText, #labelBalance, #labelStake, #labelImmature, #labelUnconfirmed, #labelTotal, #labelTotalMintedText, #labelTotalMinted {
+            font-size: 12pt;
         }
         
-        #treeWidget, #lineEditCustomCC {
-            font-family: "UbuntuMono-Regular";
-            font-size: 12px;
+        #labelBtcValue {
+            font-family: "Inconsolata";
+            font-size: 12pt;
         }
     )");
 #ifndef Q_OS_MAC

@@ -27,7 +27,7 @@
 
 
 #define DECORATION_SIZE 64
-#define NUM_ITEMS 3
+#define NUM_ITEMS 4
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -63,14 +63,6 @@ public:
         }
 
         painter->setPen(foreground);
-
-        // if (fontID > 0)
-        // {
-        //     QString fUbuntu = QFontDatabase::applicationFontFamilies(fontID).at(0);
-        //     QFont* Ubuntu = new QFont(fUbuntu, 8, QFont::Normal, false);
-        //     painter->setFont(*Ubuntu);
-
-        // }
 
         painter->drawText(addressRect, Qt::AlignLeft|Qt::AlignVCenter, address);
 
@@ -127,43 +119,9 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     txdelegate->fontID = -1;
 
-#ifdef MAC_OSX
-    QFont overviewHeaders("Rubik", 16, QFont::Bold);
-    QFont overviewSpend("Rubik", 20, QFont::Normal);
-    QFont overviewBalances("Rubik", 16, QFont::Normal);
-#else
-    QFont overviewHeaders("Rubik", 14, QFont::Bold);
-    QFont overviewSpend("Rubik", 18, QFont::Normal);
-    QFont overviewBalances("Rubik", 14, QFont::Normal);
-#endif
-
     // HACK: Makes that label transparent for mouse events
     // Mitigates strange event swallowing behavior in main window
-    ui->label_4->setAttribute(Qt::WA_TransparentForMouseEvents);
-
-    ui->label->setFont(overviewHeaders);
-    ui->label_3->setFont(overviewHeaders);
-    ui->label_4->setFont(overviewHeaders);
-    ui->label_6->setFont(overviewHeaders);
-    ui->labelImmatureText->setFont(overviewHeaders);
-    ui->labelTotalText->setFont(overviewHeaders);
-
-    ui->labelBalance->setFont(overviewSpend);
-    ui->labelBalance->setContentsMargins(0,0,0,5);
-    ui->labelStake->setFont(overviewSpend);
-    ui->labelStake->setContentsMargins(0,0,0,5);
-    ui->labelImmature->setFont(overviewBalances);
-    ui->labelImmature->setContentsMargins(0,0,0,5);
-    ui->labelUnconfirmed->setFont(overviewBalances);
-    ui->labelUnconfirmed->setContentsMargins(0,0,0,5);
-    ui->labelTotal->setFont(overviewSpend);
-    ui->labelTotal->setContentsMargins(0,0,0,5);
-    ui->labelBtcValue->setFont(overviewBalances);
-    ui->labelBtcValue->setContentsMargins(0,0,0,5);
-    ui->labelTotalMinted->setFont(overviewBalances);
-    ui->labelTotalMinted->setContentsMargins(0,0,0,5);
-
-    ui->labelInfoPlatform->setFont(overviewBalances);
+    ui->ov_recent_tx_label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     // Recent transactions
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -179,8 +137,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
-
-
 
 #if QT_VERSION >= 0x050000
     // set a timer for price API
@@ -222,11 +178,11 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
 
     if (confirmingBalance > unconfirmedBalance)
     {
-            ui->label_3->setText("Confirming");
+            ui->ov_unconfirmed_label->setText("Confirming");
             ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, confirmingBalance, false, 2));
     } else {
-            if (ui->label_3->text() != "Unconfirmed")
-                ui->label_3->setText("Unconfirmed");
+            if (ui->ov_unconfirmed_label->text() != "Unconfirmed")
+                ui->ov_unconfirmed_label->setText("Unconfirmed");
     }
 
     // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
@@ -238,10 +194,10 @@ void OverviewPage::setBalance(qint64 balance, qint64 minted, qint64 stake, qint6
 
     bool showImmature = immatureBalance != 0;
 
-    ui->label_3->setVisible(showUnconfirmed);
+    ui->ov_unconfirmed_label->setVisible(showUnconfirmed);
     ui->labelUnconfirmed->setVisible(showUnconfirmed);
     ui->labelImmature->setVisible(showImmature);
-    ui->labelImmatureText->setVisible(showImmature);
+    ui->ov_immature_label->setVisible(showImmature);
 
 #if QT_VERSION >= 0x050000
     sendRequest();
@@ -289,11 +245,6 @@ void OverviewPage::updateDisplayUnit()
 
         // Update txdelegate->unit with the current unit
         txdelegate->unit = model->getOptionsModel()->getDisplayUnit();
-        // if (txdelegate->fontID < 0)
-        // {
-        //     FontID = QFontDatabase::addApplicationFont(":/fonts/Rubik-Regular");
-        //     txdelegate->fontID = FontID;
-        // }
 
         ui->listTransactions->update();
     }
