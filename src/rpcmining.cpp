@@ -42,29 +42,50 @@ Value getmininginfo(const Array& params, bool fHelp)
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
 
-    Object obj, diff, weight;
-    obj.push_back(Pair("blocks",        (int)nBestHeight));
-    obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
+    time_t rawtime;
+    time ( &rawtime );
 
-    diff.push_back(Pair("proof-of-work",        GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
-    diff.push_back(Pair("proof-of-stake(flash)",       GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
-    diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
-    obj.push_back(Pair("difficulty",    diff));
+    bool is_pow_disabled = pindexBest->nTime > nTimeV231;
+    bool is_flash_stake = IsFlashStake(rawtime);
+    bool staking_status = nLastCoinStakeSearchInterval && nWeight;
+    unsigned int block_target_spacing = is_pow_disabled && is_flash_stake ? nTargetSpacing_FlashStaking : nTargetSpacing;
+    int staking_estimated_time = staking_status ? (block_target_spacing * GetPoSKernelPS() / nWeight) : -1;
+    
+    Object obj, obj_staking_info, obj_staking_weight, obj_diff;
 
-    obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(nBestHeight+1, 0)));
-    obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
-    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
-    obj.push_back(Pair("errors",        GetWarnings("statusbar")));
-    obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
+    obj.push_back(Pair("blocks", (int)nBestHeight));
+    obj.push_back(Pair("next-block-value-pos", ValueFromAmount(GetProofOfStakeReward(0, 0, nBestHeight+1, 0))));
+    if(!is_pow_disabled)
+        obj.push_back(Pair("next-block-value-pow", ValueFromAmount(GetProofOfWorkReward(nBestHeight+1, 0))));
+    obj.push_back(Pair("last-block-size", (uint64_t)nLastBlockSize));
+    obj.push_back(Pair("last-block-tx", (uint64_t)nLastBlockTx));
+    obj.push_back(Pair("pooledtx", (uint64_t)mempool.size()));
+    obj.push_back(Pair("tx-fee", ValueFromAmount((int64_t)MIN_TX_FEE)));
 
-    weight.push_back(Pair("minimum",    (uint64_t)nMinWeight));
-    weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
-    weight.push_back(Pair("combined",  (uint64_t)nWeight));
-    obj.push_back(Pair("stakeweight", weight));
+    obj_staking_info.push_back(Pair("enabled", staking_status));
+    obj_staking_info.push_back(Pair("estimated-time", staking_estimated_time));
+    obj_staking_info.push_back(Pair("search-interval", (int)nLastCoinStakeSearchInterval));
+    obj_staking_info.push_back(Pair("utxo-combine-threshold", (int64_t)nCombineThreshold));
+    obj_staking_info.push_back(Pair("utxo-split-threshold", (int64_t)nSplitThreshold));
+    obj.push_back(Pair("staking", obj_staking_info));
+    
+    obj_staking_weight.push_back(Pair("minimum", (uint64_t)nMinWeight));
+    obj_staking_weight.push_back(Pair("maximum", (uint64_t)nMaxWeight));
+    obj_staking_weight.push_back(Pair("combined", (uint64_t)nWeight));
+    obj_staking_weight.push_back(Pair("network", (uint64_t)GetPoSKernelPS()));
+    obj.push_back(Pair("stakeweight", obj_staking_weight));
 
-    obj.push_back(Pair("testnet",       fTestNet));
+    if(!is_pow_disabled)
+        obj_diff.push_back(Pair("proof-of-work", GetDifficulty()));
+    obj_diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex2(GetLastBlockIndex(pindexBest, true), false))));
+    obj_diff.push_back(Pair("proof-of-stake(flash)", GetDifficulty(GetLastBlockIndex2(pindexBest, true))));
+    obj.push_back(Pair("difficulty", obj_diff));
+
+    obj.push_back(Pair("netstakeweight", (uint64_t)GetPoSKernelPS()));
+    if(!is_pow_disabled)
+        obj.push_back(Pair("netmhashps", GetPoWMHashPS()));
+    obj.push_back(Pair("testnet", fTestNet));
+    obj.push_back(Pair("errors", GetWarnings("statusbar")));
     return obj;
 }
 
