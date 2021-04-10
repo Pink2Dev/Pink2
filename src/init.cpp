@@ -85,7 +85,11 @@ void Shutdown(void* parg)
     {
         fShutdown = true;
         
-        SecureMsgShutdown();
+        if(fSmsg || GetBoolArg("-smsg"))
+        {
+            printf("{SMSG} Status: Shutting down");
+            SecureMsgShutdown();
+        }
         
         nTransactionsUpdated++;
 //        CTxDB().Close();
@@ -1003,7 +1007,8 @@ bool AppInit2(boost::thread_group& threadGroup)
     
     // ********************************************************* Step 11.1: startup secure messaging
     
-    if (fSmsg || GetBoolArg("-smsg")) {
+    if (fSmsg || GetBoolArg("-smsg"))
+    {
         SecureMsgStart(GetBoolArg("-smsgscanchain"));
         printf("{SMSG} Status: Enabled\n");
     } else {
