@@ -50,6 +50,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     bool staking_status = nLastCoinStakeSearchInterval && nWeight;
     unsigned int block_target_spacing = is_pow_disabled && is_flash_stake ? nTargetSpacing_FlashStaking : nTargetSpacing;
     int staking_estimated_time = staking_status ? (block_target_spacing * GetPoSKernelPS() / nWeight) : -1;
+    bool is_targeting_fpos = (int64_t)nSplitThreshold >= 100000; 
     
     Object obj, obj_staking_info, obj_staking_weight, obj_diff;
 
@@ -63,6 +64,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("tx-fee", ValueFromAmount((int64_t)MIN_TX_FEE)));
 
     obj_staking_info.push_back(Pair("enabled", staking_status));
+    obj_staking_info.push_back(Pair("targeting-fpos", is_targeting_fpos));
     obj_staking_info.push_back(Pair("estimated-time", staking_estimated_time));
     obj_staking_info.push_back(Pair("search-interval", (int)nLastCoinStakeSearchInterval));
     obj_staking_info.push_back(Pair("utxo-combine-threshold", (int64_t)nCombineThreshold));
