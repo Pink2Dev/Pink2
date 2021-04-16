@@ -9,7 +9,6 @@ src/build.h
 *.rej
 *.orig
 *.o
-*.patch
 .sdcoin
 #compilation and Qt preprocessor part
 *.qm
