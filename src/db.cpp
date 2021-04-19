@@ -523,7 +523,11 @@ bool CAddrDB::Write(const CAddrMan& addr)
     FILE *file = fopen(pathTmp.string().c_str(), "wb");
     CAutoFile fileout = CAutoFile(file, SER_DISK, CLIENT_VERSION);
     if (!fileout)
+    {
+        fileout.fclose();
+        remove(pathTmp);
         return error("CAddrman::Write() : open failed");
+    }
 
     // Write and commit header, data
     try {
@@ -537,7 +541,11 @@ bool CAddrDB::Write(const CAddrMan& addr)
 
     // replace existing peers.dat, if any, with new peers.dat.XXXX
     if (!RenameOver(pathTmp, pathAddr))
+    {
+        fileout.fclose();
+        remove(pathTmp);
         return error("CAddrman::Write() : Rename-into-place failed");
+    }
 
     return true;
 }
