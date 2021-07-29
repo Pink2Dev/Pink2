@@ -33,9 +33,9 @@ builds_dir=$base_dir/builds
 mkdir -p $builds_dir
 
 # Fetch and verify source
-#cd $source_dir
-#wget "$pkg_dl_path/$pkg_file_name"
-#echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+cd $source_dir
+wget "$pkg_dl_path/$pkg_file_name"
+echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
 
 # Extract archive
 cd $work_dir
