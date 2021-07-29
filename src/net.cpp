@@ -1269,6 +1269,9 @@ void MapPort()
 // The second name should resolve to a list of seed addresses.
 
 static const char *strDNSSeed[][2] = {
+    {"northwood-us-east-nv", "us-east-nv.northwood.ch"},                    // SUPERNODE -- US - EAST - NORTH VIRGINA, USA
+    {"northwood-eu-west-3", "eu-west-3.northwood.ch"},                      // SUPERNODE -- EU - WEST 3 - PARIS, FRANCE
+    {"northwood-supernode-round-robin", "supernodes.pink2.northwood.ch"},   // SUPERNODE DNS Round Robin
     {"primary", "pinkarmy.ml"},
     {"frankfurt", "frankfurt.pinkarmy.ml"},
     {"paris", "paris.pinkarmy.ml"},
@@ -1344,19 +1347,10 @@ void ThreadDNSAddressSeed2(void* parg)
 }
 
 
-
-
-
-
-
-
-
-
 unsigned int pnSeed[] =
 {
-    0xa0064d2d, 0x9aa5b35f, 0x8e0ef7c7, 0xee244d2d, 0xed31202d
+    0x3726ed03, 0xc727b423, 0xa0064d2d, 0x9aa5b35f, 0x8e0ef7c7, 0xee244d2d, 0xed31202d
 };
-
 
 
 void DumpAddresses()
