@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Statically built Linux OpenSSL binaries for use with legacy Bitcoin code
+# Statically built Linux Berkeley dB binaries for use with legacy Bitcoin code
 # (Roll your own...)
 # Author: opsinphark@GitHub
 
@@ -10,11 +10,11 @@ HOST="x86_64-linux-gnu"
 HOST_CFLAGS="-O2 -pipe"
 HOST_CXXFLAGS="-O2 -pipe"
 
-pkg=openssl
-pkg_version=1.1.1k
-pkg_dl_path=https://www.openssl.org/source
+pkg=db
+pkg_version=4.8.30.NC
+pkg_dl_path=http://download.oracle.com/berkeley-db
 pkg_file_name=$pkg-$pkg_version.tar.gz
-pkg_sha256_hash=892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5
+pkg_sha256_hash=12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef
 pkg_cflags="$HOST_CFLAGS"
 pkg_cxxflags="$pkg_cflags"
 
@@ -41,39 +41,21 @@ echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
 cd $work_dir
 tar xvfz $source_dir/$pkg_file_name
 
-# Configure
+# Patch
 cd $pkg-$pkg_version
+sed -i.old 's/__atomic_compare_exchange/__atomic_compare_exchange_db/' dbinc/atomic.h && \
+sed -i.old 's/atomic_init/atomic_init_db/' dbinc/atomic.h mp/mp_region.c mp/mp_mvcc.c mp/mp_fget.c mutex/mut_method.c mutex/mut_tas.c
+
+# Configure
+cd build_unix/
 CFLAGS=$pkg_cflags \
 CXXFLAGS=$pkg_cxxflags \
-./Configure \
---prefix=$staging_dir \
-	linux-x86_64 \
-        no-camellia \
-        no-capieng \
-        no-cast \
-        no-comp \
-        no-dso \
-        no-dtls1 \
-        no-gost \
-        no-heartbeats \
-        no-idea \
-        no-md2 \
-        no-mdc2 \
-        no-rc4 \
-        no-rc5 \
-        no-rdrand \
-        no-rfc3779 \
-        no-sctp \
-        no-seed \
-        no-shared \
-        no-ssl-trace \
-        no-ssl3 \
-        no-unit-test \
-        no-weak-ssl-ciphers \
-        no-whirlpool \
-        no-zlib \
-        no-zlib-dynamic
-make depend
+        ../dist/configure \
+        --prefix=$staging_dir \
+        --enable-cxx \
+        --disable-replication \
+        --disable-shared \
+        --with-pic
 make install
 
 # Archive build
