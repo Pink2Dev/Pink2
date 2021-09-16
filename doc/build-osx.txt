@@ -45,8 +45,8 @@ cd pinkcoin/src
 make -f makefile.osx
 
 Run:
-  ./pinkcoind --help  # for a list of command-line options.
+  ./pink2d --help  # for a list of command-line options.
 Run
-  ./pinkcoind -daemon # to start the pinkcoin daemon.
+  ./pink2d -daemon # to start the pinkcoin daemon.
 Run
-  ./pinkcoind help # When the daemon is running, to get a list of RPC commands
+  ./pink2d help # When the daemon is running, to get a list of RPC commands
