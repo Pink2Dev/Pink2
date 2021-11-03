@@ -7,17 +7,23 @@
 # Originally by Laszlo Hanyecz (solar@heliacal.net)
 
 CXX=llvm-g++
-DEPSDIR=/opt/local
+DEPSDIR=/usr/local/opt/
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"$(CURDIR)"/obj \
- -I"$(DEPSDIR)/include" \
- -I"$(DEPSDIR)/include/db48"
+ -I"$(DEPSDIR)/miniupnpc/include" \
+ -I"$(DEPSDIR)/berkeley-db@4/include" \
+ -I"$(DEPSDIR)/boost/include" \
+ -I"$(DEPSDIR)/openssl/include" \
+ -I"$(DEPSDIR)/zlib/include"
 
 LIBPATHS= \
- -L"$(DEPSDIR)/lib" \
- -L"$(DEPSDIR)/lib/db48"
+ -L"$(DEPSDIR)/miniupnpc/lib" \
+ -L"$(DEPSDIR)/berkeley-db@4/lib" \
+ -L"$(DEPSDIR)/boost/lib" \
+ -L"$(DEPSDIR)/openssl/lib" \
+ -L"$(DEPSDIR)/zlib/lib"
 
 USE_UPNP:=1
 
@@ -26,15 +32,16 @@ LIBS= -dead_strip
 ifdef STATIC
 # Build STATIC if you are redistributing the pink2d binary
 LIBS += \
- $(DEPSDIR)/lib/db48/libdb_cxx-4.8.a \
- $(DEPSDIR)/lib/libboost_system-mt.a \
- $(DEPSDIR)/lib/libboost_filesystem-mt.a \
- $(DEPSDIR)/lib/libboost_program_options-mt.a \
- $(DEPSDIR)/lib/libboost_thread-mt.a \
- $(DEPSDIR)/lib/libboost_chrono-mt.a \
- $(DEPSDIR)/lib/libssl.a \
- $(DEPSDIR)/lib/libcrypto.a \
- $(DEPSDIR)/lib/libz.a
+ $(DEPSDIR)/miniupnpc/lib/libminiupnpc.a \
+ $(DEPSDIR)/berkeley-db@4/lib/libdb_cxx-4.8.a \
+ $(DEPSDIR)/boost/lib/libboost_system-mt.a \
+ $(DEPSDIR)/boost/lib/libboost_filesystem-mt.a \
+ $(DEPSDIR)/boost/lib/libboost_program_options-mt.a \
+ $(DEPSDIR)/boost/lib/libboost_thread-mt.a \
+ $(DEPSDIR)/boost/lib/libboost_chrono-mt.a \
+ $(DEPSDIR)/openssl/lib/libssl.a \
+ $(DEPSDIR)/openssl/lib/libcrypto.a \
+ $(DEPSDIR)/zlib/lib/libz.a
 else
 LIBS += \
  -ldb_cxx-4.8 \
@@ -53,7 +60,7 @@ ifdef RELEASE
 # Compile for maximum compatibility and smallest size.
 # This requires that dependencies are compiled
 # the same way.
-CFLAGS = -mmacosx-version-min=10.7 -arch x86_64 -O3 -msse2
+CFLAGS = -mmacosx-version-min=10.14 -arch x86_64 -O3 -msse2
 else
 CFLAGS = -g -msse2
 endif
@@ -107,7 +114,7 @@ endif
 ifneq (${USE_UPNP}, -)
 	DEFS += -DUSE_UPNP=$(USE_UPNP)
 ifdef STATIC
-	LIBS += $(DEPSDIR)/lib/libminiupnpc.a
+	LIBS += $(DEPSDIR)/miniupnpc/lib/libminiupnpc.a
 else
 	LIBS += -lminiupnpc
 endif
@@ -132,7 +139,7 @@ version.cpp: obj/build.h
 DEFS += -DHAVE_BUILD_INFO
 
 obj/%.o: %.cpp
-	$(CXX) -c $(CFLAGS) -MMD -MF $(@:%.o=%.d) -o $@ $<
+	$(CXX) -c $(CFLAGS) -MMD -MF $(@:%.o=%.d) -Wc++11-extensions -fvisibility=hidden -fvisibility-inlines-hidden -o $@ $<
 	@cp $(@:%.o=%.d) $(@:%.o=%.P); \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $(@:%.o=%.d) >> $(@:%.o=%.P); \
@@ -145,7 +152,7 @@ obj/scrypt-x86_64.o: scrypt-x86_64.S
 	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
 
 pink2d: $(OBJS:obj/%=obj/%)
-	$(CXX) $(CFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
+	$(CXX) $(CFLAGS) -Wc++11-extensions -fvisibility=hidden -fvisibility-inlines-hidden -o $@ $(LIBPATHS) $^ $(LIBS)
 
 clean:
 	-rm -f pink2d

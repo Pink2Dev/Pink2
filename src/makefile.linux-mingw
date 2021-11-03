@@ -5,7 +5,7 @@
 #TARGET_PLATFORM:=i686
 #TARGET_PLATFORM:=x86_64
 
-DEPSDIR:=/usr/$(TARGET_PLATFORM)-w64-mingw32
+DEPSDIR:=/opt/$(TARGET_PLATFORM)-linux-gnu/include
 INCDIR:=$(DEPSDIR)/include
 LIBDIR:=$(DEPSDIR)/lib
 AR:=$(TARGET_PLATFORM)-w64-mingw32-ar
@@ -26,11 +26,11 @@ LIBPATHS= \
  -L"$(LIBDIR)"
 
 LIBS= \
- -l boost_system-mt-s \
- -l boost_filesystem-mt-s \
- -l boost_program_options-mt-s \
- -l boost_thread_win32-mt-s \
- -l boost_chrono-mt-s \
+ -l boost_system-mt-s-x64 \
+ -l boost_filesystem-mt-s-x64 \
+ -l boost_program_options-mt-s-x64 \
+ -l boost_thread-mt-s-x64 \
+ -l boost_chrono-mt-s-x64 \
  -l db_cxx \
  -l ssl \
  -l crypto \

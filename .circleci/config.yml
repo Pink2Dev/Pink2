@@ -1,7 +1,558 @@
----
-version: 2
+# .circleci/config.yml
+version: 2.1
 jobs:
-  build:
+  build-arm:
+    working_directory: ~/Pink2
+    machine:
+      image: ubuntu-2004:202101-01
+    environment:
+      FROM_BUILD: "Pink2"
+      HOST: "aarch64-linux-gnu"
+      HOST_CFLAGS: "-O2 -pipe"
+      HOST_CXXFLAGS: "-O2 -pipe"
+      DEPS_PREFIX: "/opt/aarch64-linux-gnu"
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run:
+          name: Install toolset
+          command: |
+                sudo echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf &&
+                sudo echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf &&
+                sudo apt-get update
+                sudo apt-get install -y \
+                    --no-install-recommends \
+                    autoconf \
+                    build-essential \
+                    git \
+                    libboost-system-dev libboost-filesystem-dev \
+                    libboost-program-options-dev libboost-thread-dev \
+                    libdb++-dev libminiupnpc-dev wget ca-certificates \
+                    pkg-config \
+                    wget \
+                    ca-certificates
+                    sudo mkdir -p $DEPS_PREFIX
+      - restore_cache:
+          key: toolkit-cache-arm-linux-V1-{{ .Branch }}
+      - run:
+          name: Build - zlib-1.2.11 [static]
+          command: |
+                pkg=zlib
+                pkg_version=1.2.11
+                pkg_dl_path=https://www.zlib.net
+                pkg_file_name=$pkg-$pkg_version.tar.gz
+                pkg_sha256_hash=c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1
+                pkg_cflags="$HOST_CFLAGS -fPIC"
+                pkg_cxxflags="$pkg_cflags"
+                pkg_cppflags="-fPIC"
+                
+                cd src
+                wget "$pkg_dl_path/$pkg_file_name"
+                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+                tar xfz $pkg_file_name
+                 
+                cd $pkg-$pkg_version
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cflags \
+                CPPFLAGS=$pkg_cppflags \
+                ./configure \
+                    --prefix=$DEPS_PREFIX \
+                    --static
+                make libz.a
+                sudo make install
+
+      - run:
+          name: Build - db-4.8.30.NC [static]
+          command: |
+                pkg=db
+                pkg_version=4.8.30.NC
+                pkg_dl_path=http://download.oracle.com/berkeley-db
+                pkg_file_name=$pkg-$pkg_version.tar.gz
+                pkg_sha256_hash=12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef
+                pkg_cflags="$HOST_CFLAGS"
+                pkg_cxxflags="$pkg_cflags"
+
+                cd src
+                wget "$pkg_dl_path/$pkg_file_name"
+                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+                tar xfz $pkg_file_name
+
+                cd $pkg-$pkg_version
+                sed -i.old 's/__atomic_compare_exchange/__atomic_compare_exchange_db/' dbinc/atomic.h && \
+                sed -i.old 's/atomic_init/atomic_init_db/' dbinc/atomic.h mp/mp_region.c mp/mp_mvcc.c mp/mp_fget.c mutex/mut_method.c mutex/mut_tas.c && \
+                
+                rm -f dist/config.guess
+                rm -f dist/config.sub
+
+                wget "http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD" -O dist/config.guess
+                wget "http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD" -O dist/config.sub
+
+                cd build_unix/
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cxxflags \
+                ../dist/configure \
+                    --prefix=$DEPS_PREFIX \
+                    --enable-cxx \
+                    --disable-replication \
+                    --disable-shared \
+                    --with-pic
+                sudo make install
+      - run:
+          name: Build - miniupnpc-2.0.20180203 [static]
+          command: |
+                pkg=miniupnpc
+                pkg_version=2.0.20180203
+                pkg_dl_path=http://miniupnp.free.fr/files
+                pkg_file_name=$pkg-$pkg_version.tar.gz
+                pkg_sha256_hash=90dda8c7563ca6cd4a83e23b3c66dbbea89603a1675bfdb852897c2c9cc220b7
+                pkg_cflags="$HOST_CFLAGS"
+                pkg_cxxflags="$pkg_cflags"
+
+                cd src
+                wget "$pkg_dl_path/$pkg_file_name"
+                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+                tar xfz $pkg_file_name
+
+                cd $pkg-$pkg_version
+                sed -e "s|MINIUPNPC_VERSION_STRING \"version\"|MINIUPNPC_VERSION_STRING \"$pkg_version\"|" -e "s|OS/version|$HOST|" miniupnpcstrings.h.in > miniupnpcstrings.h miniupnpcstrings.h.in > miniupnpcstrings.h
+                sed -i.old "s|miniupnpcstrings.h: miniupnpcstrings.h.in wingenminiupnpcstrings|miniupnpcstrings.h: miniupnpcstrings.h.in|" Makefile.mingw
+
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cxxflags \
+                make libminiupnpc.a
+                sudo mkdir -p $DEPS_PREFIX/include/$pkg
+                sudo install *.h $DEPS_PREFIX/include/miniupnpc
+                sudo install libminiupnpc.a $DEPS_PREFIX/lib
+      - run:
+          name: Build - openssl-1.1.1k [static]
+          command: |
+                pkg=openssl
+                pkg_version=1.1.1k
+                pkg_dl_path=https://www.openssl.org/source
+                pkg_file_name=$pkg-$pkg_version.tar.gz
+                pkg_sha256_hash=892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5
+                pkg_cflags="$HOST_CFLAGS"
+                pkg_cxxflags="$pkg_cflags"
+
+                cd src
+                wget "$pkg_dl_path/$pkg_file_name"
+                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+                tar xfz $pkg_file_name
+
+                cd $pkg-$pkg_version
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cxxflags \
+                ./Configure \
+                    --prefix=$DEPS_PREFIX \
+                    linux-aarch64 \
+                    no-camellia \
+                    no-capieng \
+                    no-cast \
+                    no-comp \
+                    no-dso \
+                    no-dtls1 \
+                    no-gost \
+                    no-heartbeats \
+                    no-idea \
+                    no-md2 \
+                    no-mdc2 \
+                    no-rc4 \
+                    no-rc5 \
+                    no-rdrand \
+                    no-rfc3779 \
+                    no-sctp \
+                    no-seed \
+                    no-shared \
+                    no-ssl-trace \
+                    no-ssl3 \
+                    no-unit-test \
+                    no-weak-ssl-ciphers \
+                    no-whirlpool \
+                    no-zlib \
+                    no-zlib-dynamic
+                make depend
+                sudo make install
+      - save_cache:
+          key: toolkit-cache-arm-linux-V1-{{ .Branch }}
+          paths:
+            - $DEPS_PREFIX
+      - run:
+          name: Build - leveldb
+          command: |
+                cd src/leveldb
+                TARGET_OS=Linux CROSS_COMPILE=true \
+                CXXFLAGS="-fstack-protector-all -Wstack-protector" \
+                make libleveldb.a libmemenv.a
+                cd ../../
+      - run:
+          name: Build - Pinkcoin daemon (pink2d) [static]
+          command: |
+                pkg=pink2d
+                pkg_cflags="$HOST_CFLAGS -I$DEPS_PREFIX/include"
+                pkg_cxxflags=$pkg_cflags
+                pkg_ldflags="-L$DEPS_PREFIX/lib"
+                cd src
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cxxflags \
+                LDFLAGS=$pkg_ldflags \
+                make -j2 -f makefile.pi STATIC=1 USE_UPNP=1 -I obj/
+                strip pink2d
+      - run:
+          name: Set Artifact name as env
+          command: |
+                echo 'export GIT_COMMIT_ID=$(git rev-parse --short=9 HEAD 2>/dev/null)' >> $BASH_ENV
+                echo 'export BUILD_DATE=$(date "+%Y%m%d%H%M")' >> $BASH_ENV
+                echo 'export BUILD_NAME=pinkcoin-$GIT_COMMIT_ID-$HOST-cibuild-$CIRCLE_BUILD_NUM-$BUILD_DATE' >> $BASH_ENV
+                echo 'export STAGING_DIR=/tmp/build/$BUILD_NAME' >> $BASH_ENV
+      - run:
+          name: Stage artifacts
+          command: |
+                sudo mkdir -p $STAGING_DIR/linux
+                sudo cp src/pink2d $STAGING_DIR/linux
+                cd $STAGING_DIR/linux
+                sudo tar cvfJ pink2d.tar.xz pink2d
+                sudo rm pink2d
+                cd /tmp/build
+                sudo tar cvfJ $BUILD_NAME.tar.xz $BUILD_NAME
+                # sudo sha256sum $BUILD_NAME.tar.xz >> $BUILD_NAME.tar.xz.sha256
+      - store_artifacts:
+          path: /tmp/build/
+  build-windows:
+    working_directory: /Pink2
+    docker:
+      - image: ubuntu:focal
+        environment:
+          FROM_BUILD: "Pink2"
+          HOST: "x86_64-w64-mingw32"
+          HOST_CFLAGS: "-O2 -pipe"
+          HOST_CXXFLAGS: "-O2 -pipe"
+          DEPS_PREFIX: "/opt/x86_64-linux-gnu"
+          TZ: Europe/Madrid
+    steps:
+      - checkout
+      - run:
+          name: Install toolset
+          command: |
+                ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
+                echo $TZ > /etc/timezone
+                echo APT::Install-Recommends "0"; >> /etc/apt/apt.conf &&
+                echo APT::Install-Suggests "0"; >> /etc/apt/apt.conf &&
+                apt-get update
+                apt-get install -y \
+                    --no-install-recommends \
+                    autoconf \
+                    build-essential \
+                    python3 \
+                    gettext \
+                    g++-mingw-w64-x86-64 mingw-w64-x86-64-dev \
+                    zip git \
+                    libdb++-dev libminiupnpc-dev wget ca-certificates \
+                    "^libxcb.*" libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxkbcommon-dev libxkbcommon-x11-dev \
+                    libxi-dev libxfixes-dev libxext-dev libx11-dev libfreetype6-dev libfontconfig1-dev libxml2-dev libdbus-1-dev \
+                    libqt5svg5-dev \
+                    pkg-config \
+                    wget \
+                    ca-certificates
+                update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+                mkdir -p $DEPS_PREFIX
+      - restore_cache:
+          key: toolkit-cache-windows-V3-{{ .Branch }}
+      - run:
+          name: Build - zlib-1.2.11 [static]
+          command: |
+                wget http://www.zlib.net/zlib-1.2.11.tar.gz
+                echo 'c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1 zlib-1.2.11.tar.gz' | sha256sum -c
+                tar xvzf zlib-1.2.11.tar.gz
+                cd zlib-1.2.11
+                ./configure --static --prefix=$DEPS_PREFIX
+                make -j2 CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+                CFLAGS="-DSTATICLIB -I$DEPS_PREFIX/include" LDFLAGS="-L$DEPS_PREFIX/lib" libz.a
+                make -j2 install CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+                CFLAGS="-DSTATICLIB -I$DEPS_PREFIX/include" LDFLAGS="-L$DEPS_PREFIX/lib"
+      - run:
+          name: Build - libpng-1.6.16 [static]
+          command: |
+                wget http://download.sourceforge.net/libpng/libpng-1.6.16.tar.gz
+                echo '02f96b6bad5a381d36d7ba7a5d9be3b06f7fe6c274da00707509c23592a073ad  libpng-1.6.16.tar.gz' | sha256sum -c
+                tar xzvf libpng-1.6.16.tar.gz
+                cd libpng-1.6.16
+                CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
+                CFLAGS="-DSTATICLIB -I$DEPS_PREFIX/include" \
+                CPPFLAGS="-I$DEPS_PREFIX/include" \
+                LDFLAGS="-L$DEPS_PREFIX/lib -L$DEPS_PREFIX/lib" \
+                ./configure --host=x86_64-w64-mingw32 --prefix=$DEPS_PREFIX --disable-shared \
+                --with-zlib-prefix=$DEPS_PREFIX
+                make -j2
+                make -j2 install
+      - run:
+          name: Build - qrencode-4.1.1 [static]
+          command: |
+                wget 'https://fukuchi.org/works/qrencode/qrencode-4.1.1.tar.gz'
+                echo 'da448ed4f52aba6bcb0cd48cac0dd51b8692bccc4cd127431402fca6f8171e8e qrencode-4.1.1.tar.gz' | sha256sum -c
+                tar -xzvf qrencode-4.1.1.tar.gz
+                cd qrencode-4.1.1
+                CC=x86_64-w64-mingw32-gcc \
+                AR=x86_64-w64-mingw32-ar \
+                CFLAGS="-DSTATICLIB -I$DEPS_PREFIX/include" \
+                LDFLAGS="-L$DEPS_PREFIX/lib" \
+                png_CFLAGS="-I$DEPS_PREFIX/include" \
+                png_LIBS="-I$DEPS_PREFIX/include" \
+                ./configure --host=x86_64-w64-mingw32 --disable-shared --enable-static --without-tools --prefix=$DEPS_PREFIX
+                make -j2
+                make -j2 install
+      - run:
+          name: Build - boost-1.77.0 [static]
+          command: |
+                pkg=boost
+                pkg_version=1_77_0
+                pkg_version_dotted=1.77.0
+                pkg_dl_path=https://sourceforge.net/projects/boost/files/boost/$pkg_version_dotted
+                pkg_file_name=$pkg"_"$pkg_version.tar.bz2
+                pkg_sha256_hash=fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854
+
+                wget "$pkg_dl_path/$pkg_file_name"
+                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+                tar xfj $pkg_file_name
+
+                cd $pkg"_"$pkg_version
+                echo "using gcc : : /usr/bin/x86_64-w64-mingw32-g++ : <cxxflags>\"-std=c++11 -fvisibility=hidden     -I$DEPS_PREFIX/include    \"  <linkflags>\"-L$DEPS_PREFIX/lib    \" <archiver>\"x86_64-w64-mingw32-ar\" <striper>\"x86_64-w64-mingw32-strip\"  <ranlib>\"x86_64-w64-mingw32-ranlib\" <rc>\"\" : ;" > user-config.jam
+                
+                ./bootstrap.sh \
+                    --without-icu \
+                    --with-libraries=chrono,filesystem,program_options,system,thread,test
+                ./b2 \
+                    -d2 -j2 -d1 \
+                    --prefix=$DEPS_PREFIX variant=release \
+                    --layout=tagged --build-type=complete \
+                    --user-config=user-config.jam threading=multi link=static -sNO_BZIP2=1 \
+                    -sNO_ZLIB=1 binary-format=pe target-os=windows threadapi=win32 runtime-link=static address-model=64 stage
+                ./b2 -d0 -j2 --prefix=$DEPS_PREFIX variant=release --layout=tagged \
+                    --build-type=complete --user-config=user-config.jam threading=multi link=static \
+                    -sNO_BZIP2=1 -sNO_ZLIB=1 binary-format=pe target-os=windows threadapi=win32 \
+                    runtime-link=static address-model=64 install
+      - run:
+          name: Build - db-4.8.30.NC [static]
+          command: |
+                wget 'http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz'
+                echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef db-4.8.30.NC.tar.gz' | sha256sum -c
+                tar -xzvf db-4.8.30.NC.tar.gz
+                cd db-4.8.30.NC/build_unix
+                CC=/usr/bin/x86_64-w64-mingw32-gcc CXX=/usr/bin/x86_64-w64-mingw32-g++ \
+                ../dist/configure --host=x86_64-w64-mingw32 \
+                --enable-cxx --enable-mingw --disable-replication --disable-shared --prefix=$DEPS_PREFIX
+                make -j2
+                make -j2 install
+      - run:
+          name: Build - miniupnpc-2.2.20180203 [static]
+          command: |
+                wget http://miniupnp.free.fr/files/download.php?file=miniupnpc-2.2.2.tar.gz -O miniupnpc-2.2.2.tar.gz
+                echo '888fb0976ba61518276fe1eda988589c700a3f2a69d71089260d75562afd3687 miniupnpc-2.2.2.tar.gz' | sha256sum -c
+                tar xzvf miniupnpc-2.2.2.tar.gz
+                cd miniupnpc-2.2.2
+                sed -i.old 's/defined(_WIN32)/0 \&\& defined(_WIN32)/' miniupnpc_declspec.h
+                CC=x86_64-w64-mingw32-gcc \
+                CXX=x86_64-w64-mingw32-g++ \
+                AR=x86_64-w64-mingw32-ar \
+                CFLAGS="-DMINIUPNP_STATICLIB -D_WIN32 -I$DEPS_PREFIX/include" \
+                LDFLAGS="-L$DEPS_PREFIX/lib" \
+                make -j2 libminiupnpc.a -f Makefile.mingw
+                mkdir -p $DEPS_PREFIX/include/miniupnpc
+                cp *.h $DEPS_PREFIX/include/miniupnpc
+                cp libminiupnpc.a $DEPS_PREFIX/lib
+      - run:
+          name: Build - openssl-1.1.1k [static]
+          command: |
+                wget 'https://www.openssl.org/source/openssl-1.1.1k.tar.gz'
+                echo '892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5 openssl-1.1.1k.tar.gz' | sha256sum -c
+                tar -xzvf openssl-1.1.1k.tar.gz
+                cd openssl-1.1.1k
+                CFLAGS="-DSTATICLIB -I$DEPS_PREFIX/include" \
+                LDFLAGS="-L$DEPS_PREFIX/lib" \
+                ./Configure --cross-compile-prefix=x86_64-w64-mingw32- --prefix=$DEPS_PREFIX no-camellia \
+                no-capieng no-cast no-comp no-dso no-dtls1 no-ec_nistp_64_gcc_128 no-gost \
+                no-heartbeats no-idea no-md2 no-mdc2 no-rc4 no-rc5 no-rdrand \
+                no-rfc3779 no-sctp no-sctp no-seed no-shared no-ssl-trace no-ssl2 \
+                no-ssl3 no-unit-test no-weak-ssl-ciphers no-whirlpool no-zlib \
+                no-zlib-dynamic mingw64
+                make depend
+                make -j2
+                make -j2 install
+      - run:
+          name: Build - QT-5.15.2 [static]
+          command: |
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qtbase-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qttools-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qttranslations-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qtsvg-everywhere-src-5.15.2.tar.xz'
+                echo '909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8 qtbase-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo 'c189d0ce1ff7c739db9a3ace52ac3e24cb8fd6dbf234e49f075249b38f43c1cc qttools-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo 'd5788e86257b21d5323f1efd94376a213e091d1e5e03b45a95dd052b5f570db8 qttranslations-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo '8bc3c2c1bc2671e9c67d4205589a8309b57903721ad14c60ea21a5d06acb585e qtsvg-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                tar xf qtbase-everywhere-src-5.15.2.tar.xz
+                tar xf qttools-everywhere-src-5.15.2.tar.xz
+                tar xf qttranslations-everywhere-src-5.15.2.tar.xz
+                tar xf qtsvg-everywhere-src-5.15.2.tar.xz
+                cd qtbase-everywhere-src-5.15.2/
+                SYSROOT=$DEPS_PREFIX
+                export PKG_CONFIG_DIR=
+                export PKG_CONFIG_LIBDIR=$DEPS_PREFIX/lib/pkgconfig:$DEPS_PREFIX/share/pkgconfig
+                export PKG_CONFIG_SYSROOT_DIR=$DEPS_PREFIX
+                export OPENSSL_LIBS="$DEPS_PREFIX/lib/libssl.a $DEPS_PREFIX/lib/libcrypto.a /usr/x86_64-w64-mingw32/lib/libws2_32.a /usr/x86_64-w64-mingw32/lib/libgdi32.a"
+                ./configure -prefix $DEPS_PREFIX -xplatform win32-g++ \
+                -device-option CROSS_COMPILE=x86_64-w64-mingw32- \
+                -release -c++std c++11 -confirm-license -opensource \
+                -no-compile-examples -nomake examples -nomake tests -make libs \
+                -dbus-runtime -no-cups -no-egl -no-eglfs \
+                -qt-freetype -no-glib -no-icu -no-iconv -no-kms -no-linuxfb \
+                -no-libudev -no-mtdev -no-openvg -no-reduce-relocations \
+                -no-sql-db2 -no-sql-ibase -no-sql-oci -no-sql-tds \
+                -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite \
+                -no-sql-sqlite2 -no-use-gold-linker -no-opengl \
+                -openssl-linked -optimized-qmake -pch -pkg-config -qt-libpng \
+                -qt-libjpeg -qt-harfbuzz -qt-pcre -system-zlib -strip -static -silent -v \
+                -no-feature-dial -no-feature-printer -no-feature-printdialog \
+                -no-feature-printpreviewdialog -no-feature-printpreviewwidget \
+                -no-feature-ftp -no-feature-lcdnumber -no-feature-pdf -no-feature-concurrent \
+                -no-feature-sql -no-feature-statemachine -no-feature-syntaxhighlighter \
+                -no-feature-textbrowser -no-feature-textodfwriter \
+                -no-feature-wizard -no-feature-xml \
+                -I $DEPS_PREFIX/include -L $DEPS_PREFIX/lib
+                echo "host_build: QT_CONFIG ~= s/system-zlib/zlib" >> mkspecs/qconfig.pri
+                echo "CONFIG += force_bootstrap" >> mkspecs/qconfig.pri
+                make sub-src-clean
+                cd ../qttranslations-everywhere-src-5.15.2
+                ../qtbase-everywhere-src-5.15.2/bin/qmake qttranslations.pro -o Makefile
+                cd translations
+                ../../qtbase-everywhere-src-5.15.2/bin/qmake translations.pro -o Makefile
+                cd ../../qttools-everywhere-src-5.15.2/src/linguist/lrelease/
+                ../../../../qtbase-everywhere-src-5.15.2/bin/qmake lrelease.pro -o Makefile
+                cd ../../../../qtsvg-everywhere-src-5.15.2
+                ../qtbase-everywhere-src-5.15.2/bin/qmake qtsvg.pro -o Makefile
+                cd ../qtbase-everywhere-src-5.15.2/
+                make -j2
+                make -j2 install
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease install_target
+                make -j2 -C ../qttranslations-everywhere-src-5.15.2
+                make -j2 -C ../qttranslations-everywhere-src-5.15.2 install_subtargets
+                make -j2 -C ../qtsvg-everywhere-src-5.15.2
+                make -j2 -C ../qtsvg-everywhere-src-5.15.2 install
+      - save_cache:
+          key: toolkit-cache-windows-V3-{{ .Branch }}
+          paths:
+            - /opt/x86_64-linux-gnu
+      - run:
+          name: Build - Pinkcoin daemon (pink2d) [static]
+          command: |
+                cd src
+                make -j2 -f makefile.linux-mingw DEPSDIR=$DEPS_PREFIX TARGET_PLATFORM=x86_64
+                strip pink2d.exe
+      - run:
+          name: Build - Pinkcoin Qt (pinkcoin-qt)
+          command: |
+                $DEPS_PREFIX/bin/qmake \
+                USE_UPNP=1 CONFIG+=c++11 USE_QRCODE=1 STATIC=1 RELEASE=1 \
+                DEPS_INCLUDE_PATH=$DEPS_PREFIX/include \
+                DEPS_LIB_PATH=$DEPS_PREFIX/lib \
+                QRENCODE_INCLUDE_PATH=$DEPS_PREFIX/include \
+                QRENCODE_LIB_PATH=$DEPS_PREFIX/lib \
+                BOOST_LIB_SUFFIX=-mt-s-x64 \
+                BOOST_THREAD_LIB_SUFFIX=-mt-s-x64 \
+                BOOST_INCLUDE_PATH=$DEPS_PREFIX/include/boost \
+                BOOST_LIB_PATH=$DEPS_PREFIX/lib \
+                OPENSSL_INCLUDE_PATH=$DEPS_PREFIX/include \
+                OPENSSL_LIB_PATH=$DEPS_PREFIX/lib \
+                BDB_INCLUDE_PATH=$DEPS_PREFIX/include \
+                BDB_LIB_PATH=$DEPS_PREFIX/lib \
+                MINIUPNPC_INCLUDE_PATH=$DEPS_PREFIX/include/ \
+                MINIUPNPC_LIB_PATH=$DEPS_PREFIX/lib \
+                QMAKE_LRELEASE=$DEPS_PREFIX/bin/lrelease \
+                QMAKE_CFLAGS_ISYSTEM= \
+                pinkcoin-qt.pro
+                cd src/leveldb
+                CC=/usr/bin/x86_64-w64-mingw32-gcc CXX=/usr/bin/x86_64-w64-mingw32-g++ \
+                AR=x86_64-w64-mingw32-ar TARGET_OS=OS_WINDOWS_CROSSCOMPILE make libleveldb.a libmemenv.a
+                cd ../..
+                make -j2 -f Makefile.Release
+                strip release/Pinkcoin-Qt.exe
+      - run:
+          name: Set Artifact name as env
+          command: |
+                echo 'export GIT_COMMIT_ID=$(git rev-parse --short=9 HEAD 2>/dev/null)' >> $BASH_ENV
+                echo 'export BUILD_DATE=$(date "+%Y%m%d%H%M")' >> $BASH_ENV
+                echo 'export BUILD_NAME=pinkcoin-$GIT_COMMIT_ID-$HOST-cibuild-$CIRCLE_BUILD_NUM-$BUILD_DATE' >> $BASH_ENV
+                echo 'export STAGING_DIR=/tmp/build/$BUILD_NAME' >> $BASH_ENV
+      - run:
+          name: Stage artifacts
+          command: |
+                mkdir -p $STAGING_DIR/windows
+                cp src/pink2d.exe $STAGING_DIR/windows
+                cp release/Pinkcoin-Qt.exe $STAGING_DIR/windows
+                cd $STAGING_DIR/windows
+                zip pink2d.exe.zip pink2d.exe
+                rm pink2d.exe
+                zip Pinkcoin-Qt.exe.zip Pinkcoin-Qt.exe
+                rm Pinkcoin-Qt.exe
+                cd /tmp/build
+                tar cvfJ $BUILD_NAME.tar.xz $BUILD_NAME
+                sha256sum $BUILD_NAME.tar.xz >> $BUILD_NAME.tar.xz.sha256
+      - store_artifacts:
+          path: /tmp/build/
+  build-macos:
+    macos:
+      xcode: 12.5.1
+    steps:
+      - checkout
+      - run:
+          name: Install toolset
+          command: |
+            brew install coreutils berkeley-db@4 qt@5 openssl@1.1 boost miniupnpc qrencode zlib python-tk@3.9
+      - run:
+          name: Build - Pinkcoin daemon (pink2d) [static]
+          command: |
+            cd src
+            make -j2 -f makefile.osx STATIC=1 USE_UPNP=1
+            strip pink2d
+      - run:
+          name: Build - Pinkcoin daemon (pink2d) [static]
+          command: |
+            cd src
+            make -j2 -f makefile.osx STATIC=1 USE_UPNP=1
+            strip pink2d
+      - run:
+          name: Build - Pinkcoin Qt (pinkcoin-qt)
+          command: |
+            /usr/local/opt/qt@5/bin/qmake \
+            USE_UPNP=1 \
+            USE_DBUS=1 \
+            CONFIG+=c++11 \
+            USE_QRCODE=1 \
+            STATIC=1 \
+            RELEASE=1
+            make -j2
+            /usr/local/opt/qt@5/bin/macdeployqt Pinkcoin-Qt.app -dmg
+      - run:
+          name: Set Artifact name as env
+          command: |
+                echo 'export GIT_COMMIT_ID=$(git rev-parse --short=9 HEAD 2>/dev/null)' >> $BASH_ENV
+                echo 'export BUILD_DATE=$(date "+%Y%m%d%H%M")' >> $BASH_ENV
+                echo 'export BUILD_NAME=pinkcoin-$GIT_COMMIT_ID-$HOST-cibuild-$CIRCLE_BUILD_NUM-$BUILD_DATE' >> $BASH_ENV
+                echo 'export STAGING_DIR=/tmp/build/$BUILD_NAME' >> $BASH_ENV
+      - run:
+          name: Stage artifacts
+          command: |
+                mkdir -p $STAGING_DIR/macos
+                cp src/pink2d $STAGING_DIR/macos
+                cp Pinkcoin-Qt.dmg $STAGING_DIR/macos
+                cd $STAGING_DIR/macos
+                tar cvfJ pink2d.tar.xz pink2d
+                rm pink2d
+                cd /tmp/build
+                tar cvfJ $BUILD_NAME.tar.xz $BUILD_NAME
+                sha256sum $BUILD_NAME.tar.xz >> $BUILD_NAME.tar.xz.sha256
+      - store_artifacts:
+          path: /tmp/build/
+  build-linux:
     working_directory: /Pink2
     docker:
       - image: ubuntu:bionic
@@ -24,15 +575,17 @@ jobs:
                     autoconf \
                     build-essential \
                     git \
-                    qt5-default \
-                    qt5-qmake \
-                    qtbase5-dev-tools \
-                    qttools5-dev-tools \
-                    libqt5svg5-dev \
+                    libboost-system-dev libboost-filesystem-dev \
+                    libboost-program-options-dev libboost-thread-dev \
+                    libdb++-dev libminiupnpc-dev wget ca-certificates \
+                    "^libxcb.*" libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxkbcommon-dev libxkbcommon-x11-dev \
+                    libxi-dev libxfixes-dev libxext-dev libx11-dev libfreetype6-dev libfontconfig1-dev libxml2-dev libdbus-1-dev \
                     pkg-config \
                     wget \
                     ca-certificates
                     mkdir -p $DEPS_PREFIX
+      - restore_cache:
+          key: toolkit-cache-linux-V2-{{ .Branch }}
       - run:
           name: Build - zlib-1.2.11 [static]
           command: |
@@ -59,55 +612,55 @@ jobs:
                     --static
                 make libz.a
                 make install
-      - run:
-          name: Build - boost-1.75.0 [static]
-          command: |
-                pkg=boost
-                pkg_version=1_75_0
-                pkg_dl_path=https://dl.bintray.com/boostorg/release/1.75.0/source
-                pkg_file_name=$pkg"_"$pkg_version.tar.bz2
-                pkg_sha256_hash=953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb
-                pkg_deps=zlib
-                pkg_cflags="$HOST_CFLAGS -I$DEPS_PREFIX/include"
-                pkg_cxxflags="$pkg_cflags -std=c++11 -fvisibility=hidden"
-                pkg_cxxflags_linux="$pkg_cflags -fPIC"
-                pkg_ldflags="-L$DEPS_PREFIX/lib"
-                pkg_config_libraries="chrono,filesystem,program_options,system,thread,test,iostreams"
-                pkg_config_opts="variant=release --layout=tagged --build-type=complete threading=multi link=static -sNO_COMPRESSION=1"
-                pkg_config_opts_mingw32="target-os=windows binary-format=pe threadapi=win32 runtime-link=static"
-                pkg_config_opts_linux="target-os=linux threadapi=pthread runtime-link=shared"
-                pkg_config_opts_darwin="target-os=darwin runtime-link=shared"
-                pkg_config_opts_x86_64="architecture=x86 address-model=64"
-                pkg_config_opts_i686="architecture=x86 address-model=32"
-                pkg_config_opts_aarch64="address-model=64"
-                pkg_config_opts_armv7a="address-model=32"
+      # - run:
+      #     name: Build - boost-1.75.0 [static]
+      #     command: |
+      #           pkg=boost
+      #           pkg_version=1_75_0
+      #           pkg_dl_path=https://dl.bintray.com/boostorg/release/1.75.0/source
+      #           pkg_file_name=$pkg"_"$pkg_version.tar.bz2
+      #           pkg_sha256_hash=953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb
+      #           pkg_deps=zlib
+      #           pkg_cflags="$HOST_CFLAGS -I$DEPS_PREFIX/include"
+      #           pkg_cxxflags="$pkg_cflags -std=c++11 -fvisibility=hidden"
+      #           pkg_cxxflags_linux="$pkg_cflags -fPIC"
+      #           pkg_ldflags="-L$DEPS_PREFIX/lib"
+      #           pkg_config_libraries="chrono,filesystem,program_options,system,thread,test,iostreams"
+      #           pkg_config_opts="variant=release --layout=tagged --build-type=complete threading=multi link=static -sNO_COMPRESSION=1"
+      #           pkg_config_opts_mingw32="target-os=windows binary-format=pe threadapi=win32 runtime-link=static"
+      #           pkg_config_opts_linux="target-os=linux threadapi=pthread runtime-link=shared"
+      #           pkg_config_opts_darwin="target-os=darwin runtime-link=shared"
+      #           pkg_config_opts_x86_64="architecture=x86 address-model=64"
+      #           pkg_config_opts_i686="architecture=x86 address-model=32"
+      #           pkg_config_opts_aarch64="address-model=64"
+      #           pkg_config_opts_armv7a="address-model=32"
 
-                cd src
-                wget "$pkg_dl_path/$pkg_file_name"
-                echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
-                tar xfj $pkg_file_name
+      #           cd src
+      #           wget "$pkg_dl_path/$pkg_file_name"
+      #           echo "$pkg_sha256_hash $pkg_file_name" | sha256sum -c
+      #           tar xfj $pkg_file_name
 
-                cd $pkg"_"$pkg_version
-                CFLAGS="$pkg_cflags" \
-                CXXFLAGS="$pkg_cxxflags $pkg_cxxflags_linux" \
-                CPPFLAGS="$pkg_cppflags" \
-                LDFLAGS="$pkg_ldflags" \
-                ./bootstrap.sh \
-                    --without-icu \
-                    --with-libraries="$pkg_config_libraries"
+      #           cd $pkg"_"$pkg_version
+      #           CFLAGS="$pkg_cflags" \
+      #           CXXFLAGS="$pkg_cxxflags $pkg_cxxflags_linux" \
+      #           CPPFLAGS="$pkg_cppflags" \
+      #           LDFLAGS="$pkg_ldflags" \
+      #           ./bootstrap.sh \
+      #               --without-icu \
+      #               --with-libraries="$pkg_config_libraries"
 
-                ./b2 -d2 -j2 -d1 \
-                    --prefix=$DEPS_PREFIX \
-                    $pkg_config_opts \
-                    $pkg_config_opts_linux \
-                    $pkg_config_opts_x86_64 \
-                    stage
-                ./b2 -d0 -j4 \
-                    --prefix=$DEPS_PREFIX \
-                    $pkg_config_opts \
-                    $pkg_config_opts_linux \
-                    $pkg_config_opts_x86_64 \
-                    install
+      #           ./b2 -d2 -j2 -d1 \
+      #               --prefix=$DEPS_PREFIX \
+      #               $pkg_config_opts \
+      #               $pkg_config_opts_linux \
+      #               $pkg_config_opts_x86_64 \
+      #               stage
+      #           ./b2 -d0 -j4 \
+      #               --prefix=$DEPS_PREFIX \
+      #               $pkg_config_opts \
+      #               $pkg_config_opts_linux \
+      #               $pkg_config_opts_x86_64 \
+      #               install
       - run:
           name: Build - db-4.8.30.NC [static]
           command: |
@@ -214,19 +767,74 @@ jobs:
                 make depend
                 make install
       - run:
-          name: Build - Pinkcoin daemon (pink2d) [static]
+          name: Build - QT-5.15.2 [static]
           command: |
-                pkg=pink2d
-                pkg_cflags="$HOST_CFLAGS -I$DEPS_PREFIX/include"
-                pkg_cxxflags=$pkg_cflags
-                pkg_ldflags="-L$DEPS_PREFIX/lib"
                 cd src
-                CFLAGS=$pkg_cflags \
-                CXXFLAGS=$pkg_cxxflags \
-                LDFLAGS=$pkg_ldflags \
-                BOOST_LIB_SUFFIX=-mt-x64 \
-                make -j 2 -f makefile.unix STATIC=1 USE_UPNP=0
-                strip pink2d
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qtbase-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qttools-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qttranslations-everywhere-src-5.15.2.tar.xz'
+                wget 'https://download.qt.io/official_releases/qt/5.15/5.15.2/submodules/qtsvg-everywhere-src-5.15.2.tar.xz'
+                echo '909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8 qtbase-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo 'c189d0ce1ff7c739db9a3ace52ac3e24cb8fd6dbf234e49f075249b38f43c1cc qttools-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo 'd5788e86257b21d5323f1efd94376a213e091d1e5e03b45a95dd052b5f570db8 qttranslations-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                echo '8bc3c2c1bc2671e9c67d4205589a8309b57903721ad14c60ea21a5d06acb585e qtsvg-everywhere-src-5.15.2.tar.xz' | sha256sum -c
+                tar xf qtbase-everywhere-src-5.15.2.tar.xz
+                tar xf qttools-everywhere-src-5.15.2.tar.xz
+                tar xf qttranslations-everywhere-src-5.15.2.tar.xz
+                tar xf qtsvg-everywhere-src-5.15.2.tar.xz
+                cd qtbase-everywhere-src-5.15.2/
+                SYSROOT=$DEPS_PREFIX
+                export PKG_CONFIG_DIR=
+                export PKG_CONFIG_LIBDIR=$DEPS_PREFIX/lib/pkgconfig:$DEPS_PREFIX/share/pkgconfig
+                export PKG_CONFIG_SYSROOT_DIR=$DEPS_PREFIX
+                export OPENSSL_LIBS="$DEPS_PREFIX/lib/libssl.a $DEPS_PREFIX/lib/libcrypto.a -lpthread -ldl"
+                ./configure -prefix $DEPS_PREFIX \
+                -release -c++std c++11 -confirm-license -opensource \
+                -no-compile-examples -nomake examples -nomake tests -make libs \
+                -dbus-runtime -no-cups -no-egl -no-eglfs \
+                -qt-freetype -no-glib -no-icu -no-iconv -no-kms -no-linuxfb \
+                -no-libudev -no-mtdev -no-openvg -no-reduce-relocations \
+                -no-sql-db2 -no-sql-ibase -no-sql-oci -no-sql-tds \
+                -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite \
+                -no-sql-sqlite2 -no-use-gold-linker -no-opengl \
+                -openssl-linked -optimized-qmake -pch -pkg-config -qt-libpng \
+                -qt-libjpeg -qt-harfbuzz -qt-pcre -system-zlib -strip -static -silent -v \
+                -no-feature-dial -no-feature-printer -no-feature-printdialog \
+                -no-feature-printpreviewdialog -no-feature-printpreviewwidget \
+                -no-feature-ftp -no-feature-lcdnumber -no-feature-pdf -no-feature-concurrent \
+                -no-feature-sql -no-feature-statemachine -no-feature-syntaxhighlighter \
+                -no-feature-textbrowser -no-feature-textodfwriter \
+                -no-feature-wizard -no-feature-xml \
+                -I $DEPS_PREFIX/include -L $DEPS_PREFIX/lib
+                echo "host_build: QT_CONFIG ~= s/system-zlib/zlib" >> mkspecs/qconfig.pri
+                echo "CONFIG += force_bootstrap" >> mkspecs/qconfig.pri
+                make sub-src-clean
+                cd ../qttranslations-everywhere-src-5.15.2
+                ../qtbase-everywhere-src-5.15.2/bin/qmake qttranslations.pro -o Makefile
+                cd translations
+                ../../qtbase-everywhere-src-5.15.2/bin/qmake translations.pro -o Makefile
+                cd ../../qttools-everywhere-src-5.15.2/src/linguist/lrelease/
+                ../../../../qtbase-everywhere-src-5.15.2/bin/qmake lrelease.pro -o Makefile
+                cd ../lrelease-pro/
+                ../../../../qtbase-everywhere-src-5.15.2/bin/qmake lrelease-pro.pro -o Makefile
+                cd ../../../../qtsvg-everywhere-src-5.15.2
+                ../qtbase-everywhere-src-5.15.2/bin/qmake qtsvg.pro -o Makefile
+                cd ../qtbase-everywhere-src-5.15.2/
+                make -j2
+                make -j2 install
+                cd ../qttools-everywhere-src-5.15.2/src/linguist/lprodump/
+                ../../../../qtbase-everywhere-src-5.15.2/bin/qmake lprodump.pro -o Makefile
+                cd ../../../../qtbase-everywhere-src-5.15.2/
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease install_target
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease-pro
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lrelease-pro install_target
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lprodump
+                make -j2 -C ../qttools-everywhere-src-5.15.2/src/linguist/lprodump install_target
+                make -j2 -C ../qttranslations-everywhere-src-5.15.2
+                make -j2 -C ../qttranslations-everywhere-src-5.15.2 install_subtargets
+                make -j2 -C ../qtsvg-everywhere-src-5.15.2
+                make -j2 -C ../qtsvg-everywhere-src-5.15.2 install
       - run:
           name: Build - qrencode-4.1.1 [static]
           command: |
@@ -253,6 +861,23 @@ jobs:
                     --with-pic \
                     --without-tools
                 make install
+      - save_cache:
+          key: toolkit-cache-linux-V2-{{ .Branch }}
+          paths:
+            - $DEPS_PREFIX
+      - run:
+          name: Build - Pinkcoin daemon (pink2d) [static]
+          command: |
+                pkg=pink2d
+                pkg_cflags="$HOST_CFLAGS -I$DEPS_PREFIX/include"
+                pkg_cxxflags=$pkg_cflags
+                pkg_ldflags="-L$DEPS_PREFIX/lib"
+                cd src
+                CFLAGS=$pkg_cflags \
+                CXXFLAGS=$pkg_cxxflags \
+                LDFLAGS=$pkg_ldflags \
+                make -j2 -f makefile.unix STATIC=1 USE_UPNP=1
+                strip pink2d
       - run:
           name: Build - Pinkcoin Qt (pinkcoin-qt)
           command: |
@@ -263,20 +888,24 @@ jobs:
                 CFLAGS=$pkg_cflags \
                 CXXFLAGS=$pkg_cxxflags \
                 LDFLAGS=$pkg_ldflags \
-                qmake \
-                    USE_UPNP=0 \
-                    USE_DBUS=1 \
-                    CONFIG+=c++11 \
-                    USE_QRCODE=1 \
-                    RELEASE=1 \
-                    BOOST_LIB_SUFFIX=-mt-x64 \
-                    BDB_LIB_PATH=$DEPS_PREFIX/lib \
-                    BDB_INCLUDE_PATH=$DEPS_PREFIX/include \
-                    OPENSSL_INCLUDE_PATH=$DEPS_PREFIX/include \
-                    OPENSSL_LIB_PATH=$DEPS_PREFIX/lib \
-                    QRENCODE_LIB_PATH=$DEPS_PREFIX/lib \
-                    QRENCODE_INCLUDE_PATH=$DEPS_PREFIX/include
-                make -j 2
+                $DEPS_PREFIX/bin/qmake \
+                USE_UPNP=1 CONFIG+=c++11 USE_QRCODE=1 STATIC=1 RELEASE=1 \
+                DEPS_INCLUDE_PATH=$DEPS_PREFIX/include \
+                DEPS_LIB_PATH=$DEPS_PREFIX/lib \
+                QRENCODE_INCLUDE_PATH=$DEPS_PREFIX/include \
+                QRENCODE_LIB_PATH=$DEPS_PREFIX/lib \
+                BOOST_INCLUDE_PATH=$DEPS_PREFIX/include/boost \
+                BOOST_LIB_PATH=$DEPS_PREFIX/lib \
+                OPENSSL_INCLUDE_PATH=$DEPS_PREFIX/include \
+                OPENSSL_LIB_PATH=$DEPS_PREFIX/lib \
+                BDB_INCLUDE_PATH=$DEPS_PREFIX/include \
+                BDB_LIB_PATH=$DEPS_PREFIX/lib \
+                MINIUPNPC_INCLUDE_PATH=$DEPS_PREFIX/include/ \
+                MINIUPNPC_LIB_PATH=$DEPS_PREFIX/lib \
+                QMAKE_LRELEASE=$DEPS_PREFIX/bin/lrelease \
+                QMAKE_CFLAGS_ISYSTEM= \
+                pinkcoin-qt.pro
+                make -j2
                 strip Pinkcoin-Qt
       - run:
           name: Set Artifact name as env
@@ -288,12 +917,45 @@ jobs:
       - run:
           name: Stage artifacts
           command: |
-                mkdir -p $STAGING_DIR/bin
-                cp src/pink2d $STAGING_DIR/bin
-                cp Pinkcoin-Qt $STAGING_DIR/bin
+                mkdir -p $STAGING_DIR/linux
+                cp src/pink2d $STAGING_DIR/linux
+                cp Pinkcoin-Qt $STAGING_DIR/linux
+                cd $STAGING_DIR/linux
+                tar cvfJ pink2d.tar.xz pink2d
+                rm pink2d
+                tar cvfJ Pinkcoin-Qt.tar.xz Pinkcoin-Qt
+                rm Pinkcoin-Qt
                 cd /tmp/build
                 tar cvfJ $BUILD_NAME.tar.xz $BUILD_NAME
                 sha256sum $BUILD_NAME.tar.xz >> $BUILD_NAME.tar.xz.sha256
       - store_artifacts:
           path: /tmp/build/
-destination: linux
+  # publish-github-release:
+  #   docker:
+  #     - image: cibuilds/github:0.10
+  #   steps:
+  #     - attach_workspace:
+  #         at: ./artifacts
+  #     - run:
+  #         name: "Publish Release on GitHub"
+  #         command: |
+  #           VERSION=$(linux/pink2d --version)
+  #           ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+workflows:
+  build-deploy:
+    jobs:
+      # - build-arm
+      - build-windows
+      - build-macos
+      - build-linux
+      # - publish-github-release:
+      #     requires:
+      #       - build-windows
+      #       - build-macos
+      #       - build-linux
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #       tags:
+      #         only: /^\d+\.\d+\.\d+$/
