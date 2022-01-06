@@ -345,7 +345,7 @@ jobs:
       - run:
           name: Build - miniupnpc-2.2.20180203 [static]
           command: |
-                wget http://miniupnp.free.fr/files/download.php?file=miniupnpc-2.2.2.tar.gz -O miniupnpc-2.2.2.tar.gz
+                wget http://miniupnp.free.fr/files/miniupnpc-2.2.2.tar.gz -O miniupnpc-2.2.2.tar.gz
                 echo '888fb0976ba61518276fe1eda988589c700a3f2a69d71089260d75562afd3687 miniupnpc-2.2.2.tar.gz' | sha256sum -c
                 tar xzvf miniupnpc-2.2.2.tar.gz
                 cd miniupnpc-2.2.2
