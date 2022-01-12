@@ -684,14 +684,18 @@ Value sendfrom(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 7)
         throw runtime_error(
-            "sendfrom <fromaccount> <topinkcoinaddress> <amount> [minconf=1] [note] [comment] [comment-to]\n"
+            "sendfrom <fromaccount> <topinkcoinaddress> <amount> [minconf=1] [comment] [comment-to] [note]\n"
             "<amount> is a real and is rounded to the nearest 0.000001"
             + HelpRequiringPassphrase());
-
-    string strAccount = AccountFromValue(params[0]);
+			
+    EnsureWalletIsUnlocked();
+    
+	string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
+	
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Pinkcoin address");
+	
     int64_t nAmount = AmountFromValue(params[2]);
 
     int nMinDepth = 1;
@@ -700,20 +704,18 @@ Value sendfrom(const Array& params, bool fHelp)
 
     CWalletTx wtx;
     wtx.strFromAccount = strAccount;
+	
+	if (params.size() > 4 && params[4].type() != null_type && !params[4].get_str().empty())
+        wtx.mapValue["comment"] = params[4].get_str();
+    if (params.size() > 5 && params[5].type() != null_type && !params[5].get_str().empty())
+        wtx.mapValue["to"]      = params[5].get_str();
     
     std::string sNarr;
-    if (params.size() > 4 && params[4].type() != null_type && !params[4].get_str().empty())
-        sNarr = params[4].get_str();
+    if (params.size() > 6 && params[6].type() != null_type && !params[6].get_str().empty())
+        sNarr = params[6].get_str();
     
     if (sNarr.length() > 24)
         throw runtime_error("Note must be 24 characters or less.");
-    
-    if (params.size() > 5 && params[5].type() != null_type && !params[5].get_str().empty())
-        wtx.mapValue["comment"] = params[5].get_str();
-    if (params.size() > 6 && params[6].type() != null_type && !params[6].get_str().empty())
-        wtx.mapValue["to"]      = params[6].get_str();
-
-    EnsureWalletIsUnlocked();
 
     // Check funds
     int64_t nBalance = GetAccountBalance(strAccount, nMinDepth);
